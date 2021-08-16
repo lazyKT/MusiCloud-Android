@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MusiCloud</string>
+
+    <!-- fragment titles -->
+    <string name="setting">Setting</string>
+    <string name="profile">My Profile</string>
+    <string name="report">Report a Problem</string>
+    <string name="log_in">LOG IN</string>
+    <string name="about">About MusiCloud</string>
+    <string name="search">Search</string>
+    <string name="add">Add New Song</string>
+    <string name="import_from_file">Import From Device Storage</string>
+    <string name="download_from_youtube">Download From YouTube</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- test data -->
+    <string name="song_name">Hotel California</string>
+
+</resources>

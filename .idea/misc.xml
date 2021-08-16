@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/dialog_title_round.xml" value="0.2578125" />
+        <entry key="app/src/main/res/drawable/round_corner_dialog.xml" value="0.2578125" />
+        <entry key="app/src/main/res/drawable/top_shadow.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/about_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.12771739130434784" />
+        <entry key="app/src/main/res/layout/add_new_song_dialog.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/login_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/music_player.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/nav_header.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/profile_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/report_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/search_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/setting_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/menu/navdrawer_menu.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/menu/options_menu.xml" value="0.24166666666666667" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

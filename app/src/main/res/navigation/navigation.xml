@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.musicloud.fragment.HomeFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/home_fragment"/>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.musicloud.fragment.SettingFragment"
+        android:label="@string/setting"
+        tools:layout="@layout/setting_fragment"/>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.musicloud.fragment.LoginFragment"
+        android:label="LoginFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.musicloud.fragment.ProfileFragment"
+        android:label="@string/profile" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.musicloud.fragment.SearchFragment"
+        android:label="SearchFragment" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.musicloud.fragment.AboutFragment"
+        android:label="AboutFragment" />
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.example.musicloud.fragment.ReportFragment"
+        android:label="ReportFragment" />
+</navigation>
