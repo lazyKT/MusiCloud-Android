@@ -14,4 +14,10 @@
         <!-- Customize your theme here. -->
         <item name="titleTextColor">@color/fair</item>
     </style>
+    <!-- splash screen theme -->
+    <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:background">@drawable/splash_image</item>
+        <item name="android:statusBarColor">@color/sky_blue</item>
+    </style>
+
 </resources>
