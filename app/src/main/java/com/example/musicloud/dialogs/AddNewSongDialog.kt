@@ -1,6 +1,8 @@
 package com.example.musicloud.dialogs
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.NavHostFragment
 import com.example.musicloud.R
 import com.example.musicloud.databinding.AddNewSongDialogBinding
 
@@ -23,15 +26,24 @@ class AddNewSongDialog: DialogFragment() {
         val builder = AlertDialog.Builder (requireActivity())
         builder.setView (binding.root)
 
-        binding.addFromLocalButton.setOnClickListener { v: View ->
+        val dialog: AlertDialog = builder.create()
+
+        binding.addFromLocalButton.setOnClickListener {
             Toast.makeText (requireActivity(), getString(R.string.import_from_file), Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
         }
 
-        binding.addFromYouTubeButton.setOnClickListener {v: View ->
-            Toast.makeText (requireActivity(), getString (R.string.download_from_youtube), Toast.LENGTH_SHORT).show()
+        // go to YouTube View
+        binding.addFromYouTubeButton.setOnClickListener {
+            dialog.dismiss()
+            NavHostFragment.findNavController(this).navigate (R.id.action_homeFragment_to_youtubeFragment)
         }
 
-        return builder.create()
+        dialog.apply {
+            window?.setBackgroundDrawable (ColorDrawable(Color.TRANSPARENT)) // set window background to transparent so round corners can be seen
+        }
+
+        return dialog
     }
 
     override fun onCreateView(

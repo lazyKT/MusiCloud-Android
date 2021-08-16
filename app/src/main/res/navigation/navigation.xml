@@ -9,7 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="com.example.musicloud.fragment.HomeFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/home_fragment"/>
+        tools:layout="@layout/home_fragment">
+        <action
+            android:id="@+id/action_homeFragment_to_youtubeFragment"
+            app:destination="@id/youtubeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.example.musicloud.fragment.SettingFragment"
@@ -35,4 +39,14 @@
         android:id="@+id/reportFragment"
         android:name="com.example.musicloud.fragment.ReportFragment"
         android:label="ReportFragment" />
+    <fragment
+        android:id="@+id/youtubeFragment"
+        android:name="com.example.musicloud.fragment.YoutubeFragment"
+        android:label="YoutubeFragment"
+        tools:layout="@layout/youtube_fragment"/>
+    <dialog
+        android:id="@+id/addNewSongDialog"
+        android:name="com.example.musicloud.dialogs.AddNewSongDialog"
+        android:label="AddNewSongDialog"
+        tools:layout="@layout/add_new_song_dialog"/>
 </navigation>
