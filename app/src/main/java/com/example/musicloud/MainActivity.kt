@@ -2,7 +2,6 @@ package com.example.musicloud
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme (R.style.Theme_MusiCloud)
 
         binding = ActivityMainBinding.inflate (layoutInflater)
         setContentView (binding.root)
@@ -43,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
         val playButton: ImageButton = bottomSheetView.findViewById (R.id.playButton)
-        playButton.setOnClickListener {v: View ->
+        playButton.setOnClickListener {_ ->
             Toast.makeText (this, "Play Clicked!", Toast.LENGTH_SHORT).show()
         }
 

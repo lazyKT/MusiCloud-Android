@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 
 
 @Entity (tableName = "song_table")
-data class Song (
+data class Song(
     @PrimaryKey (autoGenerate = true)
-    var id: Int = -1,
+    var id: Long = 0L,
     @ColumnInfo (name="songID")
     var songID: Int = -1,
     @ColumnInfo (name="userID")
@@ -19,7 +19,9 @@ data class Song (
     var localFileURL: String = "",
     @ColumnInfo (name="songName")
     var songName: String = "",
+    @ColumnInfo (name="finished")
+    var finished: Boolean = false,
     @ColumnInfo (name="createdAt")
-    var createdAt: String = ""
+    var createdAt: Long = System.currentTimeMillis()
         )
 

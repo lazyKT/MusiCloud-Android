@@ -7,20 +7,23 @@ import androidx.room.*
 interface SongDAO {
 
     @Insert
-    fun insert (song: Song)
+    suspend fun insert (song: Song)
 
     @Update
-    fun update (song: Song)
+    suspend fun update (song: Song)
 
     @Query ("SELECT * FROM song_table WHERE id = :id")
-    fun get (id: Int): Song?
+    suspend fun get (id: Int): Song?
 
     @Query ("SELECT * FROM song_table ORDER BY id DESC")
     fun getAllSongs(): LiveData<List<Song>>
 
     @Query ("SELECT * FROM song_table ORDER BY id DESC LIMIT 1")
-    fun getLastSong(): Song?
+    suspend fun getLastSong(): Song?
 
     @Delete
-    fun delete (song: Song)
+    suspend fun delete (song: Song)
+
+    @Query ("DELETE FROM song_table")
+    suspend fun deleteAll ()
 }

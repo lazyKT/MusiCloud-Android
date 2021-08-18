@@ -34,20 +34,45 @@ class SongDatabaseTest {
         songDAO = songDatabase.songDAO
     }
 
-    // this is a actual test
-    @Test
-    @Throws (Exception::class)
-    fun insertAndGetSong () {
-        val song = Song()
-        songDAO.insert (song)
-        val lastSongInserted = songDAO.getLastSong()
-        assertEquals (lastSongInserted?.songID, -1)
-    }
+    /**
+     * The database connection will be opened and created for each test case and
+     * the connection is always closed back after every test cases.
+     * Since, we have created the database in memory only, the data are not written
+     * in storage.
+     */
 
-    // this will be executed after the test functions have been executed
+
+    /* test insertion and fetch last data */
+//    @Test
+//    @Throws (Exception::class)
+//    fun insertAndGetSong () {
+//        val song = Song()
+//        songDAO.insert (song)
+//        val lastSongInserted = songDAO.getLastSong()
+//        assertEquals (lastSongInserted?.songID, -1)
+//    }
+//
+//    /* test update song values */
+//    @Test
+//    @Throws (Exception::class)
+//    fun updateAndGetSong () {
+//        val newSong = Song()
+//        songDAO.insert (newSong)
+//        val lastSong = songDAO.getLastSong()
+//        if (lastSong != null) {
+//            lastSong.songID = 10
+//            songDAO.update (lastSong)
+//            val updatedSong = songDAO.getLastSong()
+//            assertEquals (updatedSong?.songID, 10)
+//        }
+//    }
+
+
+    // this will be executed after every test function has been executed
     @After
     @Throws (IOException::class)
     fun closeDB () {
+        println ("Closing DB ...")
         songDatabase.close()
     }
 }

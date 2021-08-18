@@ -13,6 +13,10 @@
     <string name="download_from_youtube">Download From YouTube</string>
     <string name="cancel">Cancel</string>
 
+    <!-- formatter -->
+    <string name="title"><![CDATA[<h3>HERE IS YOUR SONG</h3>]]></string>
+    <string name="created_at"><![CDATA[<b>Created On:</b>]]></string>
+
     <!-- test data -->
     <string name="song_name">Hotel California</string>
 
