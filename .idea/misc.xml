@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.13360507246376813" />
         <entry key="app/src/main/res/layout/add_new_song_dialog.xml" value="0.16847826086956522" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/item_text_view.xml" value="0.13360507246376813" />
         <entry key="app/src/main/res/layout/login_fragment.xml" value="0.16847826086956522" />
         <entry key="app/src/main/res/layout/music_player.xml" value="0.25" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.16847826086956522" />
@@ -21,6 +22,7 @@
         <entry key="app/src/main/res/layout/report_fragment.xml" value="0.16847826086956522" />
         <entry key="app/src/main/res/layout/search_fragment.xml" value="0.16847826086956522" />
         <entry key="app/src/main/res/layout/setting_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/song_item_view.xml" value="0.335" />
         <entry key="app/src/main/res/layout/youtube_fragment.xml" value="0.16847826086956522" />
         <entry key="app/src/main/res/menu/navdrawer_menu.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/menu/options_menu.xml" value="0.24166666666666667" />

@@ -25,7 +25,7 @@ class SongViewModel (
     application: Application): AndroidViewModel (application) {
 
     private val lastSong = MutableLiveData<Song> ()
-    private val songs = database.getAllSongs()
+    val songs = database.getAllSongs()
     val songsString = Transformations.map (songs) { songs ->
         formatSongs (songs, application.resources)
     }

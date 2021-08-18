@@ -3,6 +3,8 @@ package com.example.musicloud
 import android.content.res.Resources
 import android.text.Html
 import android.text.Spanned
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.musicloud.database.Song
 
 
