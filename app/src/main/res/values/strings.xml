@@ -11,6 +11,11 @@
     <string name="add">Add New Song</string>
     <string name="import_from_file">Import From Device Storage</string>
     <string name="download_from_youtube">Download From YouTube</string>
+
+    <!-- button texts -->
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
+    <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
 
     <!-- formatter -->

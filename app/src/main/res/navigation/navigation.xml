@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_youtubeFragment"
             app:destination="@id/youtubeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_songDetailFragment"
+            app:destination="@id/songDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingFragment"
@@ -49,4 +52,13 @@
         android:name="com.example.musicloud.dialogs.AddNewSongDialog"
         android:label="AddNewSongDialog"
         tools:layout="@layout/add_new_song_dialog"/>
+    <fragment
+        android:id="@+id/songDetailFragment"
+        android:name="com.example.musicloud.fragment.SongDetailFragment"
+        android:label="SongDetailFragment" >
+        <argument
+            android:name="songKey"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
 </navigation>

@@ -30,6 +30,9 @@ class SongViewModel (
         formatSongs (songs, application.resources)
     }
 
+    private var _navigateToSongDetail = MutableLiveData<Long> ()
+    val navigateToSongDetail get() = _navigateToSongDetail
+
     init {
         initLastSong()
     }
@@ -82,5 +85,14 @@ class SongViewModel (
 
     private suspend fun clearAll () {
         database.deleteAll ()
+    }
+
+    /* on click event on song item inside recyclerview */
+    fun onSongClicked (id: Long) {
+        _navigateToSongDetail.value = id
+    }
+
+    fun onSongDetailNavigated () {
+        navigateToSongDetail.value = null
     }
 }

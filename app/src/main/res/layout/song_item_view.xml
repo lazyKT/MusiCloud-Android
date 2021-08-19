@@ -6,6 +6,9 @@
         <variable
             name="song"
             type="com.example.musicloud.database.Song" />
+        <variable
+            name="clickListener"
+            type="com.example.musicloud.song.SongListener" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -18,7 +21,8 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp">
+            android:paddingVertical="5dp"
+            android:onClick="@{() -> clickListener.onClick(song)}">
 
             <ImageView
                 android:id="@+id/songThumbnail"

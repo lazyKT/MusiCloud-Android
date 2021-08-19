@@ -3,10 +3,12 @@ package com.example.musicloud.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +17,7 @@ import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.HomeFragmentBinding
 import com.example.musicloud.dialogs.AddNewSongDialog
 import com.example.musicloud.song.SongAdapter
+import com.example.musicloud.song.SongListener
 import com.example.musicloud.song.SongViewModel
 import com.example.musicloud.song.SongViewModelFactory
 
@@ -45,7 +48,11 @@ class HomeFragment: Fragment () {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.songViewModel = songViewModel
 
-        val adapter = SongAdapter ()
+        val adapter = SongAdapter (SongListener { songID ->
+            /* onClick Event on Song Item inside RecyclerView */
+            songViewModel.onSongClicked (songID)
+        })
+
         binding.songList.adapter = adapter
         binding.songList.layoutManager = LinearLayoutManager (application)
 
@@ -57,25 +64,35 @@ class HomeFragment: Fragment () {
             }
         })
 
-        adapter.registerAdapterDataObserver (object: RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                binding.songList.scrollToPosition (0)
-            }
+//        adapter.registerAdapterDataObserver (object: RecyclerView.AdapterDataObserver() {
+//            override fun onChanged() {
+//                super.onChanged()
+//                binding.songList.scrollToPosition (0)
+//            }
+//
+//            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+//                super.onItemRangeInserted(positionStart, itemCount)
+//                binding.songList.scrollToPosition (0)
+//            }
+//
+//            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+//                super.onItemRangeChanged(positionStart, itemCount)
+//                binding.songList.scrollToPosition (0)
+//            }
+//
+//            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+//                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+//                binding.songList.scrollToPosition (0)
+//            }
+//        })
 
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                binding.songList.scrollToPosition (0)
-            }
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                super.onItemRangeChanged(positionStart, itemCount)
-                binding.songList.scrollToPosition (0)
-            }
-
-            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-                binding.songList.scrollToPosition (0)
+        /* observe the song item clicks */
+        songViewModel.navigateToSongDetail.observe (viewLifecycleOwner, Observer { song ->
+            song?.let {
+                this.findNavController().navigate (
+                    HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(song)
+                )
+                songViewModel.onSongDetailNavigated()
             }
         })
 

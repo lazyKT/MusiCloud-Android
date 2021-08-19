@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.musicloud.fragment.SongDetailFragment">
+
+        <ImageView
+            android:id="@+id/songThumbnail"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:background="@color/coral"
+            android:layout_marginTop="50dp"
+            android:contentDescription="@string/song_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/songName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="19sp"
+            android:textColor="@color/black"
+            android:text="@string/song_name"
+            android:textStyle="bold"
+            android:layout_margin="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/songThumbnail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/songSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="@string/download_from_youtube"
+            app:layout_constraintTop_toBottomOf="@+id/songName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <Button
+            android:id="@+id/shareSongButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share"
+            android:textStyle="bold"
+            android:textColor="@color/sky_blue_700"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="10dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            app:icon="@drawable/ic_share_foreground"
+            app:iconSize="30dp"
+            app:iconGravity="end"
+            app:layout_constraintTop_toBottomOf="@id/songSource"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <Button
+            android:id="@+id/deleteSongButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            android:textStyle="bold"
+            android:textColor="@color/sky_blue_700"
+            android:layout_marginVertical="10dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            app:icon="@drawable/ic_delete_foreground"
+            app:iconSize="30dp"
+            app:iconGravity="end"
+            app:layout_constraintTop_toBottomOf="@id/shareSongButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/whisper"
+            android:text="@string/cancel"
+            android:textColor="@color/coral"
+            android:textStyle="bold"
+            android:layout_margin="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deleteSongButton"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

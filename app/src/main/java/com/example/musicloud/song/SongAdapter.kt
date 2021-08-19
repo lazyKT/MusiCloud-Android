@@ -5,12 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.musicloud.R
 import com.example.musicloud.database.Song
 import com.example.musicloud.databinding.SongItemViewBinding
 
 
-class SongAdapter: ListAdapter<Song, SongAdapter.ViewHolder> (SongDiffCallBack()) {
+class SongAdapter (val clickListener: SongListener): ListAdapter<Song, SongAdapter.ViewHolder> (SongDiffCallBack()) {
 
     class ViewHolder private constructor (val binding: SongItemViewBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -22,9 +21,10 @@ class SongAdapter: ListAdapter<Song, SongAdapter.ViewHolder> (SongDiffCallBack()
             }
         }
 
-        fun bind(song: Song) {
+        fun bind(song: Song, clickListener: SongListener) {
             binding.song = song
             binding.executePendingBindings() // this call is to execute any pending data bindings right away
+            binding.clickListener = clickListener
         }
     }
 
@@ -32,7 +32,7 @@ class SongAdapter: ListAdapter<Song, SongAdapter.ViewHolder> (SongDiffCallBack()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val song = getItem (position) // getItem(position: Int) method is provided by ListAdapter
-        holder.bind (song)
+        holder.bind (song, clickListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from (parent)
@@ -50,3 +50,11 @@ class SongDiffCallBack: DiffUtil.ItemCallback<Song> () {
     }
 
 }
+
+/* Song Item Click Listener */
+class SongListener (val clickListener: (songID: Long) -> Unit) {
+
+    fun onClick (song: Song) = clickListener (song.id)
+
+}
+
