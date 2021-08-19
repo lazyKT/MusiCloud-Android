@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.musicloud.R
 import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.HomeFragmentBinding
@@ -52,7 +53,29 @@ class HomeFragment: Fragment () {
             Log.i ("SongFragment", "RecyclerView Updated!")
             Log.i ("SongFragment", "Total Number of Songs ${adapter.itemCount}")
             it?.let {
-                adapter.songs = it
+                adapter.submitList(it) // submitList () is to tell the ListAdapter that new version of data is available
+            }
+        })
+
+        adapter.registerAdapterDataObserver (object: RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                binding.songList.scrollToPosition (0)
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                binding.songList.scrollToPosition (0)
+            }
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                super.onItemRangeChanged(positionStart, itemCount)
+                binding.songList.scrollToPosition (0)
+            }
+
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                binding.songList.scrollToPosition (0)
             }
         })
 

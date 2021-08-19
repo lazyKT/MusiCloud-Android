@@ -1,65 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <data>
+        <variable
+            name="song"
+            type="com.example.musicloud.database.Song" />
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="5dp">
-
-        <ImageView
-            android:id="@+id/songThumbnail"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"
-            android:background="@color/sky_blue"
-            android:contentDescription="@string/app_name"/>
+        android:layout_width="match_parent">
 
         <LinearLayout
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="5dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp">
 
-            <TextView
-                android:id="@+id/songNameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/download_from_youtube"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                />
+            <ImageView
+                android:id="@+id/songThumbnail"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:contentDescription="@string/app_name"
+                app:songThumbnail="@{song}"/>
 
-            <TextView
-                android:id="@+id/sourceTextView"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:text="@string/download_from_youtube"
-                android:textSize="15sp"
-                />
+                android:orientation="vertical"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:id="@+id/songNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download_from_youtube"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:songNameFormatted="@{song}"/>
+
+                <TextView
+                    android:id="@+id/sourceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download_from_youtube"
+                    android:textSize="15sp"
+                    app:songSource="@{song}"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/songInfoButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/song_info_foreground"
+                android:background="@color/white"
+                android:contentDescription="@string/app_name" />
+
 
         </LinearLayout>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <ImageButton
-            android:id="@+id/songInfoButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/song_info_foreground"
-            android:background="@color/white"
-            android:contentDescription="@string/app_name"
-            />
-
-
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</layout>

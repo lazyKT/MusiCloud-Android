@@ -2,6 +2,7 @@
 <resources>
     <color name="fair">#FFF2F2</color>
     <color name="sky_blue">#66AAFF</color>
+    <color name="sky_blue_700">#1D74E2</color>
     <color name="coral">#FF7F61</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
