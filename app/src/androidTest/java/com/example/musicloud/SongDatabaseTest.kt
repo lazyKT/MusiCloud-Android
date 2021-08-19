@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.database.SongDatabase
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -43,29 +44,33 @@ class SongDatabaseTest {
 
 
     /* test insertion and fetch last data */
-//    @Test
-//    @Throws (Exception::class)
-//    fun insertAndGetSong () {
-//        val song = Song()
-//        songDAO.insert (song)
-//        val lastSongInserted = songDAO.getLastSong()
-//        assertEquals (lastSongInserted?.songID, -1)
-//    }
-//
-//    /* test update song values */
-//    @Test
-//    @Throws (Exception::class)
-//    fun updateAndGetSong () {
-//        val newSong = Song()
-//        songDAO.insert (newSong)
-//        val lastSong = songDAO.getLastSong()
-//        if (lastSong != null) {
-//            lastSong.songID = 10
-//            songDAO.update (lastSong)
-//            val updatedSong = songDAO.getLastSong()
-//            assertEquals (updatedSong?.songID, 10)
-//        }
-//    }
+    @Test
+    @Throws (Exception::class)
+    fun insertAndGetSong () {
+        runBlocking {
+            val song = Song()
+            songDAO.insert (song)
+            val lastSongInserted = songDAO.getLastSong()
+            assertEquals (lastSongInserted?.songID, -1)
+        }
+    }
+
+    /* test update song values */
+    @Test
+    @Throws (Exception::class)
+    fun updateAndGetSong () {
+        val newSong = Song()
+        runBlocking {
+            songDAO.insert (newSong)
+            val lastSong = songDAO.getLastSong()
+            if (lastSong != null) {
+                lastSong.songID = 10
+                songDAO.update (lastSong)
+                val updatedSong = songDAO.getLastSong()
+                assertEquals (updatedSong?.songID, 10)
+            }
+        }
+    }
 
 
     // this will be executed after every test function has been executed
