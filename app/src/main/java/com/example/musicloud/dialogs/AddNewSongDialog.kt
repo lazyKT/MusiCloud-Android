@@ -10,15 +10,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.example.musicloud.R
-import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.AddNewSongDialogBinding
 import com.example.musicloud.song.SongViewModel
-import com.example.musicloud.song.SongViewModelFactory
+
 
 class AddNewSongDialog: DialogFragment() {
 

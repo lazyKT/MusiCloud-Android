@@ -4,11 +4,9 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
-import com.example.musicloud.formatSongs
 import kotlinx.coroutines.launch
 
 
@@ -30,9 +28,6 @@ class SongViewModel (
 
     private val lastSong = MutableLiveData<Song> ()
     val songs = database.getAllSongs()
-    val songsString = Transformations.map (songs) { songs ->
-        formatSongs (songs, application.resources)
-    }
 
     private var _navigateToSongDetail = MutableLiveData<Long> ()
     val navigateToSongDetail get() = _navigateToSongDetail
@@ -103,7 +98,7 @@ class SongViewModel (
         navigateToSongDetail.value = null
     }
 
-    fun playSong (id: Long) {
+    private fun playSong (id: Long) {
         Log.i ("SongViewModel", "Play the song with id: $id")
     }
 }
