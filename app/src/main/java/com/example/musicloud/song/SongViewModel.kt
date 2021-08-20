@@ -20,6 +20,10 @@ import kotlinx.coroutines.launch
  * The data inside view model is only cleared when fragment goes into onDestroy() Stage, that is when the host activity is destroyed.
  * With View Models, we can retain the data between the configuration changes and fragment transactions within the same activity,
  */
+
+private const val SONG_ITEM_DETAIL: Int = 1
+private const val SONG_ITEM_PLAY: Int = 0
+
 class SongViewModel (
     val database: SongDAO,
     application: Application): AndroidViewModel (application) {
@@ -88,11 +92,18 @@ class SongViewModel (
     }
 
     /* on click event on song item inside recyclerview */
-    fun onSongClicked (id: Long) {
-        _navigateToSongDetail.value = id
+    fun onSongClicked (listenerActionType: SongListenerActionType) {
+        when (listenerActionType.actionType) {
+            SONG_ITEM_DETAIL -> _navigateToSongDetail.value = listenerActionType.songKey
+            SONG_ITEM_PLAY -> playSong (listenerActionType.songKey)
+        }
     }
 
     fun onSongDetailNavigated () {
         navigateToSongDetail.value = null
+    }
+
+    fun playSong (id: Long) {
+        Log.i ("SongViewModel", "Play the song with id: $id")
     }
 }

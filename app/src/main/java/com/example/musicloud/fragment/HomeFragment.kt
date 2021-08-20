@@ -48,9 +48,9 @@ class HomeFragment: Fragment () {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.songViewModel = songViewModel
 
-        val adapter = SongAdapter (SongListener { songID ->
+        val adapter = SongAdapter (SongListener { listenerActionType ->
             /* onClick Event on Song Item inside RecyclerView */
-            songViewModel.onSongClicked (songID)
+            songViewModel.onSongClicked (listenerActionType)
         })
 
         binding.songList.adapter = adapter
@@ -60,31 +60,9 @@ class HomeFragment: Fragment () {
             Log.i ("SongFragment", "RecyclerView Updated!")
             Log.i ("SongFragment", "Total Number of Songs ${adapter.itemCount}")
             it?.let {
-                adapter.submitList(it) // submitList () is to tell the ListAdapter that new version of data is available
+                adapter.addHeaderAndSubmitList(it) // submitList () is to tell the ListAdapter that new version of data is available
             }
         })
-
-//        adapter.registerAdapterDataObserver (object: RecyclerView.AdapterDataObserver() {
-//            override fun onChanged() {
-//                super.onChanged()
-//                binding.songList.scrollToPosition (0)
-//            }
-//
-//            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//                super.onItemRangeInserted(positionStart, itemCount)
-//                binding.songList.scrollToPosition (0)
-//            }
-//
-//            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-//                super.onItemRangeChanged(positionStart, itemCount)
-//                binding.songList.scrollToPosition (0)
-//            }
-//
-//            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-//                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-//                binding.songList.scrollToPosition (0)
-//            }
-//        })
 
         /* observe the song item clicks */
         songViewModel.navigateToSongDetail.observe (viewLifecycleOwner, Observer { song ->

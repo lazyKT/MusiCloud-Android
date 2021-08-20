@@ -68,7 +68,8 @@
                 android:layout_height="50dp"
                 android:src="@drawable/song_info_foreground"
                 android:background="@color/white"
-                android:contentDescription="@string/app_name" />
+                android:contentDescription="@string/app_name"
+                android:onClick="@{() -> clickListener.onOptionClick(song)}"/>
 
 
         </LinearLayout>

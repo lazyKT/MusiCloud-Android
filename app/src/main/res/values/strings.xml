@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MusiCloud</string>
 
+    <string name="songs">My Songs</string>
+
     <!-- fragment titles -->
     <string name="setting">Setting</string>
     <string name="profile">My Profile</string>
@@ -9,14 +11,14 @@
     <string name="about">About MusiCloud</string>
     <string name="search">Search</string>
     <string name="add">Add New Song</string>
-    <string name="import_from_file">Import From Device Storage</string>
-    <string name="download_from_youtube">Download From YouTube</string>
 
     <!-- button texts -->
     <string name="share">Share</string>
     <string name="delete">Delete</string>
     <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
+    <string name="import_from_file">Import From Device Storage</string>
+    <string name="download_from_youtube">Download From YouTube</string>
 
     <!-- formatter -->
     <string name="title"><![CDATA[<h3>HERE IS YOUR SONG</h3>]]></string>
