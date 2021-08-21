@@ -9,14 +9,10 @@ class YoutubeSearchViewModel (
     val youtubeSearchList: List<YoutubeSearch>
         ): AndroidViewModel (application) {
 
+    var searchResultList = MutableLiveData<List<YoutubeSearch>>()
+
     init {
-
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-
+        searchResultList.value = youtubeSearchList
     }
 
 }

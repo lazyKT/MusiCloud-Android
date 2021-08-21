@@ -10,7 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="20dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:paddingHorizontal="10dp"
+        android:background="@drawable/round_corner_layout_10"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,19 +27,17 @@
             android:contentDescription="@string/search_youtube"
             />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/search_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/whisper"
             android:hint="@string/search_youtube"
             android:textColorHint="@color/sky_blue_700"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:label="@string/search_youtube">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
+            android:autofillHints="@string/search_youtube"
+            android:inputType="text"
+            android:padding="15dp"
+            />
 
     </LinearLayout>
 
