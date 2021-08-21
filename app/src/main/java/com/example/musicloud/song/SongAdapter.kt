@@ -10,11 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.musicloud.R
 import com.example.musicloud.database.Song
 import com.example.musicloud.databinding.SongItemViewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ClassCastException
 
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_ITEM = 1
+
+private val adapterScope = CoroutineScope (Dispatchers.Default)
 
 class SongAdapter (private val clickListener: SongListener): ListAdapter<DataItem, RecyclerView.ViewHolder> (SongDiffCallBack()) {
 
@@ -51,11 +57,15 @@ class SongAdapter (private val clickListener: SongListener): ListAdapter<DataIte
 
     /* Update recyclerview */
     fun addHeaderAndSubmitList (list: List<Song>?) {
-        val items = when (list) {
-            null -> listOf (DataItem.Header)
-            else -> listOf (DataItem.Header) + list.map { DataItem.SongItem (it) }
+        adapterScope.launch {
+            val songs = when (list) {
+                null -> listOf (DataItem.Header)
+                else -> listOf (DataItem.Header) + list.map { DataItem.SongItem(it) }
+            }
+            withContext (Dispatchers.Main) {
+                submitList (songs)
+            }
         }
-        submitList (items)
     }
 
     /*
@@ -114,12 +124,14 @@ class SongDiffCallBack: DiffUtil.ItemCallback<DataItem> () {
 * */
 class SongListener (val clickListener: (actionType: SongListenerActionType) -> Unit) {
 
+    /* onClick Event on the SongItemView */
     fun onClick (song: Song) = clickListener (SongListenerActionType (song.id, 0))
 
+    /* onClick Event on the SongOptionButton */
     fun onOptionClick (song: Song) = clickListener (SongListenerActionType (song.id, 1))
-
 }
 
+/* ListenAction which defines clicked song and required actions: play or show details */
 data class SongListenerActionType (
     val songKey: Long,
     val actionType: Int

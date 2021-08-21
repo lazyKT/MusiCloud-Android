@@ -20,6 +20,9 @@
     <string name="import_from_file">Import From Device Storage</string>
     <string name="download_from_youtube">Download From YouTube</string>
 
+    <!-- hints -->
+    <string name="search_youtube">Search on YouTube</string>
+
     <!-- formatter -->
     <string name="title"><![CDATA[<h3>HERE IS YOUR SONG</h3>]]></string>
     <string name="created_at"><![CDATA[<b>Created On:</b>]]></string>

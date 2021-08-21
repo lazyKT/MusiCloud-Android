@@ -55,8 +55,6 @@ class HomeFragment: Fragment () {
         binding.songList.layoutManager = LinearLayoutManager (application)
 
         songViewModel.songs.observe (viewLifecycleOwner, Observer {
-            Log.i ("SongFragment", "RecyclerView Updated!")
-            Log.i ("SongFragment", "Total Number of Songs ${adapter.itemCount}")
             it?.let {
                 adapter.addHeaderAndSubmitList(it) // submitList () is to tell the ListAdapter that new version of data is available
             }
