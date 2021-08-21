@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/Theme.MusiCloud"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:id="@+id/search_button_layout"
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.musicloud.youtubesearch.YoutubeSearchViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginVertical="20dp"
-        android:layout_marginHorizontal="10dp"
-        android:paddingHorizontal="10dp"
-        android:background="@drawable/round_corner_layout_10"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:gravity="center_vertical"
-        >
+        android:layout_height="match_parent"
+        android:theme="@style/Theme.MusiCloud">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_search_foreground"
-            android:contentDescription="@string/search_youtube"
-            />
-
-        <EditText
-            android:id="@+id/search_edittext"
+        <LinearLayout
+            android:id="@+id/search_button_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/whisper"
-            android:hint="@string/search_youtube"
-            android:textColorHint="@color/sky_blue_700"
-            android:autofillHints="@string/search_youtube"
-            android:inputType="text"
-            android:padding="15dp"
-            />
+            android:orientation="horizontal"
+            android:layout_marginVertical="20dp"
+            android:layout_marginHorizontal="10dp"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/round_corner_layout_10"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center_vertical">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_search_foreground"
+                android:contentDescription="@string/search_youtube" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_result_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/search_button_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="20dp"
-        />
+            <EditText
+                android:id="@+id/search_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/whisper"
+                android:hint="@string/search_youtube"
+                android:textColorHint="@color/sky_blue_700"
+                android:autofillHints="@string/search_youtube"
+                android:inputType="text"
+                android:padding="15dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_result_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/search_button_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="20dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
