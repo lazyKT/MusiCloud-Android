@@ -1,65 +1,44 @@
 package com.example.musicloud.youtubesearch
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.musicloud.R
-
-class YoutubeSearchAdapter (
-    private val clickListener: YoutubeSearchResultListener
-        ): ListAdapter <YoutubeSearch, RecyclerView.ViewHolder> (SearchDiffCallback()) {
+import com.example.musicloud.databinding.YoutubeSearchItemViewBinding
+import com.example.musicloud.network.YoutubeSearchProperty
 
 
-    class ViewHolder private constructor (view: View): RecyclerView.ViewHolder (view) {
-        companion object {
-            fun from (parent: ViewGroup): ViewHolder {
-                val layoutInflater = LayoutInflater.from (parent.context)
-                val view = layoutInflater.inflate (R.layout.item_text_view, parent, false)
-                return ViewHolder (view)
-            }
+class YoutubeSearchAdapter : ListAdapter<YoutubeSearchProperty, YoutubeSearchAdapter.YoutubeSearchViewHolder>(DiffCallBack) {
+
+    class YoutubeSearchViewHolder (private var binding: YoutubeSearchItemViewBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind (youtubeSearchProperty: YoutubeSearchProperty) {
+            binding.property = youtubeSearchProperty
+            binding.executePendingBindings()
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ViewHolder.from (parent)
+    override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): YoutubeSearchAdapter.YoutubeSearchViewHolder {
+        val binding = YoutubeSearchItemViewBinding.inflate (LayoutInflater.from(parent.context))
+        return YoutubeSearchViewHolder (binding)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder (holder: YoutubeSearchAdapter.YoutubeSearchViewHolder, position: Int) {
+        val youtubeSearchProperty = getItem (position)
+        holder.bind (youtubeSearchProperty)
+    }
 
+    companion object DiffCallBack: DiffUtil.ItemCallback<YoutubeSearchProperty>() {
+
+        override fun areItemsTheSame (oldItem: YoutubeSearchProperty, newItem: YoutubeSearchProperty): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame (oldItem: YoutubeSearchProperty, newItem: YoutubeSearchProperty): Boolean {
+            return oldItem.videoID == newItem.videoID
+        }
     }
 
 }
 
-
-/* Search Diff Callbacks and Recycler view data binding */
-class SearchDiffCallback: DiffUtil.ItemCallback <YoutubeSearch>() {
-    override fun areItemsTheSame(oldItem: YoutubeSearch, newItem: YoutubeSearch): Boolean {
-        return oldItem.videoID == newItem.videoID
-    }
-
-    override fun areContentsTheSame(oldItem: YoutubeSearch, newItem: YoutubeSearch): Boolean {
-        return oldItem == newItem
-    }
-
-
-}
-
-
-/* on click event on search result item view and option button */
-class YoutubeSearchResultListener (val clickListener: (action: YoutubeSearchResultListenerAction) -> Unit) {
-
-    fun onClick (search: YoutubeSearch) = clickListener (YoutubeSearchResultListenerAction (search, 0))
-
-    fun onOptionClick (search: YoutubeSearch) = clickListener (YoutubeSearchResultListenerAction (search, 1))
-
-}
-
-/* ListenAction which defines clicked result and required actions */
-data class YoutubeSearchResultListenerAction (
-    val search: YoutubeSearch,
-    val actionType: Int
-        )
 

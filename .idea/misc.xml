@@ -6,15 +6,18 @@
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22083333333333333" />
         <entry key="app/src/main/res/drawable/dialog_title_round.xml" value="0.2578125" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.2578125" />
+        <entry key="app/src/main/res/drawable/loading_animation.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/drawable/round_corner_dialog.xml" value="0.2578125" />
         <entry key="app/src/main/res/drawable/round_corner_layout_10.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/drawable/song_header.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/drawable/splash_image.xml" value="0.2578125" />
         <entry key="app/src/main/res/drawable/top_shadow.xml" value="0.2578125" />
+        <entry key="app/src/main/res/drawable/youtube_search_image.xml" value="0.2947916666666667" />
         <entry key="app/src/main/res/layout/about_fragment.xml" value="0.16847826086956522" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.12771739130434784" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.13360507246376813" />
         <entry key="app/src/main/res/layout/add_new_song_dialog.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/grid_view_item.xml" value="0.13360507246376813" />
         <entry key="app/src/main/res/layout/header_text.xml" value="0.13360507246376813" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.16847826086956522" />
         <entry key="app/src/main/res/layout/item_text_view.xml" value="0.13360507246376813" />
@@ -37,7 +40,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

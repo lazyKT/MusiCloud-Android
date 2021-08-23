@@ -22,8 +22,8 @@ class AddNewSongDialog: DialogFragment() {
     private var _binding: AddNewSongDialogBinding? = null
     private val binding get() = _binding!!
 
-    /* shared viewModel from the parent Fragment */
-    private val songViewModel by viewModels<SongViewModel>(ownerProducer = { requireParentFragment() })
+    /* shared viewModel from the host activity via the parent fragment: Notice -> requireParentFragment().requireActivity() */
+    private val songViewModel by viewModels<SongViewModel>(ownerProducer = { requireParentFragment().requireActivity() })
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 

@@ -21,3 +21,5 @@ fun formatSongs (songs: List<Song>, resources: Resources): Spanned {
     }
     return Html.fromHtml(sb.toString(), Html.FROM_HTML_MODE_LEGACY)
 }
+
+

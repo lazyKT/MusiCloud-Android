@@ -43,7 +43,13 @@
                 android:textColorHint="@color/sky_blue_700"
                 android:autofillHints="@string/search_youtube"
                 android:inputType="text"
-                android:padding="15dp" />
+                android:padding="15dp"
+                android:text="@{viewModel.searchQuery}"
+                android:textColor="@color/sky_blue_700"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:search="@{viewModel.getResult}"
+                />
 
         </LinearLayout>
 
@@ -51,11 +57,25 @@
             android:id="@+id/search_result_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="20dp"
             app:layout_constraintTop_toBottomOf="@+id/search_button_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="20dp"/>
+            app:listData="@{viewModel.searchResults}"
+            tools:listitem="@layout/youtube_search_item_view"/>
+
+        <ImageView
+            android:id="@+id/status_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/search_youtube"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:youtubeSearchApiStatus="@{viewModel.status}"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

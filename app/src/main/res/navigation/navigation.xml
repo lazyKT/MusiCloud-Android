@@ -45,7 +45,7 @@
     <fragment
         android:id="@+id/youtubeFragment"
         android:name="com.example.musicloud.fragment.YoutubeFragment"
-        android:label="YoutubeFragment"
+        android:label="@string/search_youtube"
         tools:layout="@layout/youtube_fragment"/>
     <dialog
         android:id="@+id/addNewSongDialog"

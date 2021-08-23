@@ -1,60 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:paddingVertical="10dp"
-    android:layout_margin="10dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/songThumbnail"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginHorizontal="5dp"
-        android:background="@drawable/round_corner_layout_10"
-        android:backgroundTint="@color/sky_blue_700"
-        android:contentDescription="@string/search_youtube"/>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.musicloud.youtubesearch.YoutubeSearchViewModel" />
+        <variable
+            name="property"
+            type="com.example.musicloud.network.YoutubeSearchProperty" />
+    </data>
 
     <LinearLayout
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="10dp"
+        android:layout_margin="10dp">
 
-        <TextView
-            android:id="@+id/songTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/search_youtube"
-            android:textColor="@color/sky_blue_700"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginHorizontal="5dp"
-            />
 
-        <TextView
-            android:id="@+id/channelTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/search_youtube"
-            android:textColor="@color/sky_blue_700"
-            android:textStyle="bold"
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:elevation="0dp"
             android:layout_marginHorizontal="5dp"
-            />
+            app:cardCornerRadius="10dp"
+            >
+
+            <ImageView
+                android:id="@+id/songThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/round_corner_layout_10"
+                android:contentDescription="@string/search_youtube"
+                app:imageUrl="@{property.thumbnailM}"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/songTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{property.title}"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginHorizontal="5dp" />
+
+            <TextView
+                android:id="@+id/channelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{property.channelTitle}"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="5dp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/songInfoButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/song_info_foreground"
+            android:background="@color/white"
+            android:contentDescription="@string/app_name" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <ImageButton
-        android:id="@+id/songInfoButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/song_info_foreground"
-        android:background="@color/white"
-        android:contentDescription="@string/app_name"/>
-
-</LinearLayout>
+</layout>

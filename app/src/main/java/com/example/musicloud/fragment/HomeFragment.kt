@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -36,12 +37,8 @@ class HomeFragment: Fragment () {
         // include options menu
         setHasOptionsMenu (true)
 
-        val application = requireNotNull (this.activity).application
-        val dataSource = SongDatabase.getInstance (application).songDAO
-        val viewModelFactory = SongViewModelFactory (dataSource, application)
-
         /* get reference to SongViewModel via the ViewModel Factory */
-        val songViewModel = ViewModelProvider (this, viewModelFactory).get (SongViewModel::class.java)
+        val songViewModel: SongViewModel by activityViewModels()
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.songViewModel = songViewModel
@@ -52,7 +49,7 @@ class HomeFragment: Fragment () {
         })
 
         binding.songList.adapter = adapter
-        binding.songList.layoutManager = LinearLayoutManager (application)
+        binding.songList.layoutManager = LinearLayoutManager (requireActivity())
 
         songViewModel.songs.observe (viewLifecycleOwner, Observer {
             it?.let {

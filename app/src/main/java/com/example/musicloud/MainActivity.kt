@@ -6,10 +6,14 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.ActivityMainBinding
+import com.example.musicloud.song.SongViewModel
+import com.example.musicloud.song.SongViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +24,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val application = requireNotNull (this).application
+        val dataSource = SongDatabase.getInstance(application).songDAO
+        val viewModelFactory = SongViewModelFactory (dataSource, application)
+
+        val songViewModel = ViewModelProvider(this, viewModelFactory).get (SongViewModel::class.java)
 
         binding = ActivityMainBinding.inflate (layoutInflater)
         setContentView (binding.root)
