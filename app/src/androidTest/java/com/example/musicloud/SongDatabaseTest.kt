@@ -64,10 +64,10 @@ class SongDatabaseTest {
             songDAO.insert (newSong)
             val lastSong = songDAO.getLastSong()
             if (lastSong != null) {
-                lastSong.songID = 10
+                lastSong.songID = "10"
                 songDAO.update (lastSong)
                 val updatedSong = songDAO.getLastSong()
-                assertEquals (updatedSong?.songID, 10)
+                assertEquals (updatedSong?.songID, "10")
             }
         }
     }

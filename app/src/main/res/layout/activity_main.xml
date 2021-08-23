@@ -2,6 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.musicloud.song.SongViewModel" />
+    </data>
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,6 +23,7 @@
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="80dp"
                 app:defaultNavHost="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +31,64 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:navGraph="@navigation/navigation" />
 
-            <include layout="@layout/music_player" />
+            <!-- bottom sheet -->
+            <LinearLayout
+                android:id="@+id/musicPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/top_shadow"
+                android:elevation="10dp"
+                android:translationZ="10dp"
+                app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+                app:behavior_hideable="false"
+                app:behavior_peekHeight="80dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@color/sky_blue"
+                        android:contentDescription="@string/app_name"
+                        android:scaleType="centerCrop"
+                        app:imageUrl="@{viewModel.currentSong.thumbnailS}"/>
+
+                    <TextView
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currentSong.songName}"
+                        android:layout_margin="10dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageButton
+                        android:id="@+id/playButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@color/dark_white"
+                        android:contentDescription="@string/app_name"
+                        app:playState="@{viewModel.playing}"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

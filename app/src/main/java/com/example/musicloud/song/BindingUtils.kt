@@ -17,10 +17,15 @@ fun TextView.songNameFormatted (song: Song) {
 
 @BindingAdapter ("songSource")
 fun TextView.setSongSource (song: Song) {
-    text = if (song.youtubeURL == "") "Eagles" else song.youtubeURL
+    text = if (song.youtubeURL == "") "Eagles" else song.channelTitle
 }
 
-@BindingAdapter ("songThumbnail")
-fun ImageView.setSongThumbnail (song: Song) {
-    setImageResource (if (song.youtubeURL == "") R.drawable.ic_logo else R.drawable.about_foreground)
+@BindingAdapter ("channelTitle")
+fun TextView.channelTitle (song: Song) {
+    text = if (song.channelTitle == "") "Anonymous" else song.channelTitle
+}
+
+@BindingAdapter ("playState")
+fun ImageView.playState (playing: Boolean) {
+    setImageResource (if (playing) R.drawable.ic_pause_foreground else R.drawable.play_foreground)
 }

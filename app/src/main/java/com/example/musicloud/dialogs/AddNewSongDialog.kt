@@ -34,7 +34,7 @@ class AddNewSongDialog: DialogFragment() {
         val dialog: AlertDialog = builder.create()
 
         binding.addFromLocalButton.setOnClickListener {
-            songViewModel.startSongProcessing()
+//            songViewModel.startSongProcessing()
             dialog.dismiss()
         }
 

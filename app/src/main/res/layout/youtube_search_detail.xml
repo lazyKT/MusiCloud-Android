@@ -7,7 +7,7 @@
             name="viewModel"
             type="com.example.musicloud.youtubesearch.YoutubeSearchDetailsViewModel" />
         <variable
-            name="songViewModle"
+            name="songViewModel"
             type="com.example.musicloud.song.SongViewModel" />
     </data>
 
@@ -66,6 +66,7 @@
             android:textStyle="bold"
             android:textColor="@color/sky_blue_700"
             android:layout_marginTop="50dp"
+            android:onClick="@{() -> songViewModel.startSongProcessing(viewModel.searchDetails)}"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

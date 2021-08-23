@@ -3,10 +3,12 @@ package com.example.musicloud.song
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
+import com.example.musicloud.network.YoutubeSearchProperty
 import kotlinx.coroutines.launch
 
 
@@ -29,11 +31,20 @@ class SongViewModel (
     private val lastSong = MutableLiveData<Song> ()
     val songs = database.getAllSongs()
 
+    private val _currentSong = MutableLiveData<Song> ()
+    val currentSong: LiveData<Song>
+                get() = _currentSong
+
     private var _navigateToSongDetail = MutableLiveData<Long> ()
     val navigateToSongDetail get() = _navigateToSongDetail
 
+    private val _playing = MutableLiveData<Boolean> ()
+    val playing: LiveData<Boolean>
+                get() = _playing
+
     init {
         initLastSong()
+        _playing.value = false
     }
 
     private fun initLastSong () {
@@ -50,10 +61,18 @@ class SongViewModel (
         return lastSong
     }
 
-    fun startSongProcessing () {
+    fun startSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
         Log.i ("SongViewModel", "startSongProcessing()")
         viewModelScope.launch {
-            val newSong = Song()
+            val newSong = Song(
+                songID = youtubeSearchProperty.videoID,
+                channelTitle = youtubeSearchProperty.channelTitle,
+                thumbnailM = youtubeSearchProperty.thumbnailM,
+                thumbnailS = youtubeSearchProperty.thumbnailS,
+                youtubeURL = youtubeSearchProperty.fullURL,
+                songName = youtubeSearchProperty.title
+            )
+            Log.i ("SongViewModel", newSong.toString())
             insert (newSong)
             lastSong.value = getLastSongFromDatabase()
         }
@@ -100,5 +119,9 @@ class SongViewModel (
 
     private fun playSong (id: Long) {
         Log.i ("SongViewModel", "Play the song with id: $id")
+        viewModelScope.launch {
+            _currentSong.value = database.get(id)
+            _playing.value = true
+        }
     }
 }

@@ -10,7 +10,7 @@ data class Song(
     @PrimaryKey (autoGenerate = true)
     var id: Long = 0L,
     @ColumnInfo (name="songID")
-    var songID: Int = -1,
+    var songID: String = "",
     @ColumnInfo (name="userID")
     var userID: Int = -1,
     @ColumnInfo (name="youtubeURL")
@@ -19,6 +19,12 @@ data class Song(
     var localFileURL: String = "",
     @ColumnInfo (name="songName")
     var songName: String = "",
+    @ColumnInfo (name="channelTitle")
+    var channelTitle: String = "",
+    @ColumnInfo (name="thumbnailS")
+    var thumbnailS: String = "",
+    @ColumnInfo (name="thumbnailM")
+    var thumbnailM: String = "",
     @ColumnInfo (name="finished")
     var finished: Boolean = false,
     @ColumnInfo (name="createdAt")

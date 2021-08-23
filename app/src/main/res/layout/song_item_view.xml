@@ -30,7 +30,8 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:contentDescription="@string/app_name"
-                app:songThumbnail="@{song}"/>
+                android:scaleType="centerCrop"
+                app:imageUrl="@{song.thumbnailS}"/>
 
             <LinearLayout
                 android:layout_width="250dp"
@@ -42,17 +43,20 @@
                     android:id="@+id/songNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/download_from_youtube"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:songNameFormatted="@{song}"/>
 
                 <TextView
                     android:id="@+id/sourceTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/download_from_youtube"
                     android:textSize="15sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:songSource="@{song}"/>
 
             </LinearLayout>

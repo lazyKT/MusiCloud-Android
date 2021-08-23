@@ -13,7 +13,7 @@ interface SongDAO {
     suspend fun update (song: Song)
 
     @Query ("SELECT * FROM song_table WHERE id = :id")
-    suspend fun get (id: Int): Song?
+    suspend fun get (id: Long): Song?
 
     @Query ("SELECT * FROM song_table ORDER BY id DESC")
     fun getAllSongs(): LiveData<List<Song>>

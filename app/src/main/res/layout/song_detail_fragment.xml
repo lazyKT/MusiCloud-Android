@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.musicloud.song.SongDetailsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,12 +18,13 @@
             android:id="@+id/songThumbnail"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:background="@color/coral"
             android:layout_marginTop="50dp"
             android:contentDescription="@string/song_name"
+            android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:imageUrl="@{viewModel.song.thumbnailM}"
             />
 
         <TextView
@@ -30,9 +33,11 @@
             android:layout_height="wrap_content"
             android:textSize="19sp"
             android:textColor="@color/black"
-            android:text="@string/song_name"
             android:textStyle="bold"
+            android:text="@{viewModel.song.songName}"
             android:layout_margin="10dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@+id/songThumbnail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +49,9 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:text="@string/download_from_youtube"
+            android:text="@{viewModel.song.channelTitle}"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@+id/songName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
