@@ -11,6 +11,7 @@
     <string name="about">About MusiCloud</string>
     <string name="search">Search</string>
     <string name="add">Add New Song</string>
+    <string name="youtube_search_result_details">Youtube Search Result Details</string>
 
     <!-- button texts -->
     <string name="share">Share</string>
@@ -19,6 +20,8 @@
     <string name="cancel">Cancel</string>
     <string name="import_from_file">Import From Device Storage</string>
     <string name="download_from_youtube">Download From YouTube</string>
+    <string name="download">Download MP3 Offline</string>
+    <string name="view_in_youtube">View Video in Youtube</string>
 
     <!-- hints -->
     <string name="search_youtube">Search on YouTube</string>

@@ -26,6 +26,10 @@ class YoutubeSearchViewModel: ViewModel () {
     private val _searchQuery = MutableLiveData<String> ()
     val searchQuery: LiveData<String> get() = _searchQuery
 
+    private val _navigateToDetailsPage = MutableLiveData<YoutubeSearchProperty> ()
+    val navigateToDetailsPage: LiveData<YoutubeSearchProperty>
+                get() = _navigateToDetailsPage
+
     init {
         Log.i ("YoutubeSearchViewModel", "Initialised!!!")
         _status.value = YoutubeSearchApiStatus.NOTHING
@@ -57,4 +61,17 @@ class YoutubeSearchViewModel: ViewModel () {
 
     val getResult: Function1<String, Unit> = this::getSearchResult
 
+
+    fun displaySearchResultDetails (result: YoutubeSearchProperty) {
+        _navigateToDetailsPage.value = result
+    }
+
+    fun displaySearchResultDetailsDone () {
+        _navigateToDetailsPage.value = null
+    }
+
+    override fun onCleared() {
+        Log.i ("YoutubeSearchViewModel", "Data Cleared!")
+        super.onCleared()
+    }
 }

@@ -76,6 +76,7 @@ class SongAdapter (private val clickListener: SongListener): ListAdapter<DataIte
         return when (getItem(position)) {
             is DataItem.Header -> ITEM_VIEW_TYPE_HEADER
             is DataItem.SongItem -> ITEM_VIEW_TYPE_ITEM
+            else -> throw ClassCastException ("Unknown DataItem: ${getItem(position)}")
         }
     }
 

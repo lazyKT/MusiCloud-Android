@@ -9,7 +9,8 @@ import com.example.musicloud.databinding.YoutubeSearchItemViewBinding
 import com.example.musicloud.network.YoutubeSearchProperty
 
 
-class YoutubeSearchAdapter : ListAdapter<YoutubeSearchProperty, YoutubeSearchAdapter.YoutubeSearchViewHolder>(DiffCallBack) {
+class YoutubeSearchAdapter (private val onClickListener: OnClickListener):
+    ListAdapter<YoutubeSearchProperty, YoutubeSearchAdapter.YoutubeSearchViewHolder>(DiffCallBack) {
 
     class YoutubeSearchViewHolder (private var binding: YoutubeSearchItemViewBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind (youtubeSearchProperty: YoutubeSearchProperty) {
@@ -18,13 +19,16 @@ class YoutubeSearchAdapter : ListAdapter<YoutubeSearchProperty, YoutubeSearchAda
         }
     }
 
-    override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): YoutubeSearchAdapter.YoutubeSearchViewHolder {
+    override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): YoutubeSearchViewHolder {
         val binding = YoutubeSearchItemViewBinding.inflate (LayoutInflater.from(parent.context))
         return YoutubeSearchViewHolder (binding)
     }
 
-    override fun onBindViewHolder (holder: YoutubeSearchAdapter.YoutubeSearchViewHolder, position: Int) {
+    override fun onBindViewHolder (holder: YoutubeSearchViewHolder, position: Int) {
         val youtubeSearchProperty = getItem (position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick (youtubeSearchProperty)
+        }
         holder.bind (youtubeSearchProperty)
     }
 
@@ -39,6 +43,10 @@ class YoutubeSearchAdapter : ListAdapter<YoutubeSearchProperty, YoutubeSearchAda
         }
     }
 
-}
+    /* onClick event on Youtube Search Results */
+    class OnClickListener (val clickListener: (youtubeSearchResult: YoutubeSearchProperty) -> Unit) {
+        fun onClick (result: YoutubeSearchProperty) = clickListener (result)
+    }
 
+}
 

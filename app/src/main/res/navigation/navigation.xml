@@ -17,48 +17,73 @@
             android:id="@+id/action_homeFragment_to_songDetailFragment"
             app:destination="@id/songDetailFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.example.musicloud.fragment.SettingFragment"
         android:label="@string/setting"
         tools:layout="@layout/setting_fragment"/>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.musicloud.fragment.LoginFragment"
         android:label="LoginFragment" />
+
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.musicloud.fragment.ProfileFragment"
         android:label="@string/profile" />
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.musicloud.fragment.SearchFragment"
         android:label="SearchFragment" />
+
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.example.musicloud.fragment.AboutFragment"
         android:label="AboutFragment" />
+
     <fragment
         android:id="@+id/reportFragment"
         android:name="com.example.musicloud.fragment.ReportFragment"
         android:label="ReportFragment" />
+
     <fragment
         android:id="@+id/youtubeFragment"
         android:name="com.example.musicloud.fragment.YoutubeFragment"
         android:label="@string/search_youtube"
-        tools:layout="@layout/youtube_fragment"/>
+        tools:layout="@layout/youtube_fragment">
+        <action
+            android:id="@+id/action_youtubeFragment_to_youtubeSearchDetailsFragment"
+            app:destination="@id/youtubeSearchDetailsFragment" />
+    </fragment>
+
     <dialog
         android:id="@+id/addNewSongDialog"
         android:name="com.example.musicloud.dialogs.AddNewSongDialog"
         android:label="AddNewSongDialog"
         tools:layout="@layout/add_new_song_dialog"/>
+
     <fragment
         android:id="@+id/songDetailFragment"
         android:name="com.example.musicloud.fragment.SongDetailFragment"
-        android:label="SongDetailFragment" >
+        android:label="SongDetailFragment"
+        tools:layout="@layout/song_detail_fragment">
         <argument
             android:name="songKey"
             app:argType="long"
             android:defaultValue="-1L" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/youtubeSearchDetailsFragment"
+        android:name="com.example.musicloud.fragment.YoutubeSearchDetailsFragment"
+        android:label="@string/youtube_search_result_details"
+        tools:layout="@layout/youtube_search_detail">
+        <argument
+            android:name="selectedResultDetails"
+            app:argType="com.example.musicloud.network.YoutubeSearchProperty"
+            />
     </fragment>
 </navigation>
