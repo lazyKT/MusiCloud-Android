@@ -27,6 +27,8 @@ data class Song(
     var thumbnailM: String = "",
     @ColumnInfo (name="finished")
     var finished: Boolean = false,
+    @ColumnInfo (name = "processing")
+    var processing: Boolean = false,
     @ColumnInfo (name="createdAt")
     var createdAt: Long = System.currentTimeMillis()
         )

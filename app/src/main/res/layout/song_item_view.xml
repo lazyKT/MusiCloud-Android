@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -31,13 +31,17 @@
                 android:layout_margin="5dp"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:imageUrl="@{song.thumbnailS}"/>
 
             <LinearLayout
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_margin="5dp">
+                android:layout_margin="5dp"
+                app:layout_constraintStart_toEndOf="@+id/songThumbnail"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/songNameTextView"
@@ -48,7 +52,8 @@
                     android:textStyle="bold"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    app:songNameFormatted="@{song}"/>
+                    app:songNameFormatted="@{song}"
+                    app:fontColor="@{song.finished}"/>
 
                 <TextView
                     android:id="@+id/sourceTextView"
@@ -57,14 +62,10 @@
                     android:textSize="15sp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    app:songSource="@{song}"/>
+                    app:songSource="@{song}"
+                    app:fontColor="@{song.finished}"/>
 
             </LinearLayout>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
 
             <ImageButton
                 android:id="@+id/songInfoButton"
@@ -73,10 +74,25 @@
                 android:src="@drawable/song_info_foreground"
                 android:background="@color/white"
                 android:contentDescription="@string/app_name"
-                android:onClick="@{() -> clickListener.onOptionClick(song)}"/>
+                android:onClick="@{() -> clickListener.onOptionClick(song)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:showButton="@{song.finished}"/>
+
+            <ImageView
+                android:id="@+id/loadingImageView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:contentDescription="@string/app_name"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:songStatus="@{song.processing}"
+                />
 
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 </layout>

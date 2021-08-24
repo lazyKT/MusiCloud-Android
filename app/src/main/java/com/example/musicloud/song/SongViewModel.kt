@@ -9,7 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.network.YoutubeSearchProperty
+import com.example.musicloud.repository.SongRepository
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 
 /**
@@ -25,11 +27,12 @@ private const val SONG_ITEM_DETAIL: Int = 1
 private const val SONG_ITEM_PLAY: Int = 0
 
 class SongViewModel (
-    val database: SongDAO,
+    private val songDatabase: SongDAO,
     application: Application): AndroidViewModel (application) {
 
-    private val lastSong = MutableLiveData<Song> ()
-    val songs = database.getAllSongs()
+    private val songRepository = SongRepository (songDatabase)
+
+    val songs = songRepository.songs
 
     private val _currentSong = MutableLiveData<Song> ()
     val currentSong: LiveData<Song>
@@ -43,22 +46,19 @@ class SongViewModel (
                 get() = _playing
 
     init {
-        initLastSong()
         _playing.value = false
+        getSongsFromRepository()
     }
 
-    private fun initLastSong () {
-        // !!: viewModelScope is a Coroutines Scope
+    private fun getSongsFromRepository () {
         viewModelScope.launch {
-            lastSong.value = getLastSongFromDatabase()
+            try {
+                songRepository.processAndDownloadSongs()
+            }
+            catch (exception: IOException) {
+                exception.message?.let { Log.i ("SongViewModel", it) }
+            }
         }
-    }
-
-    private suspend fun getLastSongFromDatabase (): Song? {
-        var lastSong = database.getLastSong()
-        if (lastSong?.finished == true)
-            lastSong = null
-        return lastSong
     }
 
     fun startSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
@@ -72,37 +72,8 @@ class SongViewModel (
                 youtubeURL = youtubeSearchProperty.fullURL,
                 songName = youtubeSearchProperty.title
             )
-            Log.i ("SongViewModel", newSong.toString())
-            insert (newSong)
-            lastSong.value = getLastSongFromDatabase()
+            songRepository.insert (song = newSong)
         }
-    }
-
-    private suspend fun insert (song: Song) {
-        database.insert (song)
-    }
-
-    fun finishSongProcessing () {
-        viewModelScope.launch {
-            val currentSong = lastSong.value ?: return@launch
-            currentSong.finished = true
-            update (currentSong)
-        }
-    }
-
-    private suspend fun update (song: Song) {
-        database.update (song)
-    }
-
-    fun deleteAllSongs () {
-        viewModelScope.launch {
-            clearAll()
-            lastSong.value = null
-        }
-    }
-
-    private suspend fun clearAll () {
-        database.deleteAll ()
     }
 
     /* on click event on song item inside recyclerview */
@@ -120,7 +91,7 @@ class SongViewModel (
     private fun playSong (id: Long) {
         Log.i ("SongViewModel", "Play the song with id: $id")
         viewModelScope.launch {
-            _currentSong.value = database.get(id)
+            _currentSong.value = songDatabase.get(id)
             _playing.value = true
         }
     }
