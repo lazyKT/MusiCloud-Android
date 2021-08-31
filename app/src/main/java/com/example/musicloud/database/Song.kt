@@ -28,7 +28,7 @@ data class Song(
     @ColumnInfo (name="finished")
     var finished: Boolean = false,
     @ColumnInfo (name = "processing")
-    var processing: Boolean = false,
+    var processing: Boolean = true,
     @ColumnInfo (name="createdAt")
     var createdAt: Long = System.currentTimeMillis()
         )

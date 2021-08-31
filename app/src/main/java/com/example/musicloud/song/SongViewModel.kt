@@ -72,7 +72,7 @@ class SongViewModel (
                 youtubeURL = youtubeSearchProperty.fullURL,
                 songName = youtubeSearchProperty.title
             )
-            songRepository.insert (song = newSong)
+            songRepository.insert (viewModelScope, newSong)
         }
     }
 

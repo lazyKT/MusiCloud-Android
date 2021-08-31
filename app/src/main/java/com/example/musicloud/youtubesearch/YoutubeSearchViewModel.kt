@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.musicloud.network.MusiCloudApi
 
-import com.example.musicloud.network.YoutubeSearchApi
 import com.example.musicloud.network.YoutubeSearchProperty
 import kotlinx.coroutines.launch
 
@@ -46,7 +46,7 @@ class YoutubeSearchViewModel: ViewModel () {
 
         viewModelScope.launch {
             try {
-                val searchResults = YoutubeSearchApi.retrofitService.getSearchResults(url)
+                val searchResults = MusiCloudApi.retrofitService.getYtSearchResults(url)
                 _status.value = YoutubeSearchApiStatus.SUCCESS
                 if (searchResults.isNotEmpty())
                     _searchResults.value = searchResults

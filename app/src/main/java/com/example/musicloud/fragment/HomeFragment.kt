@@ -5,20 +5,16 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicloud.R
-import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.HomeFragmentBinding
 import com.example.musicloud.dialogs.AddNewSongDialog
 import com.example.musicloud.song.SongAdapter
 import com.example.musicloud.song.SongListener
 import com.example.musicloud.song.SongViewModel
-import com.example.musicloud.song.SongViewModelFactory
 
 
 class HomeFragment: Fragment () {
@@ -51,7 +47,7 @@ class HomeFragment: Fragment () {
         binding.songList.adapter = adapter
         binding.songList.layoutManager = LinearLayoutManager (requireActivity())
 
-        songViewModel.songs.observe (viewLifecycleOwner, Observer {
+        songViewModel.songs.observe (viewLifecycleOwner, {
             it?.let {
                 Log.i ("SongFragment", "Songs List Mutated!")
                 adapter.submitList(it) // submitList () is to tell the ListAdapter that new version of data is available
@@ -59,7 +55,7 @@ class HomeFragment: Fragment () {
         })
 
         /* observe the song item clicks */
-        songViewModel.navigateToSongDetail.observe (viewLifecycleOwner, Observer { song ->
+        songViewModel.navigateToSongDetail.observe (viewLifecycleOwner, { song ->
             song?.let {
                 this.findNavController().navigate (
                     HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(song)

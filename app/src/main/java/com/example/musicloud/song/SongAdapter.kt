@@ -1,7 +1,6 @@
 package com.example.musicloud.song
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -50,8 +49,6 @@ class SongDiffCallBack: DiffUtil.ItemCallback<Song> () {
 
     @SuppressLint ("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
-//        Log.i ("SongAdapter", "areContentsTheSame (${newItem.songName} vs ${oldItem.songName}: " +
-//                "${oldItem.songID == newItem.songID && oldItem.finished == newItem.finished}")
         return oldItem.songID == newItem.songID && oldItem.finished == newItem.finished
     }
 
