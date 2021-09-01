@@ -1,19 +1,21 @@
 package com.example.musicloud.fragment
 
+import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.musicloud.R
 import com.example.musicloud.databinding.YoutubeFragmentBinding
 import com.example.musicloud.youtubesearch.YoutubeSearchAdapter
 import com.example.musicloud.youtubesearch.YoutubeSearchViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class YoutubeFragment: Fragment() {
 
@@ -37,7 +39,7 @@ class YoutubeFragment: Fragment() {
         })
         binding.searchResultList.layoutManager = LinearLayoutManager (requireActivity())
 
-        youtubeSearchViewModel.navigateToDetailsPage.observe (viewLifecycleOwner, Observer {
+        youtubeSearchViewModel.navigateToDetailsPage.observe (viewLifecycleOwner, {
             if (null != it) {
                 this.findNavController().navigate (YoutubeFragmentDirections.actionYoutubeFragmentToYoutubeSearchDetailsFragment(it))
                 youtubeSearchViewModel.displaySearchResultDetailsDone()
@@ -45,7 +47,15 @@ class YoutubeFragment: Fragment() {
         })
 
         youtubeSearchViewModel.errorMessage.observe (viewLifecycleOwner, {
-            it?.let { Toast.makeText (requireActivity(), it, Toast.LENGTH_SHORT).show() }
+            it?.let {
+                Snackbar.make (binding.ytSnackBar, it, Snackbar.LENGTH_INDEFINITE)
+                    .setAction (R.string.close) {
+//                        it.visibility = View.GONE
+                    }
+                    .setBackgroundTint (ContextCompat.getColor (requireActivity(), R.color.sky_blue))
+                    .setActionTextColor (ContextCompat.getColor (requireActivity(), R.color.whisper))
+                    .show()
+            }
         })
 
         return binding.root

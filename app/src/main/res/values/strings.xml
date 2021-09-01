@@ -22,6 +22,7 @@
     <string name="download_from_youtube">Download From YouTube</string>
     <string name="download">Download MP3 Offline</string>
     <string name="view_in_youtube">View Video in Youtube</string>
+    <string name="close">Close</string>
 
     <!-- hints -->
     <string name="search_youtube">Search on YouTube</string>

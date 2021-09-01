@@ -15,6 +15,7 @@ import com.example.musicloud.databinding.ActivityMainBinding
 import com.example.musicloud.song.SongViewModel
 import com.example.musicloud.song.SongViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         // display error message
         songViewModel.errorMessage.observe (this, {
             it?.let { Toast.makeText (this, it, Toast.LENGTH_SHORT).show() }
+            it?.let { Snackbar.make (binding.mainSnackBar, it, Snackbar.LENGTH_SHORT).show() }
         })
 
     }
