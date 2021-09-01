@@ -53,7 +53,7 @@ class YoutubeSearchViewModel: ViewModel () {
             }
             catch (e: Exception) {
                 _status.value = YoutubeSearchApiStatus.ERROR
-                Log.i ("YoutubeSearchViewModel", "Error: " + status.value)
+                Log.i ("YoutubeSearchViewModel", "Error: ${e.message}, " + status.value)
                 _searchResults.value = ArrayList()
             }
         }

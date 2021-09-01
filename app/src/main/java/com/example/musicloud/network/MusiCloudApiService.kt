@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -35,15 +36,46 @@ private val retrofitDL = Retrofit.Builder()
     .addConverterFactory (GsonConverterFactory.create(gson))
     .build()
 
+data class SongProcessStatus (
+    @Json (name = "status") val status: String
+)
+
+data class SongRequestBody (
+    val url: String = ""
+)
+
+data class ProcessTaskResponse (
+    @Json (name = "id") val taskID: String
+)
+
+/* Customer Error Response Class */
+data class ErrorResponseBody (
+    val message: String
+        )
+
+
+/*
+* Wrapper Class for the network response of SongDLApiService.
+* This class is to overcome the exception handling problem within `async` call.
+* */
+sealed class ResultWrapper<out T> {
+
+    data class Success<out T> (val value: T): ResultWrapper<T> ()
+
+    data class Failure (val statusCode: Int? = null, val errorResponseBody: ErrorResponseBody? = null): ResultWrapper<Nothing> ()
+}
 
 interface MusiCloudApiService {
 
+    /* get search results from YouTube */
     @GET
     suspend fun getYtSearchResults (@Url url: String): List<YoutubeSearchProperty>
 
+    /* Request Song Processing */
     @POST ("/process")
     suspend fun checkSong (@Body requestBody: SongRequestBody): SongProcessStatus
 
+    /* Conversion from Video to Audio file in Server */
     @POST ("/convert")
     suspend fun doConversion (@Body requestBody: SongRequestBody): ProcessTaskResponse
 }
@@ -52,7 +84,7 @@ interface SongDLApiService {
     @GET
     suspend fun downloadSong (
         @Url url: String
-    ): ResponseBody
+    ): Response <ResponseBody>
 }
 
 object MusiCloudApi {
@@ -71,15 +103,3 @@ object MusiCloudApi {
         retrofitDL.create (SongDLApiService::class.java)
     }
 }
-
-data class SongProcessStatus (
-    @Json (name = "status") val status: String
-)
-
-data class SongRequestBody (
-    val url: String = ""
-)
-
-data class ProcessTaskResponse (
-    @Json (name = "id") val taskID: String
-)

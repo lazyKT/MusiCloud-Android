@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
-import com.example.musicloud.network.MusiCloudApi
-import com.example.musicloud.network.SocketManager
-import com.example.musicloud.network.SongRequestBody
+import com.example.musicloud.network.*
 import kotlinx.coroutines.*
+import retrofit2.HttpException
 import java.io.InputStream
 import java.lang.Exception
 
@@ -47,17 +46,13 @@ class SongRepository (private val songDAO: SongDAO) {
         Log.i ("SongRepository", "Finish downloading ...")
     }
 
-    private suspend fun getLastSong(): Song? {
-        return songDAO.getLastSong()
-    }
-
     suspend fun insert (parentScope: CoroutineScope, song: Song) {
         parentScope.launch (Dispatchers.IO) {
 
             /* save song record in ROOM DB */
 //            songDAO.insert(song)
 
-            processSong (song)
+            processSong (parentScope, song)
 
             /* update the song ROOM Database that the song has finished processing */
             songDAO.finishSongProcessing (finished = true, processing = false, song.songID)
@@ -65,7 +60,7 @@ class SongRepository (private val songDAO: SongDAO) {
         }
     }
 
-    private suspend fun processSong (song: Song) {
+    private suspend fun processSong (scope: CoroutineScope, song: Song) {
 
         withContext (Dispatchers.IO) {
             val songStatus =
@@ -78,10 +73,10 @@ class SongRepository (private val songDAO: SongDAO) {
             when (songStatus.status) {
                 PROCESS_SONG -> {
                     doConversion (song.youtubeURL)
-                    downloadSong (song.songID)
+                    downloadSong (scope, song.songID)
                 }
                 DOWNLOAD_READY -> {
-                    downloadSong (song.songID)
+                    downloadSong (scope, song.songID)
                 }
                 RESPONSE_TIMEOUT -> {
                     throw Exception ("Socket Connection TimeOut!")
@@ -138,21 +133,45 @@ class SongRepository (private val songDAO: SongDAO) {
         }
     }
 
+
     /* download songs from server */
-    private suspend fun downloadSong (songID: String) {
+    private suspend fun downloadSong (scope: CoroutineScope, songID: String) {
 
         val url = "/download/${songID}"
 
-        withContext (Dispatchers.IO) {
+        scope.launch {
             try {
                 val songDownloadResponseDeferred = async { MusiCloudApi.retrofitDLApiService.downloadSong (url) }
 
                 val songDownloadResponse = songDownloadResponseDeferred.await()
-                Log.i ("SongRepository", "downloadSong():ByteStream -> ${songDownloadResponse.byteStream()}")
-                writeToMediaStore (songDownloadResponse.byteStream())
+
+                if (songDownloadResponse.isSuccessful) {
+                    val result = ResultWrapper.Success (songDownloadResponse.body())
+                    result.value?.let { Log.i ("SongRepository", "InputStream: $it") }
+                    writeToMediaStore (result.value?.byteStream()!!)
+                }
+                else {
+                    val failure = ResultWrapper.Failure(
+                        songDownloadResponse.code(),
+                        ErrorResponseBody(songDownloadResponse.message())
+                    )
+                    // show error message!!!!
+                    Log.i ("SongRepository", "SongDownloadResponse Failed! ${failure.errorResponseBody}")
+                }
+            }
+            catch (e: HttpException) {
+                Log.i ("SongRepository", "HttpException Occurred! Message: ${e.message()}")
+                Log.i ("SongRepository", "HttpException Occurred! Job is being cancelled!")
+                cancel ("Job is Cancelled due to HttpException", e)
+                Log.i ("SongRepository", "HttpException Occurred! Job is Cancelled!")
+                ResultWrapper.Failure (e.code(), ErrorResponseBody (e.message()))
             }
             catch (e: Exception) {
                 Log.i ("SongRepository", "downloadSong: ${e.message}")
+                ResultWrapper.Failure (e.hashCode(), ErrorResponseBody (e.toString()))
+            }
+            finally {
+                Log.i ("SongRepository", "Network Request for songDownload: Done!")
             }
         }
     }
