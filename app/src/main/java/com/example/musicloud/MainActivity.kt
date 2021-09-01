@@ -54,9 +54,14 @@ class MainActivity : AppCompatActivity() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
         val playButton: ImageButton = bottomSheetView.findViewById (R.id.playButton)
-        playButton.setOnClickListener {_ ->
+        playButton.setOnClickListener {
             Toast.makeText (this, "Play Clicked!", Toast.LENGTH_SHORT).show()
         }
+
+        // display error message
+        songViewModel.errorMessage.observe (this, {
+            it?.let { Toast.makeText (this, it, Toast.LENGTH_SHORT).show() }
+        })
 
     }
 

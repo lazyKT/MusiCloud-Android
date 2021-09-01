@@ -2,6 +2,7 @@ package com.example.musicloud.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.network.*
@@ -20,6 +21,10 @@ class SongRepository (private val songDAO: SongDAO) {
 
     val songs: LiveData<List<Song>> = songDAO.getAllSongs()
     private var socketConnected:Boolean = false
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?>
+        get() = _errorMessage
 
     suspend fun processAndDownloadSongs () {
         withContext (Dispatchers.IO) {
@@ -148,6 +153,7 @@ class SongRepository (private val songDAO: SongDAO) {
                 if (songDownloadResponse.isSuccessful) {
                     val result = ResultWrapper.Success (songDownloadResponse.body())
                     result.value?.let { Log.i ("SongRepository", "InputStream: $it") }
+                    _errorMessage.value = null
                     writeToMediaStore (result.value?.byteStream()!!)
                 }
                 else {
@@ -155,6 +161,7 @@ class SongRepository (private val songDAO: SongDAO) {
                         songDownloadResponse.code(),
                         ErrorResponseBody(songDownloadResponse.message())
                     )
+                    _errorMessage.value = songDownloadResponse.message()
                     // show error message!!!!
                     Log.i ("SongRepository", "SongDownloadResponse Failed! ${failure.errorResponseBody}")
                 }
@@ -165,10 +172,12 @@ class SongRepository (private val songDAO: SongDAO) {
                 cancel ("Job is Cancelled due to HttpException", e)
                 Log.i ("SongRepository", "HttpException Occurred! Job is Cancelled!")
                 ResultWrapper.Failure (e.code(), ErrorResponseBody (e.message()))
+                _errorMessage.value = e.message()
             }
             catch (e: Exception) {
                 Log.i ("SongRepository", "downloadSong: ${e.message}")
                 ResultWrapper.Failure (e.hashCode(), ErrorResponseBody (e.toString()))
+                _errorMessage.value = e.toString()
             }
             finally {
                 Log.i ("SongRepository", "Network Request for songDownload: Done!")

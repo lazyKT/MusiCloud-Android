@@ -45,6 +45,9 @@ class SongViewModel (
     val playing: LiveData<Boolean>
                 get() = _playing
 
+    val errorMessage: LiveData<String?>
+            get() = songRepository.errorMessage
+
     init {
         _playing.value = false
         getSongsFromRepository()

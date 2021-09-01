@@ -30,10 +30,15 @@ class YoutubeSearchViewModel: ViewModel () {
     val navigateToDetailsPage: LiveData<YoutubeSearchProperty>
                 get() = _navigateToDetailsPage
 
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?>
+                    get() = _errorMessage
+
     init {
         Log.i ("YoutubeSearchViewModel", "Initialised!!!")
         _status.value = YoutubeSearchApiStatus.NOTHING
         _searchQuery.value = ""
+        _errorMessage.value = null
     }
 
     private fun getSearchResult (filter: String) {
@@ -48,6 +53,7 @@ class YoutubeSearchViewModel: ViewModel () {
             try {
                 val searchResults = MusiCloudApi.retrofitService.getYtSearchResults(url)
                 _status.value = YoutubeSearchApiStatus.SUCCESS
+                _errorMessage.value = null
                 if (searchResults.isNotEmpty())
                     _searchResults.value = searchResults
             }
@@ -55,6 +61,7 @@ class YoutubeSearchViewModel: ViewModel () {
                 _status.value = YoutubeSearchApiStatus.ERROR
                 Log.i ("YoutubeSearchViewModel", "Error: ${e.message}, " + status.value)
                 _searchResults.value = ArrayList()
+                _errorMessage.value = e.message
             }
         }
     }
