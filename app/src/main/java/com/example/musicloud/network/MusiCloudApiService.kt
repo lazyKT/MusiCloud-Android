@@ -48,23 +48,6 @@ data class ProcessTaskResponse (
     @Json (name = "id") val taskID: String
 )
 
-/* Customer Error Response Class */
-data class ErrorResponseBody (
-    val message: String
-        )
-
-
-/*
-* Wrapper Class for the network response of SongDLApiService.
-* This class is to overcome the exception handling problem within `async` call.
-* */
-sealed class ResultWrapper<out T> {
-
-    data class Success<out T> (val value: T): ResultWrapper<T> ()
-
-    data class Failure (val statusCode: Int? = null, val errorResponseBody: ErrorResponseBody? = null): ResultWrapper<Nothing> ()
-}
-
 interface MusiCloudApiService {
 
     /* get search results from YouTube */

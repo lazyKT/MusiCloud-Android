@@ -8,13 +8,15 @@ import com.example.musicloud.database.SongDAO
 import com.example.musicloud.network.*
 import kotlinx.coroutines.*
 import retrofit2.HttpException
-import java.io.InputStream
 import java.lang.Exception
+import java.net.SocketTimeoutException
 
 
 private const val DOWNLOAD_READY = "EXISTED"
 private const val PROCESS_SONG = "NOT EXISTS"
 private const val PROCESS_COMPLETED = "SUCCESS"
+private const val RESPONSE_OK = "OK"
+private const val RESPONSE_ERROR = "ERROR"
 private const val RESPONSE_TIMEOUT = "response_timeout"
 
 class SongRepository (private val songDAO: SongDAO) {
@@ -51,37 +53,23 @@ class SongRepository (private val songDAO: SongDAO) {
         Log.i ("SongRepository", "Finish downloading ...")
     }
 
-    suspend fun insert (parentScope: CoroutineScope, song: Song) {
-        parentScope.launch (Dispatchers.IO) {
-
-            /* save song record in ROOM DB */
-//            songDAO.insert(song)
-
-            processSong (parentScope, song)
-
-            /* update the song ROOM Database that the song has finished processing */
-            songDAO.finishSongProcessing (finished = true, processing = false, song.songID)
-            Log.i ("SongRepository", "SongList Updated: Done!")
-        }
-    }
-
-    private suspend fun processSong (scope: CoroutineScope, song: Song) {
-
-        withContext (Dispatchers.IO) {
+    suspend fun doProcessAsync (scope: CoroutineScope, song: Song) = scope.async {
+        try {
             val songStatus =
-                withContext(Dispatchers.Default) {
+                withContext(Dispatchers.IO) {
                     MusiCloudApi.retrofitService.checkSong(SongRequestBody(url = song.youtubeURL))
                 }
             Log.i ("SongRepository", "checkSongStatus = $songStatus")
 
-
             when (songStatus.status) {
                 PROCESS_SONG -> {
+                    _errorMessage.value = null
                     doConversion (song.youtubeURL)
-                    downloadSong (scope, song.songID)
+                    getSongMetaDataAsync (scope, song.songID).await()
                 }
                 DOWNLOAD_READY -> {
-                    downloadSong (scope, song.songID)
+                    _errorMessage.value = null
+                    getSongMetaDataAsync (scope, song.songID).await()
                 }
                 RESPONSE_TIMEOUT -> {
                     throw Exception ("Socket Connection TimeOut!")
@@ -89,8 +77,10 @@ class SongRepository (private val songDAO: SongDAO) {
                 else -> throw Exception ("Error! Unknown Song Status!")
             }
         }
+        catch (exp: Exception) {
+            _errorMessage.value = "${exp.hashCode()}: ${exp.message}"
+        }
     }
-
 
     /*
     * Request to server for the song conversion process of the given YouTube URL.
@@ -98,95 +88,87 @@ class SongRepository (private val songDAO: SongDAO) {
     * */
     private suspend fun doConversion (ytURL: String) {
 
-        Log.i ("SongRepository", "Start Song Processing...")
-        /* do song conversion processing in server */
-        val processTask = withContext (Dispatchers.IO) {
-            MusiCloudApi.retrofitService.doConversion (SongRequestBody(url = ytURL))
-        }
-        Log.i ("SongRepository", "Task ID: $processTask")
-
-        val sock = SocketManager()
-        socketConnected =
-            withContext(Dispatchers.IO) {
-                sock.connectSocketEvent()
+        try {
+            Log.i ("SongRepository", "Start Song Processing...")
+            /* do song conversion processing in server */
+            val processTask = withContext (Dispatchers.IO) {
+                MusiCloudApi.retrofitService.doConversion (SongRequestBody(url = ytURL))
             }
-        Log.i ("SongRepository", "SocketConnected? : $socketConnected")
+            Log.i ("SongRepository", "Task ID: $processTask")
 
-        if (socketConnected) {
-            // do accordingly
-            trackConversionProcess (sock, processTask.taskID)
+            val sock = SocketManager()
+            socketConnected =
+                withContext(Dispatchers.IO) {
+                    sock.connectSocketEvent()
+                }
+            Log.i ("SongRepository", "SocketConnected? : $socketConnected")
+
+            if (socketConnected) {
+                // do accordingly
+                trackConversionProcess (sock, processTask.taskID)
+            }
+            else throw SocketTimeoutException ("Socket Connection Time Out!")
+        }
+        catch (e: HttpException) {
+            _errorMessage.value = "${e.code()}: ${e.message()}"
+        }
+        catch (e: Exception) {
+            _errorMessage.value = "${e.hashCode()}: ${e.message}"
         }
     }
 
 
     /* get conversion process updates from the server via socket io connection */
     private suspend fun trackConversionProcess (sock: SocketManager, taskID: String) {
-        withContext (Dispatchers.IO) {
-            var processStatus = async { sock.trackSongProcess(taskID) }
-            Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
 
-            var taskCompleted: Boolean = processStatus.await() == PROCESS_COMPLETED
-
-            while (!taskCompleted) {
-                delay (4000L)
-                processStatus = async { sock.trackSongProcess(taskID) }
+        try {
+            withContext (Dispatchers.IO) {
+                var processStatus = async { sock.trackSongProcess(taskID) }
                 Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
-                taskCompleted = processStatus.await() == PROCESS_COMPLETED
-            }
 
-            sock.disconnectSocket()
+                var taskCompleted: Boolean = processStatus.await() == PROCESS_COMPLETED
+
+                while (!taskCompleted) {
+                    delay (4000L)
+                    processStatus = async { sock.trackSongProcess(taskID) }
+                    Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
+                    taskCompleted = processStatus.await() == PROCESS_COMPLETED
+                }
+
+                sock.disconnectSocket()
+            }
+        }
+        catch (e: Exception) {
+            _errorMessage.value = "${e.hashCode()}: ${e.message}"
         }
     }
 
-
-    /* download songs from server */
-    private suspend fun downloadSong (scope: CoroutineScope, songID: String) {
-
+    private suspend fun getSongMetaDataAsync (scope: CoroutineScope, songID: String) = scope.async {
         val url = "/download/${songID}"
 
-        scope.launch {
-            try {
-                val songDownloadResponseDeferred = async { MusiCloudApi.retrofitDLApiService.downloadSong (url) }
+        try {
+            val songDownloadResponseDeferred = async { MusiCloudApi.retrofitDLApiService.downloadSong (url) }
 
-                val songDownloadResponse = songDownloadResponseDeferred.await()
+            val songDownloadResponse = songDownloadResponseDeferred.await()
 
-                if (songDownloadResponse.isSuccessful) {
-                    val result = ResultWrapper.Success (songDownloadResponse.body())
-                    result.value?.let { Log.i ("SongRepository", "InputStream: $it") }
-                    _errorMessage.value = null
-                    writeToMediaStore (result.value?.byteStream()!!)
-                }
-                else {
-                    val failure = ResultWrapper.Failure(
-                        songDownloadResponse.code(),
-                        ErrorResponseBody(songDownloadResponse.message())
-                    )
-                    _errorMessage.value = songDownloadResponse.message()
-                    // show error message!!!!
-                    Log.i ("SongRepository", "SongDownloadResponse Failed! ${failure.errorResponseBody}")
-                }
+            if (songDownloadResponse.isSuccessful) {
+                _errorMessage.value = null
+                val responseBody = songDownloadResponse.body()
+                responseBody?.byteStream()
             }
-            catch (e: HttpException) {
-                Log.i ("SongRepository", "HttpException Occurred! Message: ${e.message()}")
-                Log.i ("SongRepository", "HttpException Occurred! Job is being cancelled!")
-                cancel ("Job is Cancelled due to HttpException", e)
-                Log.i ("SongRepository", "HttpException Occurred! Job is Cancelled!")
-                ResultWrapper.Failure (e.code(), ErrorResponseBody (e.message()))
-                _errorMessage.value = e.message()
+            else {
+                _errorMessage.value = songDownloadResponse.message()
+                throw HttpException (songDownloadResponse)
             }
-            catch (e: Exception) {
-                Log.i ("SongRepository", "downloadSong: ${e.message}")
-                ResultWrapper.Failure (e.hashCode(), ErrorResponseBody (e.toString()))
-                _errorMessage.value = e.toString()
-            }
-            finally {
-                Log.i ("SongRepository", "Network Request for songDownload: Done!")
-            }
+        }
+        catch (e: HttpException) {
+            Log.i ("SongRepository", "downloadSong: ${e.code()}: ${e.message}")
+            _errorMessage.value = "${e.code()}: ${e.message()}"
+        }
+        catch (e: Exception) {
+            Log.i ("SongRepository", "downloadSong: ${e.message}")
+            _errorMessage.value = e.message
         }
     }
 
-
-    private suspend fun writeToMediaStore (stream: InputStream) {
-
-    }
 }

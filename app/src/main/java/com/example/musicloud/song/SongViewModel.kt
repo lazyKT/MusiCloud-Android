@@ -1,6 +1,11 @@
 package com.example.musicloud.song
 
 import android.app.Application
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -10,8 +15,11 @@ import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.network.YoutubeSearchProperty
 import com.example.musicloud.repository.SongRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.io.InputStream
 
 
 /**
@@ -75,7 +83,12 @@ class SongViewModel (
                 youtubeURL = youtubeSearchProperty.fullURL,
                 songName = youtubeSearchProperty.title
             )
-            songRepository.insert (viewModelScope, newSong)
+
+            val songData = songRepository.doProcessAsync (viewModelScope, newSong).await()
+            Log.i ("SongViewModel", "Data : $songData")
+            if (songData != null && songData != Unit) {
+                downloadSong (newSong.songID, songData as InputStream)
+            }
         }
     }
 
@@ -96,6 +109,29 @@ class SongViewModel (
         viewModelScope.launch {
             _currentSong.value = songDatabase.get(id)
             _playing.value = true
+        }
+    }
+
+    private suspend fun downloadSong (songID: String, stream: InputStream) {
+        withContext (Dispatchers.IO) {
+
+            val resolver: ContentResolver = getApplication<Application>().contentResolver
+
+            val audioCollection: Uri =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    MediaStore.Audio.Media.getContentUri (MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                }
+                else {
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+
+            val songDetails: ContentValues = ContentValues().apply {
+                put (MediaStore.Audio.Media.DISPLAY_NAME, "$songID.mp3")
+            }
+
+            val songLocation = resolver.insert (audioCollection, songDetails)
+
+            Log.i ("SongViewModel", "$songID.mp3 will saved at $songLocation")
         }
     }
 }

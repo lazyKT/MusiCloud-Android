@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -61,8 +62,15 @@ class MainActivity : AppCompatActivity() {
 
         // display error message
         songViewModel.errorMessage.observe (this, {
-            it?.let { Toast.makeText (this, it, Toast.LENGTH_SHORT).show() }
-            it?.let { Snackbar.make (binding.mainSnackBar, it, Snackbar.LENGTH_SHORT).show() }
+            it?.let {
+                Snackbar.make (binding.mainSnackBar, it, Snackbar.LENGTH_INDEFINITE)
+                    .setAction (R.string.close) {
+
+                    }
+                    .setActionTextColor (ContextCompat.getColor (this, R.color.white))
+                    .setBackgroundTint (ContextCompat.getColor (this, R.color.coral))
+                    .show()
+            }
         })
 
     }

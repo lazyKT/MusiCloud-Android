@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -15,6 +16,7 @@ import com.example.musicloud.dialogs.AddNewSongDialog
 import com.example.musicloud.song.SongAdapter
 import com.example.musicloud.song.SongListener
 import com.example.musicloud.song.SongViewModel
+import kotlinx.coroutines.launch
 
 
 class HomeFragment: Fragment () {

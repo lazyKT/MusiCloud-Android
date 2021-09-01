@@ -27,6 +27,9 @@ interface SongDAO {
     @Query ("UPDATE song_table SET finished = :finished, processing = :processing WHERE songID = :songID")
     suspend fun finishSongProcessing (finished: Boolean, processing: Boolean, songID: String)
 
+    @Query ("UPDATE song_table SET localFileURL = :uri WHERE songID = :songID")
+    suspend fun updateFileLocation (uri: String, songID: String)
+
     @Delete
     suspend fun delete (song: Song)
 
