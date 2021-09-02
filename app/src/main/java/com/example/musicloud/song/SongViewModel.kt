@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 
 
 /**
@@ -87,7 +88,7 @@ class SongViewModel (
             val songData = songRepository.doProcessAsync (viewModelScope, newSong).await()
             Log.i ("SongViewModel", "Data : $songData")
             if (songData != null && songData != Unit) {
-                downloadSong (newSong.songID, songData as InputStream)
+                downloadSong (newSong.songID, songData as OutputStream)
             }
         }
     }
@@ -112,7 +113,8 @@ class SongViewModel (
         }
     }
 
-    private suspend fun downloadSong (songID: String, stream: InputStream) {
+    /* write/store song to MediaStore.Audio */
+    private suspend fun downloadSong (songID: String, stream: OutputStream) {
         withContext (Dispatchers.IO) {
 
             val resolver: ContentResolver = getApplication<Application>().contentResolver

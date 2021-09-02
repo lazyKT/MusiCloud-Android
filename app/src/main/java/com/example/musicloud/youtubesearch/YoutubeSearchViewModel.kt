@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicloud.network.MusiCloudApi
+import com.example.musicloud.network.ErrorMessages.genErrorMessage
 
 import com.example.musicloud.network.YoutubeSearchProperty
 import kotlinx.coroutines.launch
@@ -61,7 +62,7 @@ class YoutubeSearchViewModel: ViewModel () {
                 _status.value = YoutubeSearchApiStatus.ERROR
                 Log.i ("YoutubeSearchViewModel", "Error: ${e.message}, " + status.value)
                 _searchResults.value = ArrayList()
-                _errorMessage.value = e.message
+                _errorMessage.value = genErrorMessage (e)
             }
         }
     }

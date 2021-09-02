@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,6 +15,9 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
+import java.io.IOException
+import java.lang.Exception
+import java.net.SocketTimeoutException
 
 
 private const val BASE_URL = "http:10.0.2.2:5000"
@@ -86,3 +90,21 @@ object MusiCloudApi {
         retrofitDL.create (SongDLApiService::class.java)
     }
 }
+
+object ErrorMessages {
+    fun genErrorMessage (e: Exception): String {
+        return when (e) {
+            is HttpException -> when (e.code()) {
+                404 -> "HTTP 404 Error. Resource Not Found!"
+                400 -> "HTTP 400 Error. Bad Request!"
+                403 -> "HTTP 403 Error. Unauthorized Resource!"
+                500 -> "HTTP 500 Error. Internal Server Error!"
+                else -> "Unknown Network Error! Please Check your Connection!"
+            }
+            is IOException -> return "IOException: ${e.message}"
+            is SocketTimeoutException -> return "SocketTimeOutException: ${e.message}"
+            else -> "Unknown Error Occurred! ${e.message}"
+        }
+    }
+}
+

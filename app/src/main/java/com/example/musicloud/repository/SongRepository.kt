@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.network.*
+import com.example.musicloud.network.ErrorMessages.genErrorMessage
 import kotlinx.coroutines.*
 import retrofit2.HttpException
+import java.io.IOException
 import java.lang.Exception
 import java.net.SocketTimeoutException
 
@@ -72,13 +74,13 @@ class SongRepository (private val songDAO: SongDAO) {
                     getSongMetaDataAsync (scope, song.songID).await()
                 }
                 RESPONSE_TIMEOUT -> {
-                    throw Exception ("Socket Connection TimeOut!")
+                    throw SocketTimeoutException ("Socket Connection TimeOut!")
                 }
                 else -> throw Exception ("Error! Unknown Song Status!")
             }
         }
         catch (exp: Exception) {
-            _errorMessage.value = "${exp.hashCode()}: ${exp.message}"
+            _errorMessage.value = genErrorMessage(exp)
         }
     }
 
@@ -110,10 +112,10 @@ class SongRepository (private val songDAO: SongDAO) {
             else throw SocketTimeoutException ("Socket Connection Time Out!")
         }
         catch (e: HttpException) {
-            _errorMessage.value = "${e.code()}: ${e.message()}"
+            _errorMessage.value = genErrorMessage(e)
         }
         catch (e: Exception) {
-            _errorMessage.value = "${e.hashCode()}: ${e.message}"
+            _errorMessage.value = genErrorMessage(e)
         }
     }
 
@@ -138,8 +140,11 @@ class SongRepository (private val songDAO: SongDAO) {
                 sock.disconnectSocket()
             }
         }
+        catch (e: SocketTimeoutException) {
+            _errorMessage.value = genErrorMessage (e)
+        }
         catch (e: Exception) {
-            _errorMessage.value = "${e.hashCode()}: ${e.message}"
+            _errorMessage.value = genErrorMessage (e)
         }
     }
 
@@ -163,12 +168,11 @@ class SongRepository (private val songDAO: SongDAO) {
         }
         catch (e: HttpException) {
             Log.i ("SongRepository", "downloadSong: ${e.code()}: ${e.message}")
-            _errorMessage.value = "${e.code()}: ${e.message()}"
+            _errorMessage.value = genErrorMessage (e)
         }
         catch (e: Exception) {
             Log.i ("SongRepository", "downloadSong: ${e.message}")
-            _errorMessage.value = e.message
+            _errorMessage.value = genErrorMessage(e)
         }
     }
-
 }
