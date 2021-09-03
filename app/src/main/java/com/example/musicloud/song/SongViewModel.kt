@@ -39,7 +39,7 @@ import kotlin.system.measureTimeMillis
 private const val SONG_ITEM_DETAIL: Int = 1
 private const val SONG_ITEM_PLAY: Int = 0
 
-enum class SongFetchStatus { NOTHING, LOADING, SUCCESS, ERROR }
+enum class SongFetchStatus { NOTHING, LOADING, DONE }
 
 class SongViewModel (
     private val songDatabase: SongDAO,
@@ -48,6 +48,9 @@ class SongViewModel (
     private val songRepository = SongRepository (songDatabase)
 
     val songs = songRepository.songs
+
+    private val _songFetchStatus = MutableLiveData<SongFetchStatus>()
+    val songFetchStatus: LiveData<SongFetchStatus> get() = _songFetchStatus
 
     private val _currentSong = MutableLiveData<Song> ()
     val currentSong: LiveData<Song>
@@ -63,14 +66,17 @@ class SongViewModel (
     val errorMessage: LiveData<String?>
             get() = songRepository.errorMessage
 
-    val _fetchStatus = MutableLiveData<SongFetchStatus>()
-    val fetchStatus: LiveData<SongFetchStatus>
-            get() = _fetchStatus
-
     init {
+        _songFetchStatus.value = SongFetchStatus.LOADING
         _playing.value = false
-        _fetchStatus.value = SongFetchStatus.NOTHING
         getSongsFromRepository()
+    }
+
+    fun setSongListStatus (listSize: Int) {
+        if (listSize > 0)
+            _songFetchStatus.value = SongFetchStatus.DONE
+        else
+            _songFetchStatus.value = SongFetchStatus.NOTHING
     }
 
     private fun getSongsFromRepository () {

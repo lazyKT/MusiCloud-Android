@@ -24,7 +24,8 @@ private val SOCKET_RESPONSES = arrayOf ("SUCCESS", "STARTED", "PROGRESS")
 
 class SongRepository (private val songDAO: SongDAO) {
 
-    val songs: LiveData<List<Song>> = songDAO.getAllSongs()
+    val songs = songDAO.getAllSongs()
+
     private var socketConnected:Boolean = false
 
     private val _errorMessage = MutableLiveData<String?>()

@@ -51,8 +51,9 @@ class HomeFragment: Fragment () {
 
         songViewModel.songs.observe (viewLifecycleOwner, {
             it?.let {
-                Log.i ("SongFragment", "Songs List Mutated!")
+                Log.i ("SongFragment", "Songs List Mutated! Size: ${it.size}")
                 adapter.submitList(it) // submitList () is to tell the ListAdapter that new version of data is available
+                songViewModel.setSongListStatus (it.size)
             }
         })
 
