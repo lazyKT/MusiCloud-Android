@@ -20,6 +20,7 @@ private const val PROCESS_COMPLETED = "SUCCESS"
 private const val RESPONSE_OK = "OK"
 private const val RESPONSE_ERROR = "ERROR"
 private const val RESPONSE_TIMEOUT = "response_timeout"
+private val SOCKET_RESPONSES = arrayOf ("SUCCESS", "STARTED", "PROGRESS")
 
 class SongRepository (private val songDAO: SongDAO) {
 
@@ -57,6 +58,7 @@ class SongRepository (private val songDAO: SongDAO) {
 
     suspend fun doProcessAsync (scope: CoroutineScope, song: Song) = scope.async {
         try {
+            songDAO.insert (song)
             val songStatus =
                 withContext(Dispatchers.IO) {
                     MusiCloudApi.retrofitService.checkSong(SongRequestBody(url = song.youtubeURL))
@@ -66,7 +68,7 @@ class SongRepository (private val songDAO: SongDAO) {
             when (songStatus.status) {
                 PROCESS_SONG -> {
                     _errorMessage.value = null
-                    doConversion (song.youtubeURL)
+                    doConversion (scope, song.youtubeURL)
                     getSongMetaDataAsync (scope, song.songID).await()
                 }
                 DOWNLOAD_READY -> {
@@ -88,7 +90,7 @@ class SongRepository (private val songDAO: SongDAO) {
     * Request to server for the song conversion process of the given YouTube URL.
     * Initiate the socket connection to server to get the status updates of conversion process
     * */
-    private suspend fun doConversion (ytURL: String) {
+    private suspend fun doConversion (scope: CoroutineScope, ytURL: String) {
 
         try {
             Log.i ("SongRepository", "Start Song Processing...")
@@ -107,7 +109,8 @@ class SongRepository (private val songDAO: SongDAO) {
 
             if (socketConnected) {
                 // do accordingly
-                trackConversionProcess (sock, processTask.taskID)
+                val taskCompleted = trackConversionProcessAsync (scope, sock, processTask.taskID).await()
+                Log.i ("SongRepository", "ConversionTask Completed? = $taskCompleted")
             }
             else throw SocketTimeoutException ("Socket Connection Time Out!")
         }
@@ -121,24 +124,34 @@ class SongRepository (private val songDAO: SongDAO) {
 
 
     /* get conversion process updates from the server via socket io connection */
-    private suspend fun trackConversionProcess (sock: SocketManager, taskID: String) {
+    private suspend fun trackConversionProcessAsync (scope: CoroutineScope, sock: SocketManager, taskID: String) = scope.async {
 
         try {
-            withContext (Dispatchers.IO) {
-                var processStatus = async { sock.trackSongProcess(taskID) }
+            var processStatus = async { sock.trackSongProcess(taskID) }
+            Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
+
+            var taskCompleted: Boolean = processStatus.await() == PROCESS_COMPLETED
+            var taskError = false
+
+            while (!taskCompleted) {
+                delay (4000L)
+                processStatus = async { sock.trackSongProcess(taskID) }
                 Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
-
-                var taskCompleted: Boolean = processStatus.await() == PROCESS_COMPLETED
-
-                while (!taskCompleted) {
-                    delay (4000L)
-                    processStatus = async { sock.trackSongProcess(taskID) }
-                    Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
-                    taskCompleted = processStatus.await() == PROCESS_COMPLETED
+                taskCompleted = processStatus.await() == PROCESS_COMPLETED
+                if (processStatus.await() !in SOCKET_RESPONSES) {
+                    taskError = true
+                    break
                 }
-
-                sock.disconnectSocket()
             }
+
+            if (taskError) {
+                sock.disconnectSocket()
+                throw IOException ("IOException: Something went wrong during the process. Try again!")
+            }
+
+            sock.disconnectSocket()
+
+            taskCompleted
         }
         catch (e: SocketTimeoutException) {
             _errorMessage.value = genErrorMessage (e)

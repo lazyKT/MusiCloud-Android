@@ -16,6 +16,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
 import java.io.IOException
+import java.lang.ClassCastException
 import java.lang.Exception
 import java.net.SocketTimeoutException
 
@@ -103,6 +104,7 @@ object ErrorMessages {
             }
             is IOException -> return "IOException: ${e.message}"
             is SocketTimeoutException -> return "SocketTimeOutException: ${e.message}"
+            is ClassCastException -> return "Error -1: Application Error! Please Report to Customer Support!"
             else -> "Unknown Error Occurred! ${e.message}"
         }
     }

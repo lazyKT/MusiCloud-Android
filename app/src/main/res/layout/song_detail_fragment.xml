@@ -12,6 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingHorizontal="10dp"
         tools:context="com.example.musicloud.fragment.SongDetailFragment">
 
         <ImageView
@@ -31,6 +32,7 @@
             android:id="@+id/songName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:textSize="19sp"
             android:textColor="@color/black"
             android:textStyle="bold"
@@ -47,12 +49,24 @@
             android:id="@+id/songSource"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="@{viewModel.song.channelTitle}"
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@+id/songName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/songLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:text="@{viewModel.song.localFileURL}"
+            app:layout_constraintTop_toBottomOf="@+id/songSource"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
@@ -70,7 +84,7 @@
             app:icon="@drawable/ic_share_foreground"
             app:iconSize="30dp"
             app:iconGravity="end"
-            app:layout_constraintTop_toBottomOf="@id/songSource"
+            app:layout_constraintTop_toBottomOf="@id/songLocation"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
