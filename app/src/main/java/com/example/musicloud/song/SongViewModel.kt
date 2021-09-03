@@ -39,6 +39,8 @@ import kotlin.system.measureTimeMillis
 private const val SONG_ITEM_DETAIL: Int = 1
 private const val SONG_ITEM_PLAY: Int = 0
 
+enum class SongFetchStatus { NOTHING, LOADING, SUCCESS, ERROR }
+
 class SongViewModel (
     private val songDatabase: SongDAO,
     application: Application): AndroidViewModel (application) {
@@ -61,8 +63,13 @@ class SongViewModel (
     val errorMessage: LiveData<String?>
             get() = songRepository.errorMessage
 
+    val _fetchStatus = MutableLiveData<SongFetchStatus>()
+    val fetchStatus: LiveData<SongFetchStatus>
+            get() = _fetchStatus
+
     init {
         _playing.value = false
+        _fetchStatus.value = SongFetchStatus.NOTHING
         getSongsFromRepository()
     }
 
@@ -156,7 +163,7 @@ class SongViewModel (
                 else {
                     // store new song inside MediaStore.Audio
                     val songLocation = resolver.insert (audioCollection, songDetails)
-                    var downloadedBytes: Int = 0
+                    var downloadedBytes: Int
                     Log.i ("SongViewModel", "${song.songID}.mp3 will saved at $songLocation")
 
                     viewModelScope.launch (Dispatchers.IO) {
