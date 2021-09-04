@@ -13,10 +13,13 @@
         android:layout_height="match_parent"
         android:id="@+id/drawerLayout"
         >
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:id="@+id/constraintLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layoutDescription="@xml/activity_main_xml_constraintlayout2_scene2">
 
             <fragment
                 android:id="@+id/navHostFragment"
@@ -32,73 +35,156 @@
                 app:navGraph="@navigation/navigation" />
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/mainSnackBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/mainSnackBar"
                 android:layout_margin="10dp"
-                android:layout_gravity="center_horizontal"
-                />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-            <!-- bottom sheet -->
+            <!-- Full Music Player -->
             <LinearLayout
-                android:id="@+id/musicPlayer"
+                android:id="@+id/fullMusicPlayer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/top_shadow"
-                android:elevation="10dp"
-                android:translationZ="10dp"
-                app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-                app:behavior_hideable="false"
-                app:behavior_peekHeight="80dp">
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="0dp"
+                android:paddingTop="50dp"
+                android:paddingBottom="100dp"
+                android:background="@color/dark_white"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
+                <ImageView
+                    android:id="@+id/songImageView"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:contentDescription="@string/app_name"
+                    imageUrl="@{viewModel.currentSong.thumbnailM}"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{viewModel.currentSong.songName}"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{viewModel.currentSong.channelTitle}"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="40dp"
+                    android:value="5"
+                    app:trackCornerRadius="5dp"
+                    app:trackColor="@color/sky_blue"
+                    app:indicatorColor="@color/sky_blue_700"
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="10dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@color/sky_blue"
-                        android:contentDescription="@string/app_name"
-                        android:scaleType="centerCrop"
-                        app:imageUrl="@{viewModel.currentSong.thumbnailS}"/>
-
-                    <TextView
-                        android:layout_width="250dp"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.currentSong.songName}"
-                        android:layout_margin="10dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:maxLines="1"
-                        android:ellipsize="end"/>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
+                    android:gravity="center">
 
                     <ImageButton
-                        android:id="@+id/playButton"
+                        android:id="@+id/reverseButton"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:background="@color/dark_white"
                         android:contentDescription="@string/app_name"
-                        app:playState="@{viewModel.playing}"/>
+                        android:background="@color/dark_white"
+                        android:src="@drawable/play_foreground"
+                        android:layout_marginHorizontal="10dp"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/playButtonFullPlayer"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:contentDescription="@string/app_name"
+                        android:background="@color/dark_white"
+                        android:src="@drawable/play_foreground"
+                        android:layout_marginHorizontal="10dp"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/skipButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:contentDescription="@string/app_name"
+                        android:background="@color/dark_white"
+                        android:src="@drawable/play_foreground"
+                        android:layout_marginHorizontal="10dp"
+                        />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <!-- Mini Music Player -->
+            <LinearLayout
+                android:id="@+id/miniPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:background="@color/dark_white"
+                app:layout_constraintBottom_toTopOf="@id/fullMusicPlayer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/sky_blue"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    app:imageUrl="@{viewModel.currentSong.thumbnailS}" />
+
+                <TextView
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{viewModel.currentSong.songName}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/playButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/dark_white"
+                    android:contentDescription="@string/app_name"
+                    app:playState="@{viewModel.playing}" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.motion.widget.MotionLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:layout_width="wrap_content"

@@ -3,7 +3,7 @@
     package="com.example.musicloud">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28"/>
 
@@ -29,6 +29,11 @@
             android:name=".MainActivity"
             android:theme="@style/AppTheme"
             android:exported="true"/>
+        <service android:name=".media.MusicService">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

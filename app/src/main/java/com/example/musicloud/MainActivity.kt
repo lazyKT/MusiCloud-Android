@@ -2,9 +2,6 @@ package com.example.musicloud
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -15,14 +12,12 @@ import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.ActivityMainBinding
 import com.example.musicloud.song.SongViewModel
 import com.example.musicloud.song.SongViewModelFactory
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,16 +44,6 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController (this, navController, drawerLayout)
         // add navigation drawer
         NavigationUI.setupWithNavController (binding.navView, navController)
-
-        val bottomSheetView = binding.musicPlayer
-
-        bottomSheetBehavior = BottomSheetBehavior.from (bottomSheetView)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-
-        val playButton: ImageButton = bottomSheetView.findViewById (R.id.playButton)
-        playButton.setOnClickListener {
-            Toast.makeText (this, "Play Clicked!", Toast.LENGTH_SHORT).show()
-        }
 
         // display error message
         songViewModel.errorMessage.observe (this, {
