@@ -3,6 +3,8 @@ package com.example.musicloud.song
 import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -43,7 +45,7 @@ enum class SongFetchStatus { NOTHING, LOADING, DONE }
 
 class SongViewModel (
     private val songDatabase: SongDAO,
-    application: Application): AndroidViewModel (application) {
+    application: Application): AndroidViewModel (application), MediaPlayer.OnCompletionListener {
 
     private val songRepository = SongRepository (songDatabase)
 
@@ -66,11 +68,14 @@ class SongViewModel (
     val errorMessage: LiveData<String?>
             get() = songRepository.errorMessage
 
+    private var mediaPlayer: MediaPlayer? = null
+
     init {
         _songFetchStatus.value = SongFetchStatus.LOADING
         _playing.value = false
         getSongsFromRepository()
     }
+
 
     fun setSongListStatus (listSize: Int) {
         if (listSize > 0)
@@ -94,7 +99,7 @@ class SongViewModel (
     fun onSongClicked (listenerActionType: SongListenerActionType) {
         when (listenerActionType.actionType) {
             SONG_ITEM_DETAIL -> _navigateToSongDetail.value = listenerActionType.songKey
-            SONG_ITEM_PLAY -> playSong (listenerActionType.songKey)
+            SONG_ITEM_PLAY -> playSong (id = listenerActionType.songKey)
         }
     }
 
@@ -102,13 +107,69 @@ class SongViewModel (
         navigateToSongDetail.value = null
     }
 
-    private fun playSong (id: Long) {
-        Log.i ("SongViewModel", "Play the song with id: $id")
+    private fun playSong (id: Long = -1L, _seekTo: Int = 0) {
         viewModelScope.launch {
-            _currentSong.value = songDatabase.get(id)
+            val song = if (id == -1L) currentSong.value else songDatabase.get (id)
+            _currentSong.value = song
             _playing.value = true
+            val uri: Uri = Uri.parse (song?.localFileURL)
+
+            /* if last song is still playing, stop the last song first before playing current song */
+            stopSong()
+
+            launch (Dispatchers.IO) {
+                try {
+                    mediaPlayer = MediaPlayer().apply {
+                        setAudioAttributes (
+                            AudioAttributes.Builder()
+                                .setContentType (AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .setUsage (AudioAttributes.USAGE_MEDIA)
+                                .build()
+                        )
+                        setDataSource(getApplication(), uri)
+                        prepare()
+                        start()
+                        seekTo (_seekTo)
+                    }
+                }
+                catch (e: Exception) {
+                    Log.i ("SongViewModel", "Exception Occurred in Coroutines! ${e.message}")
+                }
+            }
         }
     }
+
+
+    private fun pauseSong () {
+        mediaPlayer?.pause()
+    }
+
+    private fun stopSong () {
+        mediaPlayer?.release()
+        mediaPlayer = null
+    }
+
+    /*
+    * Song onCompletion state
+    * */
+    override fun onCompletion(mp: MediaPlayer?) {
+        _currentSong.value = null
+        _playing.value = false
+        /* check if the next song is available, if so, play the next song */
+    }
+
+
+    fun togglePlayPause () {
+        _playing.value = playing.value != true
+        Log.i ("SongViewModel", "PlayBackState (Playing): ${playing.value}")
+        if (playing.value == true) {
+            mediaPlayer?.currentPosition?.let { playSong (_seekTo = it) }
+        }
+        else {
+            pauseSong()
+        }
+    }
+
 
     fun startSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
         Log.i ("SongViewModel", "startSongProcessing()")
@@ -176,11 +237,11 @@ class SongViewModel (
                         val timeTaken = measureTimeMillis {
                             resolver.openOutputStream(songLocation!!, "w").use {
                                 val byteArray = ByteArray(4096)
-                                var count = stream.read(byteArray, 0, byteArray.size)
+                                var count = stream.read(byteArray, 0, 4096)
                                 downloadedBytes = count
                                 while (count != -1) {
-                                    it?.write(count)
-                                    count = stream.read(byteArray, 0, byteArray.size)
+                                    it?.write(byteArray, 0, count)
+                                    count = stream.read(byteArray, 0, 4096)
                                     downloadedBytes += count
                                 }
                                 songDetails.put(MediaStore.Audio.Media.SIZE, downloadedBytes)

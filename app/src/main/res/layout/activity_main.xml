@@ -14,12 +14,10 @@
         android:id="@+id/drawerLayout"
         >
 
-        <androidx.constraintlayout.motion.widget.MotionLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layoutDescription="@xml/activity_main_xml_constraintlayout2_scene2">
+            android:layout_height="match_parent">
 
             <fragment
                 android:id="@+id/navHostFragment"
@@ -27,12 +25,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="80dp"
-                app:defaultNavHost="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:navGraph="@navigation/navigation" />
+                app:navGraph="@navigation/navigation"/>
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/mainSnackBar"
@@ -43,148 +40,145 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <!-- Full Music Player -->
-            <LinearLayout
-                android:id="@+id/fullMusicPlayer"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="0dp"
-                android:paddingTop="50dp"
-                android:paddingBottom="100dp"
+                android:layout_height="match_parent"
+                android:id="@+id/music_player"
                 android:background="@color/dark_white"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <ImageView
-                    android:id="@+id/songImageView"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:contentDescription="@string/app_name"
-                    imageUrl="@{viewModel.currentSong.thumbnailM}"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@{viewModel.currentSong.songName}"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@{viewModel.currentSong.channelTitle}"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="40dp"
-                    android:value="5"
-                    app:trackCornerRadius="5dp"
-                    app:trackColor="@color/sky_blue"
-                    app:indicatorColor="@color/sky_blue_700"
-                    />
+                android:elevation="10dp"
+                app:behavior_peekHeight="70dp"
+                app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+                >
 
                 <LinearLayout
+                    android:id="@+id/miniPlayer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_height="70dp"
                     android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageButton
-                        android:id="@+id/reverseButton"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:contentDescription="@string/app_name"
-                        android:background="@color/dark_white"
-                        android:src="@drawable/play_foreground"
+                        android:layout_gravity="center"
+                        android:elevation="0dp"
+                        android:layout_marginHorizontal="5dp"
+                        app:cardCornerRadius="10dp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/songThumbnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/round_corner_layout_10"
+                            android:contentDescription="@string/search_youtube"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/songTitleTextView"
+                        android:layout_width="230dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
-                        />
+                        android:text="@string/youtube_search_result_details"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
 
                     <ImageButton
-                        android:id="@+id/playButtonFullPlayer"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:contentDescription="@string/app_name"
-                        android:background="@color/dark_white"
-                        android:src="@drawable/play_foreground"
+                        android:id="@+id/playPauseButtonMiniPlayer"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginHorizontal="10dp"
-                        />
-
-                    <ImageButton
-                        android:id="@+id/skipButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:contentDescription="@string/app_name"
                         android:background="@color/dark_white"
-                        android:src="@drawable/play_foreground"
-                        android:layout_marginHorizontal="10dp"
+                        android:contentDescription="@string/app_name"
+                        android:onClick="@{() -> viewModel.togglePlayPause()}"
+                        playbackState="@{viewModel.playing}"
                         />
 
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <!-- Mini Music Player -->
-            <LinearLayout
-                android:id="@+id/miniPlayer"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="10dp"
-                android:background="@color/dark_white"
-                app:layout_constraintBottom_toTopOf="@id/fullMusicPlayer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@color/sky_blue"
-                    android:contentDescription="@string/app_name"
-                    android:scaleType="centerCrop"
-                    app:imageUrl="@{viewModel.currentSong.thumbnailS}" />
-
-                <TextView
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@{viewModel.currentSong.songName}"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
                 <ImageButton
-                    android:id="@+id/playButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/collapsePlayer"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:background="@color/dark_white"
+                    android:src="@drawable/ic_down_foreground"
+                    android:layout_margin="10dp"
                     android:contentDescription="@string/app_name"
-                    app:playState="@{viewModel.playing}" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="gone"
+                    />
 
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/fullPlayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginTop="70dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/miniPlayer">
 
-        </androidx.constraintlayout.motion.widget.MotionLayout>
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center"
+                        android:elevation="0dp"
+                        android:layout_marginHorizontal="5dp"
+                        app:cardCornerRadius="10dp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/songThumbnailFull"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/round_corner_layout_10"
+                            android:contentDescription="@string/search_youtube"
+                            imageUrl="@{viewModel.currentSong.thumbnailM}"
+                            />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/songTitleTextViewFull"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginTop="20dp"
+                        android:text="@{viewModel.currentSong.songName}"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        />
+
+                    <TextView
+                        android:id="@+id/channelTitleTextViewFull"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@{viewModel.currentSong.channelTitle}"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        />
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:layout_width="wrap_content"

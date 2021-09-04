@@ -1,6 +1,7 @@
 package com.example.musicloud.binding
 
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.example.musicloud.R
@@ -22,5 +23,11 @@ fun ImageView.setSongFetchStatus (status: SongFetchStatus) {
             visibility = View.GONE
         }
     }
-
 }
+
+
+@BindingAdapter ("playbackState")
+fun ImageButton.setPlayBackState (isPlaying: Boolean) {
+    setImageResource (if (isPlaying) R.drawable.ic_pause_foreground else R.drawable.play_foreground)
+}
+

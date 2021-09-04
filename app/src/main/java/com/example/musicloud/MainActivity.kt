@@ -2,6 +2,10 @@ package com.example.musicloud
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -12,12 +16,15 @@ import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.ActivityMainBinding
 import com.example.musicloud.song.SongViewModel
 import com.example.musicloud.song.SongViewModelFactory
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +65,49 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        bottomSheetBehavior = BottomSheetBehavior.from (binding.musicPlayer)
+
+        binding.miniPlayer.setOnClickListener {
+            bottomSheetBehavior.state =  BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.collapsePlayer.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback (object: BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Log.i ("MainActivity", "onStateChanged: $newState")
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.collapsePlayer.visibility = View.GONE
+                        binding.miniPlayer.visibility = View.VISIBLE
+                        binding.miniPlayer.alpha = 1F
+                        binding.fullPlayer.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        binding.collapsePlayer.visibility = View.VISIBLE
+                        binding.miniPlayer.visibility = View.GONE
+                        binding.collapsePlayer.alpha = 1F
+                        binding.fullPlayer.visibility = View.VISIBLE
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                        binding.fullPlayer.alpha = 0.2F
+                        binding.fullPlayer.visibility = View.VISIBLE
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> {
+                        binding.fullPlayer.alpha = 0.5F
+                        binding.collapsePlayer.alpha = 0.5F
+                        binding.miniPlayer.alpha = 0.1F
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//                Log.i ("MainActivity", "onSlide: slideOffset: $slideOffset")
+            }
+
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {

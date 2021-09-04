@@ -24,23 +24,34 @@
             android:paddingVertical="5dp"
             android:onClick="@{() -> clickListener.onClick(song)}">
 
-            <ImageView
-                android:id="@+id/songThumbnail"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/songThumbnailCardView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_margin="5dp"
-                android:contentDescription="@string/app_name"
-                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:elevation="0dp"
+                android:layout_marginHorizontal="5dp"
+                app:cardCornerRadius="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:imageUrl="@{song.thumbnailS}"/>
+                >
+
+                <ImageView
+                    android:id="@+id/songThumbnail"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    app:imageUrl="@{song.thumbnailS}"/>
+
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_margin="5dp"
-                app:layout_constraintStart_toEndOf="@+id/songThumbnail"
+                app:layout_constraintStart_toEndOf="@+id/songThumbnailCardView"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
