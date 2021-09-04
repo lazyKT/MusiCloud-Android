@@ -90,8 +90,10 @@ class MainActivity : AppCompatActivity() {
                         binding.miniPlayer.visibility = View.GONE
                         binding.collapsePlayer.alpha = 1F
                         binding.fullPlayer.visibility = View.VISIBLE
+                        binding.fullPlayer.alpha = 1F
                     }
                     BottomSheetBehavior.STATE_DRAGGING -> {
+                        binding.collapsePlayer.alpha = 0.3F
                         binding.fullPlayer.alpha = 0.2F
                         binding.fullPlayer.visibility = View.VISIBLE
                     }

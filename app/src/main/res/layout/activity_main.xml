@@ -51,6 +51,7 @@
                 app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
                 >
 
+                <!-- mini player -->
                 <LinearLayout
                     android:id="@+id/miniPlayer"
                     android:layout_width="match_parent"
@@ -77,7 +78,8 @@
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
                             android:background="@drawable/round_corner_layout_10"
-                            android:contentDescription="@string/search_youtube"/>
+                            android:contentDescription="@string/search_youtube"
+                            imageUrl="@{viewModel.currentSong.thumbnailS}"/>
 
                     </androidx.cardview.widget.CardView>
 
@@ -86,7 +88,7 @@
                         android:layout_width="230dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
-                        android:text="@string/youtube_search_result_details"
+                        android:text="@{viewModel.currentSong.songName}"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:maxLines="1"
