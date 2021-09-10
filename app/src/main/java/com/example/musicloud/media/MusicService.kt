@@ -3,6 +3,7 @@ package com.example.musicloud.media
 import android.app.PendingIntent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -11,14 +12,13 @@ import com.example.musicloud.media.callbacks.MusicPlaybackPreparer
 import com.example.musicloud.media.callbacks.MusicPlayerEventListener
 import com.example.musicloud.media.callbacks.MusicPlayerNotificationListener
 import com.example.musicloud.song.SongDataSource
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
@@ -51,6 +51,10 @@ class MusicService: MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
 
+        serviceScope.launch {
+            songDataSource.getMediaData()
+        }
+
         /* trigger when we start actions from notifications */
         val activityIntent = packageManager?.getLaunchIntentForPackage (packageName)?.let {
             PendingIntent.getActivity (this, 0, it, 0)
@@ -77,6 +81,7 @@ class MusicService: MediaBrowserServiceCompat() {
 
         mediaSessionConnector = MediaSessionConnector (mediaSession)
         mediaSessionConnector.setPlaybackPreparer (musicPlaybackPreparer)
+        mediaSessionConnector.setQueueNavigator (MusicQueueNavigator())
         mediaSessionConnector.setPlayer (exoPlayer)
 
         exoPlayer.addListener (MusicPlayerEventListener (this))
@@ -108,6 +113,14 @@ class MusicService: MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         
+    }
+
+    private inner class MusicQueueNavigator : TimelineQueueNavigator (mediaSession) {
+
+        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+            return songDataSource.formattedSongs[windowIndex].description
+        }
+
     }
 
     private fun preparePlayer (
