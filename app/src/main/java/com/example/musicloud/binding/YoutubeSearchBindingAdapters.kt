@@ -1,20 +1,14 @@
 package com.example.musicloud.binding
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Glide.with
-import com.bumptech.glide.request.RequestOptions
 import com.example.musicloud.GlideApp
-import com.example.musicloud.SongGlideModule
 import com.example.musicloud.R
 import com.example.musicloud.network.YoutubeSearchProperty
 import com.example.musicloud.youtubesearch.YoutubeSearchAdapter
