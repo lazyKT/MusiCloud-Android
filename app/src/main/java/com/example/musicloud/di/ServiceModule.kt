@@ -1,6 +1,8 @@
 package com.example.musicloud.di
 
 import android.content.Context
+import com.example.musicloud.database.SongDAO
+import com.example.musicloud.database.SongDatabase
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
@@ -17,6 +19,12 @@ import dagger.hilt.android.scopes.ServiceScoped
 @Module
 @InstallIn (ServiceComponent::class)
 object ServiceModule {
+
+    @ServiceScoped
+    @Provides
+    fun provideSongDAO (
+        @ApplicationContext context: Context
+    ) = SongDatabase.getInstance (context).songDAO
 
     @ServiceScoped
     @Provides

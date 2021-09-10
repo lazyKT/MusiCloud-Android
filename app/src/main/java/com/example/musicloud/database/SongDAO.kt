@@ -18,6 +18,9 @@ interface SongDAO {
     @Query ("SELECT * FROM song_table ORDER BY id DESC")
     fun getAllSongs(): LiveData<List<Song>>
 
+    @Query ("SELECT * FROM song_table ORDER BY id DESC")
+    fun getSongs (): List<Song>
+
     @Query ("SELECT * FROM song_table ORDER BY id DESC LIMIT 1")
     suspend fun getLastSong(): Song?
 

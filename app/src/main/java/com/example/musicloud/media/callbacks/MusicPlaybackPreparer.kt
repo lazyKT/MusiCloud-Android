@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import com.example.musicloud.database.SongDAO
+import com.example.musicloud.song.SongDataSource
 import com.google.android.exoplayer2.ControlDispatcher
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 
 class MusicPlaybackPreparer (
-    private val songDAO: SongDAO,
+    private val songDataSource: SongDataSource,
     private val onPlayerPrepared: (MediaMetadataCompat?) -> Unit
         ): MediaSessionConnector.PlaybackPreparer {
 
@@ -32,6 +32,10 @@ class MusicPlaybackPreparer (
     override fun onPrepare(playWhenReady: Boolean) = Unit
 
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
+        songDataSource.whenReady {
+            val itemToPlay = songDataSource.formattedSongs.find { mediaId == it.description.mediaId }
+            onPlayerPrepared (itemToPlay)
+        }
     }
 
     override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) = Unit
