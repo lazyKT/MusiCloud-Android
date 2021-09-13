@@ -1,6 +1,7 @@
 package com.example.musicloud.viewmodels
 
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -78,6 +79,15 @@ class HomeViewModel @Inject constructor(
 //        }
 //    }
 
+    fun togglePlayPause () {
+        currentPlayingSong.value?.let {
+            val song = mediaDataCompatToSong (it)
+            if (song != null) {
+                playOrPauseSong (song, true)
+            }
+        }
+    }
+
     fun playOrPauseSong (mediaItem: Song, toggle: Boolean = false) {
         Log.i ("HomeViewModel", "playOrPauseSong ${mediaItem.songName}")
         val isPrepared = playbackState.value?.isPrepared ?: false
@@ -95,6 +105,19 @@ class HomeViewModel @Inject constructor(
             musicServiceConnection.transportControl.playFromMediaId (mediaItem.songID, null)
         }
     }
+
+    private fun mediaDataCompatToSong (mediaMetadataCompat: MediaMetadataCompat) =
+        mediaMetadataCompat.description.mediaId?.let {
+            Song (
+            songID = it,
+            songName = mediaMetadataCompat.description.title.toString(),
+            localFileURL = mediaMetadataCompat.description.mediaUri.toString(),
+            thumbnailM = mediaMetadataCompat.description.iconUri.toString(),
+            thumbnailS = mediaMetadataCompat.description.iconUri.toString(),
+            processing = false,
+            finished = true
+            )
+        }
 
     override fun onCleared() {
         super.onCleared()

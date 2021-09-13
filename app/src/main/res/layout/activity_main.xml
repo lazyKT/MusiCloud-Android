@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.musicloud.viewmodels.HomeViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -99,6 +101,7 @@
                         android:layout_marginHorizontal="10dp"
                         android:background="@color/dark_white"
                         android:contentDescription="@string/app_name"
+                        android:onClick="@{() -> viewModel.togglePlayPause()}"
                         />
 
                 </LinearLayout>

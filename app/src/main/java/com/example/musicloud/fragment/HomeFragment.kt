@@ -67,7 +67,7 @@ class HomeFragment: Fragment () {
             }
         })
 
-        homeAdapter.setOnItemClickListener {
+        homeAdapter.setItemClickListener {
             homeViewModel.playOrPauseSong (it)
         }
 

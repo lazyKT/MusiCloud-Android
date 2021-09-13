@@ -6,6 +6,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
 import androidx.core.net.toUri
+import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.song.State.*
 import com.google.android.exoplayer2.MediaItem
@@ -98,6 +99,10 @@ class SongDataSource @Inject constructor(
             action (state == STATE_INITIALIZED)
             true
         }
+
+    }
+
+    fun addNewSong (song: Song) {
 
     }
 }

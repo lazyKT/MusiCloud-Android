@@ -1,10 +1,13 @@
 package com.example.musicloud.binding
 
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.example.musicloud.R
+import com.example.musicloud.media.isPlaying
 import com.example.musicloud.song.SongFetchStatus
 
 @BindingAdapter ("songFetchStatus")
@@ -24,7 +27,6 @@ fun ImageView.setSongFetchStatus (status: SongFetchStatus) {
         }
     }
 }
-
 
 @BindingAdapter ("playbackState")
 fun ImageButton.setPlayBackState (isPlaying: Boolean) {
