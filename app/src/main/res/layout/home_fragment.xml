@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="songViewModel"
-            type="com.example.musicloud.song.SongViewModel" />
+            name="viewModel"
+            type="com.example.musicloud.viewmodels.HomeViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +30,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:songFetchStatus="@{songViewModel.songFetchStatus}"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable
-            name="viewModel"
-            type="com.example.musicloud.song.SongViewModel" />
+
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -19,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <fragment
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/navHostFragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
@@ -29,7 +27,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:navGraph="@navigation/navigation"/>
+                app:navGraph="@navigation/navigation"
+                app:defaultNavHost="true"/>
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/mainSnackBar"
@@ -79,7 +78,7 @@
                             android:scaleType="centerCrop"
                             android:background="@drawable/round_corner_layout_10"
                             android:contentDescription="@string/search_youtube"
-                            imageUrl="@{viewModel.currentSong.thumbnailS}"/>
+                            />
 
                     </androidx.cardview.widget.CardView>
 
@@ -88,7 +87,6 @@
                         android:layout_width="230dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
-                        android:text="@{viewModel.currentSong.songName}"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:maxLines="1"
@@ -101,8 +99,6 @@
                         android:layout_marginHorizontal="10dp"
                         android:background="@color/dark_white"
                         android:contentDescription="@string/app_name"
-                        android:onClick="@{() -> viewModel.togglePlayPause()}"
-                        playbackState="@{viewModel.playing}"
                         />
 
                 </LinearLayout>
@@ -147,7 +143,6 @@
                             android:scaleType="centerCrop"
                             android:background="@drawable/round_corner_layout_10"
                             android:contentDescription="@string/search_youtube"
-                            imageUrl="@{viewModel.currentSong.thumbnailM}"
                             />
 
                     </androidx.cardview.widget.CardView>
@@ -158,7 +153,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="20dp"
-                        android:text="@{viewModel.currentSong.songName}"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         />
@@ -169,7 +163,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="10dp"
-                        android:text="@{viewModel.currentSong.channelTitle}"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         />

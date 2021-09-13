@@ -1,11 +1,15 @@
 package com.example.musicloud.media
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.annotation.RequiresApi
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -16,6 +20,7 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 
 const val NOTIFICATION_ID = 10231
 const val CHANNEL_ID = "MUSICLOUD"
+
 
 class MusicNotificationManager (
     private val context: Context,
@@ -28,6 +33,15 @@ class MusicNotificationManager (
 
     init {
         val mediaControllerCompat = MediaControllerCompat (context, sessionToken)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /* for version ANDROID.O and later we need to create notification channel before building a notification */
+            val name: CharSequence = CHANNEL_ID
+            val importance: Int = NotificationManager.IMPORTANCE_HIGH
+            val notificationChannel: NotificationChannel = NotificationChannel (CHANNEL_ID, name, importance)
+            val notificationManager: NotificationManager = context.getSystemService (NotificationManager::class.java)
+            notificationManager.createNotificationChannel (notificationChannel)
+        }
+
         playerNotificationManager = PlayerNotificationManager.Builder (
             context,
             NOTIFICATION_ID,

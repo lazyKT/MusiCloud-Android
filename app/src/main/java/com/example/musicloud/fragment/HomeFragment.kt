@@ -3,26 +3,30 @@ package com.example.musicloud.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicloud.R
+import com.example.musicloud.adapters.HomeAdapter
 import com.example.musicloud.databinding.HomeFragmentBinding
 import com.example.musicloud.dialogs.AddNewSongDialog
-import com.example.musicloud.song.SongAdapter
-import com.example.musicloud.song.SongListener
-import com.example.musicloud.song.SongViewModel
-import kotlinx.coroutines.launch
+import com.example.musicloud.media.Status
+import com.example.musicloud.viewmodels.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class HomeFragment: Fragment () {
 
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var homeAdapter: HomeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,36 +40,36 @@ class HomeFragment: Fragment () {
         setHasOptionsMenu (true)
 
         /* get reference to SongViewModel via the ViewModel Factory */
-        val songViewModel: SongViewModel by activityViewModels()
+        val homeViewModel: HomeViewModel = ViewModelProvider (requireActivity()).get (HomeViewModel::class.java)
 
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.songViewModel = songViewModel
+        binding.viewModel = homeViewModel
 
-        val adapter = SongAdapter (SongListener { listenerActionType ->
-            /* onClick Event on Song Item inside RecyclerView */
-            songViewModel.onSongClicked (listenerActionType)
-        })
 
-        binding.songList.adapter = adapter
-        binding.songList.layoutManager = LinearLayoutManager (requireActivity())
+        binding.songList.apply {
+            adapter = homeAdapter
+            layoutManager = LinearLayoutManager (requireActivity())
+        }
 
-        songViewModel.songs.observe (viewLifecycleOwner, {
-            it?.let {
-                Log.i ("SongFragment", "Songs List Mutated! Size: ${it.size}")
-                adapter.submitList(it) // submitList () is to tell the ListAdapter that new version of data is available
-                songViewModel.setSongListStatus (it.size)
+        homeViewModel.mediaItems.observe (viewLifecycleOwner, { result ->
+            when (result.status) {
+                Status.SUCCESS -> {
+                    Log.i ("HomeFragment", "Songs Loaded!!")
+                    result.data?.let { songs ->
+                        homeAdapter.songs = songs
+                    }
+                }
+                Status.ERROR -> Unit
+                Status.LOADING -> {
+                    Log.i ("HomeFragment", "Songs Loading ....")
+                    Toast.makeText (requireActivity(), "Songs Loading ...", Toast.LENGTH_SHORT).show()
+                }
             }
         })
 
-        /* observe the song item clicks */
-        songViewModel.navigateToSongDetail.observe (viewLifecycleOwner, { song ->
-            song?.let {
-                this.findNavController().navigate (
-                    HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(song)
-                )
-                songViewModel.onSongDetailNavigated()
-            }
-        })
+        homeAdapter.setOnItemClickListener {
+            homeViewModel.playOrPauseSong (it)
+        }
 
         return view
     }

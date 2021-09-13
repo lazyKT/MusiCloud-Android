@@ -5,6 +5,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.musicloud.R
+import com.example.musicloud.media.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,4 +28,9 @@ object AppModule {
             .diskCacheStrategy (DiskCacheStrategy.DATA)
     )
 
+    @Singleton
+    @Provides
+    fun provideMusicServiceConnection (
+        @ApplicationContext context: Context
+    ) = MusicServiceConnection (context)
 }

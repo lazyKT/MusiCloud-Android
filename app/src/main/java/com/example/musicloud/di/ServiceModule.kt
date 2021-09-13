@@ -26,12 +26,14 @@ object ServiceModule {
         @ApplicationContext context: Context
     ) = SongDatabase.getInstance (context).songDAO
 
+
     @ServiceScoped
     @Provides
     fun provideAudioAttributes() = AudioAttributes.Builder()
         .setContentType (C.CONTENT_TYPE_MUSIC)
         .setUsage (C.USAGE_MEDIA)
         .build()
+
 
     @ServiceScoped
     @Provides

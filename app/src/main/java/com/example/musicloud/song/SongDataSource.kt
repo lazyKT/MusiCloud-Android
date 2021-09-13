@@ -1,21 +1,20 @@
 package com.example.musicloud.song
 
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 import android.support.v4.media.MediaMetadataCompat.*
-import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
 import androidx.core.net.toUri
-
-import com.example.musicloud.song.State.*
 import com.example.musicloud.database.SongDAO
+import com.example.musicloud.song.State.*
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /*
 * This is an abstraction layer between the original Song Source (Rooms Database) and the Music Player.
@@ -28,9 +27,11 @@ class SongDataSource @Inject constructor(
 
     var formattedSongs = emptyList<MediaMetadataCompat>()
 
-    suspend fun getMediaData () = withContext (Dispatchers.IO) {
+    suspend fun getMediaData () = withContext (Dispatchers.Main) {
         state = STATE_INITIALIZING
-        val allSongs = songDAO.getSongs()
+
+        val allSongs =
+            withContext(Dispatchers.IO) { songDAO.getSongs() }
 
         formattedSongs = allSongs.map {
             MediaMetadataCompat.Builder()
@@ -69,7 +70,7 @@ class SongDataSource @Inject constructor(
             .setIconUri (it.description.iconUri)
             .build()
         MediaBrowserCompat.MediaItem (description, FLAG_PLAYABLE)
-    }
+    }.toMutableList()
 
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit> ()
 
