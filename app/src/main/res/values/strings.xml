@@ -34,4 +34,7 @@
     <!-- test data -->
     <string name="song_name">Hotel California</string>
 
+    <!-- player -->
+    <string name="playbackTime">--:--</string>
+
 </resources>
