@@ -2,7 +2,6 @@ package com.example.musicloud
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.media.MediaMetadataCompat
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
@@ -13,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.RequestManager
+import com.example.musicloud.database.Song
 import com.example.musicloud.databinding.ActivityMainBinding
 import com.example.musicloud.media.Status
 import com.example.musicloud.media.isPlaying
@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private val homeViewModel: HomeViewModel by viewModels ()
+
+    private lateinit var currentSong: Song
 
     @Inject
     lateinit var glide: RequestManager
@@ -80,17 +82,10 @@ class MainActivity : AppCompatActivity() {
                 Log.i ("MainActivity", "onStateChanged: $newState")
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        binding.collapsePlayer.visibility = View.GONE
-                        binding.miniPlayer.visibility = View.VISIBLE
-                        binding.miniPlayer.alpha = 1F
-                        binding.fullPlayer.visibility = View.GONE
+                        showMiniPlayer()
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {
-                        binding.collapsePlayer.visibility = View.VISIBLE
-                        binding.miniPlayer.visibility = View.GONE
-                        binding.collapsePlayer.alpha = 1F
-                        binding.fullPlayer.visibility = View.VISIBLE
-                        binding.fullPlayer.alpha = 1F
+                        showFullPlayer()
                     }
                     BottomSheetBehavior.STATE_DRAGGING -> {
                         binding.collapsePlayer.alpha = 0.3F
@@ -113,19 +108,48 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun showMiniPlayer () {
+        binding.collapsePlayer.visibility = View.GONE
+        binding.miniPlayer.visibility = View.VISIBLE
+        binding.miniPlayer.alpha = 1F
+        binding.fullPlayer.visibility = View.GONE
+    }
+
+    private fun showFullPlayer () {
+        binding.collapsePlayer.visibility = View.VISIBLE
+        binding.miniPlayer.visibility = View.GONE
+        binding.collapsePlayer.alpha = 1F
+        binding.fullPlayer.visibility = View.VISIBLE
+        binding.fullPlayer.alpha = 1F
+    }
+
     private fun subscribeObservers () {
 
         homeViewModel.currentPlayingSong.observe (this) {
             if (it == null) return@observe
 
-            binding.songTitleTextView.text = it.description.title
-            glide.load (it.description.iconUri).into (binding.songThumbnail)
+            /* mini bottom sheet player */
+            currentSong = homeViewModel.mediaDataCompatToSong (it)!!
+            binding.songTitleTextView.text = currentSong.songName
+            glide.load (currentSong.thumbnailS).into (binding.songThumbnail)
+
+            /* full player */
+            binding.channelTitleTextViewFull.text = currentSong.channelTitle
+            binding.songTitleTextViewFull.text = currentSong.songName
+            glide.load (currentSong.thumbnailM).into (binding.songThumbnailFull)
         }
 
         homeViewModel.playbackState.observe (this) {
+            /* mini bottom sheet player */
             binding.playPauseButtonMiniPlayer.setImageResource(
                 if (it?.isPlaying == true) R.drawable.ic_pause_foreground
                     else R.drawable.play_foreground
+            )
+
+            /* full player */
+            binding.playPauseButton.setImageResource (
+                if (it?.isPlaying == true) R.drawable.ic_pause_foreground
+                else R.drawable.ic_play_l_foreground
             )
         }
 

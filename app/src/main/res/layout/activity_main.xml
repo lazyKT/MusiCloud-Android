@@ -137,6 +137,7 @@
                         android:elevation="0dp"
                         android:layout_marginHorizontal="5dp"
                         app:cardCornerRadius="10dp"
+                        app:cardElevation="10dp"
                         >
 
                         <ImageView
@@ -157,7 +158,9 @@
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="20dp"
                         android:textStyle="bold"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         />
 
                     <TextView
@@ -167,8 +170,63 @@
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="10dp"
                         android:textStyle="bold"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/seekBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_marginHorizontal="15dp"
+                        />
+
+                    <!-- Player Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_margin="20dp"
+                        android:gravity="center"
+                        >
+
+                        <ImageButton
+                            android:id="@+id/revButton"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/ic_previous_foreground"
+                            android:contentDescription="@string/app_name"
+                            android:layout_marginHorizontal="10dp"
+                            android:background="@color/dark_white"
+                            android:onClick="@{() -> viewModel.skipToPreviousSong()}"
+                            />
+
+                        <ImageButton
+                            android:id="@+id/playPauseButton"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@drawable/ic_play_l_foreground"
+                            android:contentDescription="@string/app_name"
+                            android:layout_marginHorizontal="10dp"
+                            android:background="@color/dark_white"
+                            android:onClick="@{() -> viewModel.togglePlayPause()}"
+                            />
+
+                        <ImageButton
+                            android:id="@+id/nextButton"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/ic_next_foreground"
+                            android:contentDescription="@string/app_name"
+                            android:layout_marginHorizontal="10dp"
+                            android:background="@color/dark_white"
+                            android:onClick="@{() -> viewModel.skipToNextSong()}"
+                            />
+
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
 

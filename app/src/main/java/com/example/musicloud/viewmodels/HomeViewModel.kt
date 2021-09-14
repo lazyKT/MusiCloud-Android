@@ -106,7 +106,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun mediaDataCompatToSong (mediaMetadataCompat: MediaMetadataCompat) =
+    fun mediaDataCompatToSong (mediaMetadataCompat: MediaMetadataCompat) =
         mediaMetadataCompat.description.mediaId?.let {
             Song (
             songID = it,
