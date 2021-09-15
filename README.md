@@ -8,5 +8,6 @@ MusiCloud Android Application: download songs from Youtube and import as mp3 fil
 * Glide
 * Retrofit2
 * Room
+* Dagger Hilt
 * Androidx Jetpack Navigation
 
