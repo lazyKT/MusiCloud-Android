@@ -7,9 +7,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.musicloud.database.Song
 import com.example.musicloud.media.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -31,6 +34,13 @@ class HomeViewModel @Inject constructor(
     val currentPlayingSong = musicServiceConnection.currentPlayingSong
     val playbackState = musicServiceConnection.playbackState
 
+    private val _playbackStateDuration = MutableLiveData<Long> ()
+    val playbackStateDuration : LiveData<Long>
+        get() = _playbackStateDuration
+
+    private val _playbackStatePosition = MutableLiveData<Long> ()
+    val playbackStatePosition : LiveData<Long>
+        get() = _playbackStatePosition
 
     init {
         _mediaItems.postValue (Resource.loading(null))
@@ -57,6 +67,8 @@ class HomeViewModel @Inject constructor(
                 _mediaItems.postValue (Resource.success (items))
             }
         })
+
+        updateCurrentPlaybackStatePosition()
     }
 
     fun skipToNextSong () {
@@ -118,6 +130,19 @@ class HomeViewModel @Inject constructor(
             finished = true
             )
         }
+
+    private fun updateCurrentPlaybackStatePosition () {
+        viewModelScope.launch {
+            while (true) {
+                val currentPos = playbackState.value?.currentPlaybackPosition
+                if (playbackStatePosition.value != currentPos) {
+                    _playbackStatePosition.postValue (currentPos)
+                    _playbackStateDuration.postValue (MusicService.currentSongDuration)
+                }
+                delay (100L) // update playback position every 100ms
+            }
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

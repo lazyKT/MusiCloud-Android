@@ -12,6 +12,7 @@
     <string name="search">Search</string>
     <string name="add">Add New Song</string>
     <string name="youtube_search_result_details">Youtube Search Result Details</string>
+    <string name="process">Process</string>
 
     <!-- button texts -->
     <string name="share">Share</string>

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.drawerlayout.widget.DrawerLayout
@@ -20,6 +21,8 @@ import com.example.musicloud.viewmodels.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val homeViewModel: HomeViewModel by viewModels ()
 
     private lateinit var currentSong: Song
+    private var shouldUpdateSeekbar = true
 
     @Inject
     lateinit var glide: RequestManager
@@ -44,6 +48,28 @@ class MainActivity : AppCompatActivity() {
         setContentView (binding.root)
 
         binding.viewModel = homeViewModel
+
+        /* seekbar onDrag/onChange Event */
+        binding.seekBar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    binding.playbackTime.text = toTimeFormat (progress.toLong())
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                shouldUpdateSeekbar = false
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                seekBar?.let {
+                    homeViewModel.seekTo (it.progress.toLong())
+                    shouldUpdateSeekbar = true
+                }
+            }
+
+        })
 
         setUpNavigation ()
 
@@ -148,9 +174,26 @@ class MainActivity : AppCompatActivity() {
 
             /* full player */
             binding.playPauseButton.setImageResource (
-                if (it?.isPlaying == true) R.drawable.ic_pause_foreground
+                if (it?.isPlaying == true) R.drawable.ic_pause_l_foreground
                 else R.drawable.ic_play_l_foreground
             )
+
+            /* update seek bar position */
+            binding.seekBar.progress = it?.position?.toInt() ?: 0
+        }
+
+        /* update song duration */
+        homeViewModel.playbackStateDuration.observe (this) {
+            binding.songDuration.text = toTimeFormat (it)
+            binding.seekBar.max = it.toInt()
+        }
+
+        /* update playback position on Seekbar */
+        homeViewModel.playbackStatePosition.observe (this) {
+            if (shouldUpdateSeekbar) {
+                binding.seekBar.progress = it.toInt()
+                binding.playbackTime.text = toTimeFormat (it)
+            }
         }
 
         homeViewModel.isConnected.observe (this) {
@@ -185,6 +228,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun toTimeFormat (ms: Long): String {
+        val dateFormat = SimpleDateFormat ("mm:ss", Locale.getDefault())
+        return dateFormat.format (ms - (30 * 60L * 1000))
     }
 
     override fun onSupportNavigateUp(): Boolean {
