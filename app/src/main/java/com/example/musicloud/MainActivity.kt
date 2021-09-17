@@ -1,22 +1,28 @@
 package com.example.musicloud
 
+import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.SeekBar
-import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.RequestManager
 import com.example.musicloud.database.Song
+import com.example.musicloud.database.SongDAO
+import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.ActivityMainBinding
+import com.example.musicloud.media.MusicServiceConnection
 import com.example.musicloud.media.Status
 import com.example.musicloud.media.isPlaying
+import com.example.musicloud.song.SongViewModel
+import com.example.musicloud.song.SongViewModelFactory
 import com.example.musicloud.viewmodels.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
@@ -33,10 +39,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
-    private val homeViewModel: HomeViewModel by viewModels ()
-
     private lateinit var currentSong: Song
     private var shouldUpdateSeekbar = true
+
+    lateinit var homeViewModel: HomeViewModel
 
     @Inject
     lateinit var glide: RequestManager
@@ -47,7 +53,27 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate (layoutInflater)
         setContentView (binding.root)
 
+        val application: Application = this.application
+        val songDAO: SongDAO = SongDatabase.getInstance (application).songDAO
+        val songViewModelFactory = SongViewModelFactory (songDAO, application)
+
+        val songViewModel: SongViewModel = ViewModelProvider (this, songViewModelFactory).get (SongViewModel::class.java)
+
+        homeViewModel = ViewModelProvider (this).get (HomeViewModel::class.java)
+
         binding.viewModel = homeViewModel
+
+        songViewModel.songs.observe (this) {
+            if (it.isNotEmpty()) {
+                if (songViewModel.isNewSong) {
+                    val lastSong = it[0]
+                    Log.i ("MainActivity", "Music: last song : $lastSong")
+                    if (lastSong.finished)
+                        homeViewModel.addSongToPlayList (lastSong)
+                }
+                songViewModel.isNewSong = false
+            }
+        }
 
         /* seekbar onDrag/onChange Event */
         binding.seekBar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {

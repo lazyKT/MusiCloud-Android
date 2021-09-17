@@ -92,4 +92,9 @@
             app:argType="com.example.musicloud.network.YoutubeSearchProperty"
             />
     </fragment>
+    <fragment
+        android:id="@+id/processFragment"
+        android:name="com.example.musicloud.fragment.ProcessFragment"
+        android:label="@string/process"
+        tools:layout="@layout/process_fragment" />
 </navigation>

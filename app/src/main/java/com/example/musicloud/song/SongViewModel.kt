@@ -70,6 +70,8 @@ class SongViewModel (
 
     private var mediaPlayer: MediaPlayer? = null
 
+    var isNewSong: Boolean = false
+
     init {
         _songFetchStatus.value = SongFetchStatus.LOADING
         _playing.value = false
@@ -261,6 +263,7 @@ class SongViewModel (
                         resolver.update (songLocation!!, songDetails, null, null)
                         songDatabase.updateFileLocation (songLocation.toString(), song.songID)
                         songDatabase.finishSongProcessing (finished = true, processing = false, songID = song.songID )
+                        isNewSong = true
                     }
                 }
             }

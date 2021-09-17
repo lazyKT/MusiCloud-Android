@@ -6,7 +6,6 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
 import androidx.core.net.toUri
-import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.song.State.*
 import com.google.android.exoplayer2.MediaItem
@@ -25,8 +24,7 @@ import javax.inject.Inject
 class SongDataSource @Inject constructor(
     private val songDAO: SongDAO
 ){
-
-    var formattedSongs = emptyList<MediaMetadataCompat>()
+    var formattedSongs = mutableListOf<MediaMetadataCompat>()
 
     suspend fun getMediaData () = withContext (Dispatchers.Main) {
         state = STATE_INITIALIZING
@@ -35,7 +33,7 @@ class SongDataSource @Inject constructor(
             withContext(Dispatchers.IO) { songDAO.getSongs() }
 
         formattedSongs = allSongs.map {
-            MediaMetadataCompat.Builder()
+            Builder()
                 .putString (METADATA_KEY_ARTIST, it.channelTitle)
                 .putString (METADATA_KEY_MEDIA_ID, it.songID)
                 .putString (METADATA_KEY_TITLE, it.songName)
@@ -45,7 +43,7 @@ class SongDataSource @Inject constructor(
                 .putString (METADATA_KEY_ALBUM_ART_URI, it.thumbnailM)
                 .putString (METADATA_KEY_DISPLAY_SUBTITLE, it.channelTitle)
                 .build()
-        }
+        }.toMutableList()
         state = STATE_INITIALIZED
     }
 
@@ -102,8 +100,8 @@ class SongDataSource @Inject constructor(
 
     }
 
-    fun addNewSong (song: Song) {
-
+    fun addNewSong (mediaMetadataCompat: MediaMetadataCompat) {
+        formattedSongs.add (0, mediaMetadataCompat)
     }
 }
 

@@ -3,12 +3,15 @@ package com.example.musicloud.media
 import android.content.ComponentName
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.musicloud.database.Song
 
 private const val NETWORK_ERROR = "NETWORK_ERROR"
 
@@ -49,7 +52,37 @@ class MusicServiceConnection (
     }
 
     fun unsubscribe (parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
-        mediaBrowserCompat.unsubscribe (parentId)
+        mediaBrowserCompat.unsubscribe (parentId, callback)
+    }
+
+    /**
+     * send command to MusicService: MediaBrowserServiceCompat
+     * The below two functions are referenced from Universal Android Music Player Github.
+     * */
+    fun sendCommand (command:String, song: MediaMetadataCompat) {
+
+        var parameters: Bundle? = null
+
+        if (command == "add") {
+            parameters = Bundle()
+            parameters.putParcelable ("newSong", song)
+        }
+
+        sendCommand(command, parameters) { _, _ -> }
+    }
+
+    private fun sendCommand (command: String, parameters: Bundle?, resultCallback: ((Int, Bundle?) -> Unit)): Boolean {
+
+        return if (mediaBrowserCompat.isConnected) {
+            mediaController.sendCommand (command, parameters, object : ResultReceiver(Handler()) {
+                override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                    resultCallback (resultCode, resultData)
+                }
+            })
+            true
+        } else {
+            false
+        }
     }
 
 

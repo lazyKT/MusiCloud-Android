@@ -4,9 +4,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_URI
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import com.example.musicloud.song.SongDataSource
 import com.google.android.exoplayer2.ControlDispatcher
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 
@@ -22,7 +25,21 @@ class MusicPlaybackPreparer (
         command: String,
         extras: Bundle?,
         cb: ResultReceiver?
-    ) = false
+    ): Boolean {
+
+        Log.i ("MusicPlaybackPreparer", "onCommand() -> command: $command")
+
+        if (command == "add") {
+            val mediaMetadataCompat = extras?.getParcelable<MediaMetadataCompat>("newSong")
+            mediaMetadataCompat?.apply {
+                player.addMediaItem (0, MediaItem.fromUri(getString (METADATA_KEY_MEDIA_URI)))
+                songDataSource.addNewSong (this)
+                Log.i ("MusicPlaybackPreparer", "onCommand() -> Added to the playlist")
+            }
+        }
+
+        return true
+    }
 
     override fun getSupportedPrepareActions(): Long {
         return PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or

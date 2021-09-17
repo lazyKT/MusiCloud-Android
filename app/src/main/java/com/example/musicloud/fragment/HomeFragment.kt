@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -40,7 +41,7 @@ class HomeFragment: Fragment () {
         setHasOptionsMenu (true)
 
         /* get reference to SongViewModel via the ViewModel Factory */
-        val homeViewModel: HomeViewModel = ViewModelProvider (requireActivity()).get (HomeViewModel::class.java)
+        val homeViewModel: HomeViewModel by activityViewModels ()
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = homeViewModel
@@ -54,6 +55,7 @@ class HomeFragment: Fragment () {
         homeViewModel.mediaItems.observe (viewLifecycleOwner, { result ->
             when (result.status) {
                 Status.SUCCESS -> {
+                    Log.i ("HomeFragment", "Music: Media Items Loaded!")
                     Log.i ("HomeFragment", "Songs Loaded!!")
                     result.data?.let { songs ->
                         homeAdapter.songs = songs

@@ -4,15 +4,12 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.musicloud.database.Song
 import com.example.musicloud.media.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
 
@@ -23,9 +20,10 @@ private const val PLAY_SONG = 0
 private const val OPEN_SONG_DETAILS = 1
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel @Inject constructor (
     private val musicServiceConnection: MusicServiceConnection
-): ViewModel() {
+): ViewModel () {
+
     private val _mediaItems = MutableLiveData <Resource<List<Song>>> ()
     val mediaItems: LiveData <Resource<List<Song>>> get() = _mediaItems
 
@@ -43,6 +41,11 @@ class HomeViewModel @Inject constructor(
         get() = _playbackStatePosition
 
     init {
+        getMediaItems()
+        updateCurrentPlaybackStatePosition()
+    }
+
+    private fun getMediaItems () {
         _mediaItems.postValue (Resource.loading(null))
 
         /* load song data and subscribe to exoplayer */
@@ -68,7 +71,6 @@ class HomeViewModel @Inject constructor(
             }
         })
 
-        updateCurrentPlaybackStatePosition()
     }
 
     fun skipToNextSong () {
@@ -140,6 +142,37 @@ class HomeViewModel @Inject constructor(
                     _playbackStateDuration.postValue (MusicService.currentSongDuration)
                 }
                 delay (100L) // update playback position every 100ms
+            }
+        }
+    }
+
+    fun addSongToPlayList (song: Song) {
+        val mediaMetadataCompat = MediaMetadataCompat.Builder()
+            .putString (MediaMetadataCompat.METADATA_KEY_ARTIST, song.channelTitle)
+            .putString (METADATA_KEY_MEDIA_ID, song.songID)
+            .putString (MediaMetadataCompat.METADATA_KEY_TITLE, song.songName)
+            .putString (MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.songName)
+            .putString (MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, song.thumbnailM)
+            .putString (MediaMetadataCompat.METADATA_KEY_MEDIA_URI, song.localFileURL)
+            .putString (MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, song.thumbnailM)
+            .putString (MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, song.channelTitle)
+            .build()
+
+        musicServiceConnection.sendCommand ("add", mediaMetadataCompat)
+
+        var oldPlayList: MutableList<Song>? = null
+
+        mediaItems.value?.apply {
+            oldPlayList = this.data?.toMutableList()
+        }
+
+        oldPlayList?.add (0, song)
+
+        _mediaItems.postValue (Resource.success(oldPlayList))
+
+        mediaItems.value?.apply {
+            data?.map {
+                Log.i ("HomeViewModel", "Music: $it")
             }
         }
     }

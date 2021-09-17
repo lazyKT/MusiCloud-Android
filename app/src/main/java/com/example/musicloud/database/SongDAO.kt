@@ -27,6 +27,9 @@ interface SongDAO {
     @Query ("SELECT * FROM song_table WHERE finished = :finish ORDER BY id")
     suspend fun getDownloadList (finish: Boolean): List<Song>
 
+    @Query ("SELECT * FROM song_table WHERE finished = :done ORDER BY id DESC LIMIT 1")
+    fun getLastDownloadedSong (done: Boolean): LiveData<Song>
+
     @Query ("UPDATE song_table SET finished = :finished, processing = :processing WHERE songID = :songID")
     suspend fun finishSongProcessing (finished: Boolean, processing: Boolean, songID: String)
 
