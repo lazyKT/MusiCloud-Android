@@ -1,5 +1,10 @@
 package com.example.musicloud.media
 
+
+/**
+ * Wrapper around Media Items,
+ * Indicating whether the items are correctly loaded or not.
+ */
 data class Resource <out T> (
     val status: Status,
     val data: T?,

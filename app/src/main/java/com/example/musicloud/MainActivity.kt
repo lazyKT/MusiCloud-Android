@@ -18,7 +18,6 @@ import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.ActivityMainBinding
-import com.example.musicloud.media.MusicServiceConnection
 import com.example.musicloud.media.Status
 import com.example.musicloud.media.isPlaying
 import com.example.musicloud.song.SongViewModel

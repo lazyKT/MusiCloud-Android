@@ -9,13 +9,10 @@ import com.example.musicloud.database.Song
 import com.example.musicloud.media.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
 
-private const val SERVICE_TAG = "MUSIC_SERVICE"
 private const val MY_MEDIA_ROOT_ID = "MY_MEDIA_ROOT_ID"
-private const val NETWORK_ERROR = "NETWORK_ERROR"
 private const val PLAY_SONG = 0
 private const val OPEN_SONG_DETAILS = 1
 

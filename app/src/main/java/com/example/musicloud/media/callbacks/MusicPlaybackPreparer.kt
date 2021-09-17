@@ -13,6 +13,10 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 
+
+/**
+ * Preparing Media player and Playlist Items (including add new items to playlist)
+ */
 class MusicPlaybackPreparer (
     private val songDataSource: SongDataSource,
     private val onPlayerPrepared: (MediaMetadataCompat?) -> Unit

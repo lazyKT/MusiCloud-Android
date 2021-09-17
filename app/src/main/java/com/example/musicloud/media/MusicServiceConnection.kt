@@ -11,7 +11,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.musicloud.database.Song
 
 private const val NETWORK_ERROR = "NETWORK_ERROR"
 
@@ -74,7 +73,7 @@ class MusicServiceConnection (
     private fun sendCommand (command: String, parameters: Bundle?, resultCallback: ((Int, Bundle?) -> Unit)): Boolean {
 
         return if (mediaBrowserCompat.isConnected) {
-            mediaController.sendCommand (command, parameters, object : ResultReceiver(Handler()) {
+            mediaController.sendCommand (command, parameters, object : ResultReceiver (Handler()) {
                 override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                     resultCallback (resultCode, resultData)
                 }
