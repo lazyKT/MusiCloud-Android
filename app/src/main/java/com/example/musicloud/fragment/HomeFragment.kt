@@ -74,7 +74,7 @@ class HomeFragment: Fragment () {
 
         homeViewModel.navigateToSongDetailsFragment.observe (viewLifecycleOwner, { songId ->
             Log.i ("HomeFragment", "songId: $songId")
-            if (songId > -1) {
+            if (songId != null) {
                 this.findNavController().navigate (HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(songId))
                 homeViewModel.onNavigatedToSongDetailsFragment()
             }

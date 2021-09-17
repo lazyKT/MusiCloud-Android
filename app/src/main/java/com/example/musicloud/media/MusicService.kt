@@ -164,6 +164,7 @@ class MusicService: MediaBrowserServiceCompat() {
         playNow: Boolean
     ) {
         if (itemToPlay == null) {
+            exoPlayer.setMediaSource (songDataSource.asMediaSource (dataSourceFactory))
             exoPlayer.prepare ()
             return
         }

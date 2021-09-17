@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
 
 class SongDetailsViewModelFactory (
         private val database: SongDAO,
-        private val id: Long,
+        private val id: String,
         private val application: Application
         ): ViewModelProvider.Factory {
 

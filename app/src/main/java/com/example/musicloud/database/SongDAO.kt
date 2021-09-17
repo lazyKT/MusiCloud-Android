@@ -15,6 +15,9 @@ interface SongDAO {
     @Query ("SELECT * FROM song_table WHERE id = :id")
     suspend fun get (id: Long): Song?
 
+    @Query ("SELECT * FROM song_table WHERE songID = :songID")
+    suspend fun get (songID: String): Song?
+
     @Query ("SELECT * FROM song_table ORDER BY id DESC")
     fun getAllSongs(): LiveData<List<Song>>
 

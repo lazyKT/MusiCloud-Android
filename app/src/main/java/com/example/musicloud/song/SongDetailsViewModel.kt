@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 
 class SongDetailsViewModel (
     val database: SongDAO,
-    val id: Long,
+    val id: String,
     app: Application
         ): AndroidViewModel (app) {
 

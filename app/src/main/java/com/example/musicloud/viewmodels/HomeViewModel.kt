@@ -35,8 +35,8 @@ class HomeViewModel @Inject constructor (
     val playbackStatePosition : LiveData<Long>
         get() = _playbackStatePosition
 
-    private val _navigateToSongDetailsFragment = MutableLiveData<Long> ()
-    val navigateToSongDetailsFragment: LiveData<Long>
+    private val _navigateToSongDetailsFragment = MutableLiveData<String> ()
+    val navigateToSongDetailsFragment: LiveData<String>
         get() = _navigateToSongDetailsFragment
 
     init {
@@ -86,11 +86,11 @@ class HomeViewModel @Inject constructor (
 
     fun showSongDetails (song: Song) {
         Log.i ("HomeViewModel", "showSongDetails() $song")
-        _navigateToSongDetailsFragment.value = song.id
+        _navigateToSongDetailsFragment.value = song.songID
     }
 
     fun onNavigatedToSongDetailsFragment () {
-        _navigateToSongDetailsFragment.value = -1L
+        _navigateToSongDetailsFragment.value = null
     }
 
     fun togglePlayPause () {

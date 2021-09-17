@@ -43,7 +43,7 @@ class SongRepository (private val songDAO: SongDAO) {
                 fakeDownload()
                 song.processing = false
                 song.finished = true
-                songDAO.update (song)
+                songDAO.finishSongProcessing (finished = true, processing = false, songID = song.songID)
             }
             // read again
             // start processing if any ..
