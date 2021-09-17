@@ -29,6 +29,11 @@ class HomeAdapter @Inject constructor(
                         action (song)
                     }
                 }
+                songDetailsButton.setOnClickListener {
+                    onOptionItemClickListener?.let { optionClickAction ->
+                        optionClickAction (song)
+                    }
+                }
             }
         }
         catch (e: ClassCastException) {

@@ -18,6 +18,4 @@ class YoutubeSearchDetailsViewModel (
     init {
         _searchDetails.value = youtubeSearchProperty
     }
-
-
 }

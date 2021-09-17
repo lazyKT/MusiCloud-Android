@@ -134,6 +134,9 @@ class MusicService: MediaBrowserServiceCompat() {
                             preparePlayer (songDataSource.formattedSongs, songDataSource.formattedSongs[0], false)
                             isPlayerInitialize = true
                         }
+                        else if (songDataSource.formattedSongs.isEmpty()) {
+                            preparePlayer (songDataSource.formattedSongs, null, false)
+                        }
                         else {
                             mediaSession.sendSessionEvent (NETWORK_ERROR, null)
                             result.sendResult (null)
@@ -160,6 +163,10 @@ class MusicService: MediaBrowserServiceCompat() {
         itemToPlay: MediaMetadataCompat?,
         playNow: Boolean
     ) {
+        if (itemToPlay == null) {
+            exoPlayer.prepare ()
+            return
+        }
         val currentSongIdx = if (currentPlayingSong == null) 0 else songs.indexOf (itemToPlay)
         exoPlayer.setMediaSource (songDataSource.asMediaSource (dataSourceFactory))
         exoPlayer.prepare ()

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicloud.R
@@ -34,7 +35,6 @@ class HomeFragment: Fragment () {
         savedInstanceState: Bundle?
     ): View {
         _binding = HomeFragmentBinding.inflate (inflater, container, false)
-        val view = binding.root
 
         // include options menu
         setHasOptionsMenu (true)
@@ -51,6 +51,10 @@ class HomeFragment: Fragment () {
             layoutManager = LinearLayoutManager (requireActivity())
         }
 
+        /**
+         * observing song items (playlists) changes,
+         * updates UI accordingly.
+         */
         homeViewModel.mediaItems.observe (viewLifecycleOwner, { result ->
             when (result.status) {
                 Status.SUCCESS -> {
@@ -68,11 +72,25 @@ class HomeFragment: Fragment () {
             }
         })
 
+        homeViewModel.navigateToSongDetailsFragment.observe (viewLifecycleOwner, { songId ->
+            Log.i ("HomeFragment", "songId: $songId")
+            if (songId > -1) {
+                this.findNavController().navigate (HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(songId))
+                homeViewModel.onNavigatedToSongDetailsFragment()
+            }
+        })
+
+
         homeAdapter.setItemClickListener {
             homeViewModel.playOrPauseSong (it)
         }
 
-        return view
+        homeAdapter.setOptionItemClickListener {
+            Log.i ("HomeFragment", "setOptionItemClickListener: $it")
+            homeViewModel.showSongDetails (it)
+        }
+
+        return binding.root
     }
 
 

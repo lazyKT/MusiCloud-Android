@@ -13,8 +13,6 @@ import javax.inject.Inject
 
 
 private const val MY_MEDIA_ROOT_ID = "MY_MEDIA_ROOT_ID"
-private const val PLAY_SONG = 0
-private const val OPEN_SONG_DETAILS = 1
 
 @HiltViewModel
 class HomeViewModel @Inject constructor (
@@ -36,6 +34,10 @@ class HomeViewModel @Inject constructor (
     private val _playbackStatePosition = MutableLiveData<Long> ()
     val playbackStatePosition : LiveData<Long>
         get() = _playbackStatePosition
+
+    private val _navigateToSongDetailsFragment = MutableLiveData<Long> ()
+    val navigateToSongDetailsFragment: LiveData<Long>
+        get() = _navigateToSongDetailsFragment
 
     init {
         getMediaItems()
@@ -82,13 +84,14 @@ class HomeViewModel @Inject constructor (
         musicServiceConnection.transportControl.seekTo (position)
     }
 
-//    fun onClickSongMediaItem (actionType: SongClickActionType) {
-//        when (actionType.actionType) {
-//            PLAY_SONG -> playOrPauseSong (actionType.song)
-//            OPEN_SONG_DETAILS -> Unit
-//            else -> Unit
-//        }
-//    }
+    fun showSongDetails (song: Song) {
+        Log.i ("HomeViewModel", "showSongDetails() $song")
+        _navigateToSongDetailsFragment.value = song.id
+    }
+
+    fun onNavigatedToSongDetailsFragment () {
+        _navigateToSongDetailsFragment.value = -1L
+    }
 
     fun togglePlayPause () {
         currentPlayingSong.value?.let {

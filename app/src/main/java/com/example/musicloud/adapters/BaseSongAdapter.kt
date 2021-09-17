@@ -1,7 +1,6 @@
 package com.example.musicloud.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.musicloud.database.Song
 import com.example.musicloud.databinding.MediaItemViewBinding
+import com.example.musicloud.databinding.SongDetailFragmentBinding
 import java.lang.Exception
 
 private const val SONG_LIST_LAYOUT = 0
@@ -23,11 +23,15 @@ abstract class BaseSongAdapter (
 
         companion object {
             fun from (parent: ViewGroup, layoutID: Int): SongViewHolder {
-                when (layoutID) {
+                val layoutInflater = LayoutInflater.from (parent.context)
+                return when (layoutID) {
                     SONG_LIST_LAYOUT -> {
-                        val layoutInflater = LayoutInflater.from (parent.context)
                         val binding = MediaItemViewBinding.inflate (layoutInflater, parent, false)
-                        return SongViewHolder (binding)
+                        SongViewHolder (binding)
+                    }
+                    SONG_DETAILS_LAYOUT -> {
+                        val binding = SongDetailFragmentBinding.inflate (layoutInflater, parent, false)
+                        SongViewHolder (binding)
                     }
                     else -> throw Exception ("Invalid Layout ID $layoutID")
                 }
@@ -60,6 +64,12 @@ abstract class BaseSongAdapter (
 
     fun setItemClickListener (listener: (Song) -> Unit) {
         onItemClickListener = listener
+    }
+
+    protected var onOptionItemClickListener: ((Song) -> Unit)? = null
+
+    fun setOptionItemClickListener (listener: (Song) -> Unit) {
+        onOptionItemClickListener = listener
     }
 
     override fun getItemCount(): Int {
