@@ -1,12 +1,8 @@
 package com.example.musicloud.song
 
 import android.app.Application
-import android.app.RecoverableSecurityException
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,6 +12,7 @@ import com.example.musicloud.database.SongDAO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class SongDetailsViewModel (
     val database: SongDAO,
@@ -39,7 +36,7 @@ class SongDetailsViewModel (
 
     private fun getSongById () {
         viewModelScope.launch {
-            _song.value = database.get (id)
+            _song.value = database.getBySongID (id)
         }
     }
 

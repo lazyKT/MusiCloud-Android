@@ -63,7 +63,8 @@ class HomeViewModel @Inject constructor (
                         thumbnailM = it.description.iconUri.toString(),
                         thumbnailS = it.description.iconUri.toString(),
                         processing = false,
-                        finished = true
+                        finished = true,
+                        channelTitle = it.description.subtitle.toString()
                     )
                 }
                 _mediaItems.postValue (Resource.success (items))
