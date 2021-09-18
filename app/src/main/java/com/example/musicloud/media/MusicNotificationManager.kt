@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -56,6 +57,7 @@ class MusicNotificationManager (
     }
 
     fun showNotification (player: Player) {
+        Log.i ("MusicNotificationManager", "showNotification()")
         playerNotificationManager?.setPlayer (player)
     }
 

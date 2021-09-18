@@ -106,12 +106,17 @@ class HomeViewModel @Inject constructor (
     fun playOrPauseSong (mediaItem: Song, toggle: Boolean = false) {
         Log.i ("HomeViewModel", "playOrPauseSong ${mediaItem.songName}")
         val isPrepared = playbackState.value?.isPrepared ?: false
+        musicServiceConnection.sendCommand ("startNotification", null)
+
         if (isPrepared &&
             mediaItem.songID == currentPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)) {
+            Log.i ("HomeViewModel", "PlayerIsPrepared: playOrPauseSong ${mediaItem.songName}")
             playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControl.pause()
-                    playbackState.isPlayEnabled -> musicServiceConnection.transportControl.play()
+                    playbackState.isPlayEnabled -> {
+                        musicServiceConnection.transportControl.play()
+                    }
                     else -> Unit
                 }
             }

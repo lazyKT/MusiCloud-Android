@@ -85,7 +85,7 @@ class MusicService: MediaBrowserServiceCompat() {
             currentSongDuration = exoPlayer.duration
         }
 
-        val musicPlaybackPreparer = MusicPlaybackPreparer (songDataSource = songDataSource) {
+        val musicPlaybackPreparer = MusicPlaybackPreparer (musicNotificationManager, songDataSource) {
             currentPlayingSong = it
             preparePlayer (songDataSource.formattedSongs, it, true)
         }
@@ -97,7 +97,6 @@ class MusicService: MediaBrowserServiceCompat() {
 
         musicPlayerEventListener = MusicPlayerEventListener (this)
         exoPlayer.addListener (musicPlayerEventListener)
-        musicNotificationManager.showNotification (exoPlayer)
     }
 
     /*

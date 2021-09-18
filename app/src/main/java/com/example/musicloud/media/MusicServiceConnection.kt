@@ -9,6 +9,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -28,6 +29,8 @@ class MusicServiceConnection (
 
     private val _currentPlayingSong = MutableLiveData <MediaMetadataCompat?> ()
     val currentPlayingSong: LiveData <MediaMetadataCompat?> get() = _currentPlayingSong
+
+    private var firstTimePlaying: Boolean = true
 
     lateinit var mediaController: MediaControllerCompat
 
@@ -58,16 +61,26 @@ class MusicServiceConnection (
      * send command to MusicService: MediaBrowserServiceCompat
      * The below two functions are referenced from Universal Android Music Player Github.
      * */
-    fun sendCommand (command:String, song: MediaMetadataCompat) {
+    fun sendCommand (command:String, song: MediaMetadataCompat?) {
 
-        var parameters: Bundle? = null
+        val parameters: Bundle?
+        when (command) {
+            "add" -> {
+                parameters = Bundle()
+                parameters.putParcelable ("newSong", song)
 
-        if (command == "add") {
-            parameters = Bundle()
-            parameters.putParcelable ("newSong", song)
+                sendCommand(command, parameters) { _, _ -> }
+            }
+            "startNotification" -> {
+                Log.i ("MusicServiceConnection", "First time playing: $firstTimePlaying")
+                if (firstTimePlaying) {
+                    parameters = null
+                    firstTimePlaying = false
+                    sendCommand(command, parameters) { _, _ -> }
+                }
+            }
+            else -> Unit
         }
-
-        sendCommand(command, parameters) { _, _ -> }
     }
 
     private fun sendCommand (command: String, parameters: Bundle?, resultCallback: ((Int, Bundle?) -> Unit)): Boolean {
