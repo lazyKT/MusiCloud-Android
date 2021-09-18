@@ -38,6 +38,8 @@ class SongViewModel (
 
     private val songRepository = SongRepository (songDatabase)
 
+    val processingSongs = songDatabase.getDownloadList (false)
+
     val songs = songRepository.songs
 
     var isNewSong: Boolean = false

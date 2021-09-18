@@ -5,10 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.musicloud.database.SongProcess
+import com.bumptech.glide.RequestManager
+import com.example.musicloud.database.Song
 import com.example.musicloud.databinding.ProcessItemViewBinding
+import javax.inject.Inject
 
-class ProcessAdapter (): ListAdapter <SongProcess, ProcessAdapter.ProcessViewHolder> (DiffCallBack) {
+class ProcessAdapter @Inject constructor (
+    private val glide: RequestManager
+): ListAdapter <Song, ProcessAdapter.ProcessViewHolder> (DiffCallBack) {
 
 
     class ProcessViewHolder private constructor (val binding: ProcessItemViewBinding)
@@ -22,8 +26,8 @@ class ProcessAdapter (): ListAdapter <SongProcess, ProcessAdapter.ProcessViewHol
             }
         }
 
-        fun bind (process: SongProcess) {
-            binding.item = process
+        fun bind (song: Song) {
+            binding.song = song
         }
     }
 
@@ -36,14 +40,14 @@ class ProcessAdapter (): ListAdapter <SongProcess, ProcessAdapter.ProcessViewHol
         holder.bind (processItem)
     }
 
-    companion object DiffCallBack: DiffUtil.ItemCallback <SongProcess> () {
+    companion object DiffCallBack: DiffUtil.ItemCallback <Song> () {
 
-        override fun areItemsTheSame(oldItem: SongProcess, newItem: SongProcess): Boolean {
-            return oldItem == newItem
+        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem.songID == newItem.songID
         }
 
-        override fun areContentsTheSame(oldItem: SongProcess, newItem: SongProcess): Boolean {
-            return oldItem.songName == newItem.songName
+        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem.songID == newItem.songID && oldItem.finished == newItem.finished
         }
 
     }

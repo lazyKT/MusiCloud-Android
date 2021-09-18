@@ -33,22 +33,7 @@ class SongRepository (private val songDAO: SongDAO) {
         get() = _errorMessage
 
     suspend fun processAndDownloadSongs () {
-        withContext (Dispatchers.IO) {
-            // read database
-            val dlList: List<Song> = songDAO.getDownloadList (false)
-            // start processing
-            for (song in dlList) {
-                song.processing = true
-                // download
-                fakeDownload()
-                song.processing = false
-                song.finished = true
-                songDAO.finishSongProcessing (finished = true, processing = false, songID = song.songID)
-            }
-            // read again
-            // start processing if any ..
-            // download -> repeat
-        }
+
     }
 
     private suspend fun fakeDownload () {

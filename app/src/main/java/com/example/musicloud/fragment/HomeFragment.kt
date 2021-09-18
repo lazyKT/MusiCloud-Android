@@ -3,6 +3,7 @@ package com.example.musicloud.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,6 +16,7 @@ import com.example.musicloud.adapters.HomeAdapter
 import com.example.musicloud.databinding.HomeFragmentBinding
 import com.example.musicloud.dialogs.AddNewSongDialog
 import com.example.musicloud.media.Status
+import com.example.musicloud.song.SongViewModel
 import com.example.musicloud.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,6 +30,8 @@ class HomeFragment: Fragment () {
 
     @Inject
     lateinit var homeAdapter: HomeAdapter
+
+    private val songViewModel: SongViewModel by activityViewModels ()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -102,9 +106,22 @@ class HomeFragment: Fragment () {
         val processItem = menu.findItem (R.id.track_song_process)
         val processActionView = processItem.actionView
 
+        val badgeCount = processActionView.findViewById <TextView> (R.id.badgeCount)
+
         processActionView.setOnClickListener {
             Log.i ("HomeFragment", "Process Action View Clicked!")
             this.findNavController().navigate (R.id.action_homeFragment_to_processFragment)
+        }
+
+        songViewModel.processingSongs.observe (viewLifecycleOwner) { processList ->
+            val numOfProcess = processList?.size ?: 0
+            if (numOfProcess > 0) {
+                badgeCount.text = numOfProcess.toString()
+                badgeCount.visibility = View.VISIBLE
+            }
+            else {
+                badgeCount.visibility = View.GONE
+            }
         }
     }
 

@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="item"
-            type="com.example.musicloud.database.SongProcess" />
+            name="song"
+            type="com.example.musicloud.database.Song" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -44,7 +44,7 @@
                     android:id="@+id/songTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{item.songName}"
+                    android:text="@{song.songName}"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:maxLines="1"
@@ -54,7 +54,7 @@
                     android:id="@+id/songSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{item.channelTitle}"
+                    android:text="@{song.channelTitle}"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:maxLines="1"

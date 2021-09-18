@@ -32,6 +32,7 @@ class YoutubeFragment: Fragment() {
         _binding = YoutubeFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = youtubeSearchViewModel
+
         binding.searchResultList.adapter = YoutubeSearchAdapter (YoutubeSearchAdapter.OnClickListener {
             youtubeSearchViewModel.displaySearchResultDetails (it)
         })

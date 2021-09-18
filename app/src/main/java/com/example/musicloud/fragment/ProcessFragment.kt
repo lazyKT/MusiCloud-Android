@@ -5,12 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.musicloud.adapters.ProcessAdapter
 import com.example.musicloud.databinding.ProcessFragmentBinding
+import com.example.musicloud.song.SongViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ProcessFragment: Fragment() {
 
     private var _binding : ProcessFragmentBinding? = null
     private val binding: ProcessFragmentBinding get() = _binding!!
+
+    private val songViewModel: SongViewModel by activityViewModels ()
+
+
+    @Inject
+    lateinit var processAdapter: ProcessAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,7 +33,23 @@ class ProcessFragment: Fragment() {
 
         _binding = ProcessFragmentBinding.inflate (inflater, container, false)
 
+        binding.processRecyclerView.apply {
+            adapter = processAdapter
+            layoutManager = LinearLayoutManager (requireActivity())
+        }
+
+        subscribeObservers()
+
         return binding.root
+    }
+
+    private fun subscribeObservers () {
+
+        songViewModel.processingSongs.observe (viewLifecycleOwner) {
+            it?.let {
+                processAdapter.submitList (it)
+            }
+        }
     }
 
     override fun onDestroyView() {
