@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +42,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currentSong: Song
     private var shouldUpdateSeekbar = true
 
-    lateinit var homeViewModel: HomeViewModel
+    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var songViewModel: SongViewModel
 
     @Inject
     lateinit var glide: RequestManager
@@ -56,23 +58,11 @@ class MainActivity : AppCompatActivity() {
         val songDAO: SongDAO = SongDatabase.getInstance (application).songDAO
         val songViewModelFactory = SongViewModelFactory (songDAO, application)
 
-        val songViewModel: SongViewModel = ViewModelProvider (this, songViewModelFactory).get (SongViewModel::class.java)
+        songViewModel = ViewModelProvider (this, songViewModelFactory).get (SongViewModel::class.java)
 
         homeViewModel = ViewModelProvider (this).get (HomeViewModel::class.java)
 
         binding.viewModel = homeViewModel
-
-        songViewModel.songs.observe (this) {
-            if (it.isNotEmpty()) {
-                if (songViewModel.isNewSong) {
-                    val lastSong = it[0]
-                    Log.i ("MainActivity", "Music: last song : $lastSong")
-                    if (lastSong.finished)
-                        homeViewModel.addSongToPlayList (lastSong)
-                }
-                songViewModel.isNewSong = false
-            }
-        }
 
         /* seekbar onDrag/onChange Event */
         binding.seekBar.setOnSeekBarChangeListener (object : SeekBar.OnSeekBarChangeListener {
@@ -176,6 +166,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribeObservers () {
+
+        /* add song to play list */
+        songViewModel.songs.observe (this) {
+            if (it.isNotEmpty()) {
+                if (songViewModel.isNewSong) {
+                    val lastSong = it[0]
+                    Log.i ("MainActivity", "Music: last song : $lastSong")
+                    if (lastSong.finished)
+                        homeViewModel.addSongToPlayList (lastSong)
+                }
+                songViewModel.isNewSong = false
+            }
+        }
 
         homeViewModel.currentPlayingSong.observe (this) {
             if (it == null) return@observe

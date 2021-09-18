@@ -5,8 +5,9 @@
     <item
         android:title="@string/process"
         android:icon="@drawable/ic_process_foreground"
-        app:showAsAction="ifRoom"
-        android:id="@+id/processFragment"
+        app:actionLayout="@layout/process_action_item"
+        app:showAsAction="always"
+        android:id="@+id/track_song_process"
         />
 
     <item

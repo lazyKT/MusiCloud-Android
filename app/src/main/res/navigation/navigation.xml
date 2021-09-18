@@ -19,6 +19,9 @@
         <argument
             android:name="afterDeletionOfSong"
             app:argType="string"/>
+        <action
+            android:id="@+id/action_homeFragment_to_processFragment"
+            app:destination="@id/processFragment" />
     </fragment>
 
     <fragment

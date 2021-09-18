@@ -98,10 +98,20 @@ class HomeFragment: Fragment () {
         super.onCreateOptionsMenu(menu, inflater)
         // inflate the menu layout
         inflater.inflate (R.menu.options_menu, menu)
+
+        val processItem = menu.findItem (R.id.track_song_process)
+        val processActionView = processItem.actionView
+
+        processActionView.setOnClickListener {
+            Log.i ("HomeFragment", "Process Action View Clicked!")
+            this.findNavController().navigate (R.id.action_homeFragment_to_processFragment)
+        }
     }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        Log.i ("HomeFragment", "onOptionsItemSelected: ${item.itemId}")
 
         if (item.itemId == R.id.add_new_song) {
             /* show options of adding new songs to user */
