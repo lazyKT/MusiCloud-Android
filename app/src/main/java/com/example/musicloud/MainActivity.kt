@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController (binding.navView, navController)
     }
 
+    /* Player Bottom Sheet */
     private fun setUpBottomSheet () {
         bottomSheetBehavior = BottomSheetBehavior.from (binding.musicPlayer)
 
