@@ -84,6 +84,7 @@
             android:textStyle="bold"
             android:textColor="@color/sky_blue_700"
             android:layout_margin="10dp"
+            android:onClick="@{() -> viewModel.viewOnYoutube()}"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
