@@ -120,7 +120,6 @@ class MainActivity : AppCompatActivity() {
 
         bottomSheetBehavior.addBottomSheetCallback (object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Log.i ("MainActivity", "onStateChanged: $newState")
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         showMiniPlayer()
@@ -241,11 +240,7 @@ class MainActivity : AppCompatActivity() {
                 when (result.status) {
                     Status.ERROR -> {
                         // show error snack bar
-                        Snackbar.make (
-                            binding.mainSnackBar,
-                            result.message ?: "An Unknown Error Occurred!",
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                        showErrorMessage (result.message)
                     }
                     else -> Unit
                 }
@@ -261,11 +256,7 @@ class MainActivity : AppCompatActivity() {
                 when (result.status) {
                     Status.ERROR -> {
                         // show error snack bar
-                        Snackbar.make (
-                            binding.mainSnackBar,
-                            result.message ?: "An Unknown Error Occurred!",
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                        showErrorMessage (result.message)
                     }
                     else -> Unit
                 }
@@ -273,21 +264,31 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * Observer for Song IO Operations: Add, Remove
+         * Observer for Song IO Operations realated to player: Add, Remove
          */
         homeViewModel.ioError.observe (this) {
             it?.getContentIfNotHandle()?.let { result ->
                 when (result.status) {
                     Status.ERROR -> {
-                        Snackbar.make (
-                            binding.mainSnackBar,
-                            result.message ?: "An Unknown Error Occurred!",
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                       showErrorMessage (result.message)
                     }
                     else -> Unit
                 }
             }
+        }
+
+        /**
+         * Observers for song processes operation
+         */
+        songViewModel.errorMessageFromRepository.observe (this) {
+            if (it == null) return@observe
+
+            showErrorMessage (it)
+        }
+        songViewModel.errorMessage.observe (this) {
+            if (it == null) return@observe
+
+            showErrorMessage (it)
         }
 
     }
@@ -295,6 +296,17 @@ class MainActivity : AppCompatActivity() {
     private fun toTimeFormat (ms: Long): String {
         val dateFormat = SimpleDateFormat ("mm:ss", Locale.getDefault())
         return dateFormat.format (ms - (30 * 60L * 1000))
+    }
+
+    private fun showErrorMessage (message: String?) {
+        Snackbar.make (
+            binding.mainSnackBar,
+            message ?: "An Unknown Error Occurred!",
+            Snackbar.LENGTH_INDEFINITE
+        )
+            .setAction (R.string.cancel) {
+            }
+            .show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -8,6 +8,8 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
@@ -46,6 +48,9 @@ class SongViewModel (
 
     var isNewSong: Boolean = false
 
+    private val _errorMessage = MutableLiveData<String> ()
+    val errorMessage: LiveData<String> get() = _errorMessage
+
     init {
         processUnfinishedSongs()
     }
@@ -58,22 +63,18 @@ class SongViewModel (
             viewModelScope.launch (Dispatchers.IO) {
 
                 val unfinishedSongs = songDatabase.getUnFinishedSongs (finished = false)
-                unfinishedSongs.map {
-                    Log.i ("SongViewModel", "Unfinished Songs: ${it.songName}")
-                }
-                Log.i ("SongViewModel", "Processing Unfinished Songs: ${unfinishedSongs.size} songs")
 
                 unfinishedSongs.map {
-                    Log.i ("SongViewModel", "Processing Unfinished Songs: ${it.songName}")
                     val songData = songRepository.processAndDownloadSongsAsync (viewModelScope, it).await()
                     if (songData != null && songData != Unit) {
                         downloadSong (it, songData as InputStream)
                     }
                 }
             }
+            _errorMessage.value = null
         }
-        catch (exception: Exception) {
-            exception.message?.let { Log.i ("SongViewModel", it) }
+        catch (e: Exception) {
+            _errorMessage.value = genErrorMessage (e)
         }
     }
 
@@ -82,7 +83,6 @@ class SongViewModel (
      * Request the song processing on the server.
      */
     fun startSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
-        Log.i ("SongViewModel", "startSongProcessing()")
         try {
             viewModelScope.launch {
                 val newSong = Song(
@@ -95,14 +95,14 @@ class SongViewModel (
                 )
 
                 val songData = songRepository.doProcessAsync (viewModelScope, newSong).await()
-                Log.i ("SongViewModel", "Data : $songData")
                 if (songData != null && songData != Unit) {
                     downloadSong (newSong, songData as InputStream)
                 }
             }
+            _errorMessage.value = null
         }
         catch (e: Exception) {
-            e.message?.let { Log.i ("SongViewModel", it) }
+            _errorMessage.value = genErrorMessage (e)
         }
     }
 
@@ -137,7 +137,6 @@ class SongViewModel (
                 // store new song inside MediaStore.Audio
                 val songLocation = resolver.insert (audioCollection, songDetails)
                 var downloadedBytes: Int
-                Log.i ("SongViewModel", "${song.songID}.mp3 will saved at $songLocation")
 
                 viewModelScope.launch (Dispatchers.IO) {
                     val timeTaken = measureTimeMillis {
@@ -151,7 +150,6 @@ class SongViewModel (
                                 downloadedBytes += count
                             }
                             songDetails.put(MediaStore.Audio.Media.SIZE, downloadedBytes)
-                            Log.i ("SongViewModel", "File Write Operation Finished! $downloadedBytes downloaded!")
                         }
                     }
                     Log.i ("SongViewModel", "Download Finish in ${timeTaken/1000} seconds")
@@ -169,16 +167,15 @@ class SongViewModel (
                     songDatabase.finishSongProcessing (finished = true, processing = false, songID = song.songID )
                     isNewSong = true
                 }
-
             }
             catch (e: NullPointerException) {
-                genErrorMessage (e)
+                _errorMessage.value = genErrorMessage (e)
             }
             catch (e: IOException) {
-                genErrorMessage (e)
+                _errorMessage.value = genErrorMessage (e)
             }
             catch (e: FileNotFoundException) {
-                genErrorMessage (e)
+                _errorMessage.value = genErrorMessage (e)
             }
         }
     }
