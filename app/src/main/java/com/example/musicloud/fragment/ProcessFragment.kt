@@ -33,7 +33,7 @@ class ProcessFragment: Fragment() {
 
         _binding = ProcessFragmentBinding.inflate (inflater, container, false)
 
-        binding.processRecyclerView.apply {
+        binding.processList.apply {
             adapter = processAdapter
             layoutManager = LinearLayoutManager (requireActivity())
         }
@@ -45,9 +45,9 @@ class ProcessFragment: Fragment() {
 
     private fun subscribeObservers () {
 
-        songViewModel.processingSongs.observe (viewLifecycleOwner) {
+        songViewModel.songs.observe (viewLifecycleOwner) {
             it?.let {
-                processAdapter.submitList (it)
+                processAdapter.songs = it
             }
         }
     }

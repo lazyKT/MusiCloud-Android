@@ -125,7 +125,6 @@ class HomeFragment: Fragment () {
         }
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         Log.i ("HomeFragment", "onOptionsItemSelected: ${item.itemId}")
