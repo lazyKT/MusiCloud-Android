@@ -1,5 +1,6 @@
 package com.example.musicloud.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -25,10 +26,6 @@ class ProcessAdapter @Inject constructor (
                 return ProcessViewHolder (binding)
             }
         }
-
-        fun bind (song: Song) {
-            binding.song = song
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProcessViewHolder {
@@ -37,7 +34,14 @@ class ProcessAdapter @Inject constructor (
 
     override fun onBindViewHolder(holder: ProcessViewHolder, position: Int) {
         val processItem = getItem (position)
-        holder.bind (processItem)
+        Log.i ("ProcessAdapter", processItem.toString())
+
+        holder.binding.apply {
+            glide.load (processItem.thumbnailS).into (processThumbnail)
+            song = processItem
+            songSubtitle.text = processItem.channelTitle
+            songTitle.text = processItem.songName
+        }
     }
 
     companion object DiffCallBack: DiffUtil.ItemCallback <Song> () {

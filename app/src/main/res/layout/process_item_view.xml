@@ -22,9 +22,9 @@
                 android:id="@+id/processThumbnail"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:background="@color/sky_blue"
                 android:contentDescription="@string/app_name"
                 android:layout_marginVertical="5dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -44,8 +44,7 @@
                     android:id="@+id/songTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{song.songName}"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:maxLines="1"
                     android:ellipsize="end" />
@@ -54,9 +53,7 @@
                     android:id="@+id/songSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{song.channelTitle}"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
+                    android:textSize="14sp"
                     android:maxLines="1"
                     android:ellipsize="end" />
 
@@ -64,7 +61,6 @@
 
             <ImageView
                 android:id="@+id/processStatusImage"
-                android:background="@color/sky_blue_700"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginVertical="5dp"
