@@ -65,7 +65,6 @@ class SongDatabaseTest {
             val lastSong = songDAO.getLastSong()
             if (lastSong != null) {
                 lastSong.songID = "10"
-                songDAO.update (lastSong)
                 val updatedSong = songDAO.getLastSong()
                 assertEquals (updatedSong?.songID, "10")
             }
