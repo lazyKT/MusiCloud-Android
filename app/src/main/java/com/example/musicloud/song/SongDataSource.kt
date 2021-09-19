@@ -31,7 +31,7 @@ class SongDataSource @Inject constructor(
         state = STATE_INITIALIZING
 
         val allSongs =
-            withContext(Dispatchers.IO) { songDAO.getSongs() }
+            withContext(Dispatchers.IO) { songDAO.getSongs (finished = true) }
 
         formattedSongs = allSongs.map {
             Builder()

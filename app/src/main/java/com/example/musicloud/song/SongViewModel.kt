@@ -40,25 +40,43 @@ class SongViewModel (
 
     val processingSongs = songDatabase.getDownloadList (false)
 
+    val errorMessageFromRepository = songRepository.errorMessage
+
     val songs = songRepository.songs
 
     var isNewSong: Boolean = false
 
     init {
-        getSongsFromRepository()
+        processUnfinishedSongs()
     }
 
+    /**
+     * Finish/continue processing on the unfinished songs from previous app session.
+     */
+    private fun processUnfinishedSongs () {
+        try {
+            viewModelScope.launch (Dispatchers.IO) {
 
-    private fun getSongsFromRepository () {
-        viewModelScope.launch {
-            try {
-                songRepository.processAndDownloadSongs()
-            }
-            catch (exception: IOException) {
-                exception.message?.let { Log.i ("SongViewModel", it) }
+                val unfinishedSongs = songDatabase.getUnFinishedSongs (finished = false)
+                unfinishedSongs.map {
+                    Log.i ("SongViewModel", "Unfinished Songs: ${it.songName}")
+                }
+                Log.i ("SongViewModel", "Processing Unfinished Songs: ${unfinishedSongs.size} songs")
+
+                unfinishedSongs.map {
+                    Log.i ("SongViewModel", "Processing Unfinished Songs: ${it.songName}")
+                    val songData = songRepository.processAndDownloadSongsAsync (viewModelScope, it).await()
+                    if (songData != null && songData != Unit) {
+                        downloadSong (it, songData as InputStream)
+                    }
+                }
             }
         }
+        catch (exception: Exception) {
+            exception.message?.let { Log.i ("SongViewModel", it) }
+        }
     }
+
 
     /**
      * Request the song processing on the server.
@@ -84,7 +102,7 @@ class SongViewModel (
             }
         }
         catch (e: Exception) {
-
+            e.message?.let { Log.i ("SongViewModel", it) }
         }
     }
 

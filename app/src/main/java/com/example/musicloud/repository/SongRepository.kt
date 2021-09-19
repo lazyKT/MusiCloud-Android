@@ -32,14 +32,33 @@ class SongRepository (private val songDAO: SongDAO) {
     val errorMessage: LiveData<String?>
         get() = _errorMessage
 
-    suspend fun processAndDownloadSongs () {
+    suspend fun processAndDownloadSongsAsync (scope: CoroutineScope, song: Song) =  scope.async {
+        try {
+            val songStatus =
+                withContext(Dispatchers.IO) {
+                    MusiCloudApi.retrofitService.checkSong(SongRequestBody(url = song.youtubeURL))
+                }
+            Log.i ("SongRepository", "checkSongStatus = $songStatus")
 
-    }
-
-    private suspend fun fakeDownload () {
-        Log.i ("SongRepository", "Starting download ...")
-        delay (6000)
-        Log.i ("SongRepository", "Finish downloading ...")
+            when (songStatus.status) {
+                PROCESS_SONG -> {
+                    _errorMessage.value = null
+                    doConversion (scope, song.youtubeURL)
+                    getSongMetaDataAsync (scope, song.songID).await()
+                }
+                DOWNLOAD_READY -> {
+                    _errorMessage.value = null
+                    getSongMetaDataAsync (scope, song.songID).await()
+                }
+                RESPONSE_TIMEOUT -> {
+                    throw SocketTimeoutException ("Socket Connection TimeOut!")
+                }
+                else -> throw Exception ("Error! Unknown Song Status!")
+            }
+        }
+        catch (exp: Exception) {
+            _errorMessage.value = genErrorMessage(exp)
+        }
     }
 
     suspend fun doProcessAsync (scope: CoroutineScope, song: Song) = scope.async {
