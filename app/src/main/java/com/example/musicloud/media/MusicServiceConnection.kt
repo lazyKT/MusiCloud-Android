@@ -92,6 +92,9 @@ class MusicServiceConnection (
                     parameters.putParcelable ("song", song)
                     parameters.putInt ("removedIndex", removedIndex)
                     _ioError.postValue (Event (Resource.success (true)))
+                    if (currentPlayingSong.value?.description?.mediaId == song?.description?.mediaId) {
+                        _currentPlayingSong.postValue (null)
+                    }
                 }
             }
             else -> Unit

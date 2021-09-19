@@ -11,7 +11,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.RequestManager
 import com.example.musicloud.R
 import com.example.musicloud.adapters.HomeAdapter
 import com.example.musicloud.databinding.HomeFragmentBinding
@@ -66,6 +65,10 @@ class HomeFragment: Fragment () {
                     Log.i ("HomeFragment", "Music: Media Items Loaded!")
                     Log.i ("HomeFragment", "Songs Loaded!!")
 
+                    /**
+                     * Check whether playlist is empty or not.
+                     * If empty, show empty icon. Otherwise, playlist!!
+                     */
                     if (result.data?.size?.compareTo(0) == 0) {
                         binding.playListStatusImageView.visibility = View.VISIBLE
                         binding.playListStatusImageView.setImageResource (R.drawable.ic_empty)

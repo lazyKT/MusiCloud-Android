@@ -180,7 +180,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         homeViewModel.currentPlayingSong.observe (this) {
-            if (it == null) return@observe
+            Log.i ("MainActivity", "CurrentPlaying Song: $it")
+            if (it == null) {
+                binding.songTitleTextView.text = "--"
+                binding.songThumbnailFull.setImageResource (R.drawable.ic_logo)
+                binding.songThumbnail.setImageResource (R.drawable.ic_logo)
+
+                /* full player */
+                binding.channelTitleTextViewFull.text = "--"
+                binding.songTitleTextViewFull.text = "--"
+                return@observe
+            }
 
             /* mini bottom sheet player */
             currentSong = homeViewModel.mediaDataCompatToSong (it)

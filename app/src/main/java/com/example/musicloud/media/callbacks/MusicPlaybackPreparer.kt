@@ -51,9 +51,8 @@ class MusicPlaybackPreparer (
                 val idx = extras?.getInt ("removedIndex")
                 mediaMetadataCompat?.apply {
                     idx?.let {
-                        val removedItem = songDataSource.removeSong (idx)
+                        songDataSource.removeSong (idx)
                         player.removeMediaItem (idx)
-                        Log.i ("MusicPlaybackPreparer", "onCommand() -> ${removedItem.description.title} removed from the playlist")
                     }
                 }
             }

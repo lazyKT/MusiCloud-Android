@@ -196,11 +196,6 @@ class HomeViewModel @Inject constructor (
                 it.songID == song.songID
             } ?: -1
 
-            playList?.map {
-                Log.i ("HomeViewModel", "remove: item index: ${playList?.indexOf (song)}")
-                Log.i ("HomeViewModel", "remove: ${it.songName}")
-            }
-            Log.i ("HomeViewModel", "remove: item index: ${playList?.indexOf (song)}")
             playList?.removeAt (removedIndex)
         }
 
@@ -208,6 +203,11 @@ class HomeViewModel @Inject constructor (
         musicServiceConnection.sendCommand ("remove", metadataCompat, removedIndex)
 
         _mediaItems.postValue (Resource.success (playList))
+
+        /**
+         * if remove item is at currently playing song,
+         * remove it from players and set null to current playing song.
+         */
     }
 
     override fun onCleared() {

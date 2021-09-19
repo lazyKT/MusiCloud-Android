@@ -57,7 +57,6 @@ class MusicNotificationManager (
     }
 
     fun showNotification (player: Player) {
-        Log.i ("MusicNotificationManager", "showNotification()")
         playerNotificationManager?.setPlayer (player)
     }
 
