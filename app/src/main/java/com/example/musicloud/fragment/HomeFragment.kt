@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.RequestManager
 import com.example.musicloud.R
 import com.example.musicloud.adapters.HomeAdapter
 import com.example.musicloud.databinding.HomeFragmentBinding
@@ -64,7 +65,19 @@ class HomeFragment: Fragment () {
                 Status.SUCCESS -> {
                     Log.i ("HomeFragment", "Music: Media Items Loaded!")
                     Log.i ("HomeFragment", "Songs Loaded!!")
+
+                    if (result.data?.size?.compareTo(0) == 0) {
+                        binding.playListStatusImageView.visibility = View.VISIBLE
+                        binding.playListStatusImageView.setImageResource (R.drawable.ic_empty)
+                    }
+                    else {
+                        binding.playListStatusImageView.visibility = View.GONE
+                    }
+
                     result.data?.let { songs ->
+                        songs.map {
+                            Log.i ("HomeFragment", "song name: ${it.songName}")
+                        }
                         homeAdapter.songs = songs
                     }
                 }

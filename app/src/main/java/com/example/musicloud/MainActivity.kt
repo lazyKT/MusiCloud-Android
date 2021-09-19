@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.View
 import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
-    private lateinit var currentSong: Song
+    private var currentSong: Song? = null
     private var shouldUpdateSeekbar = true
 
     private lateinit var homeViewModel: HomeViewModel
@@ -184,14 +183,16 @@ class MainActivity : AppCompatActivity() {
             if (it == null) return@observe
 
             /* mini bottom sheet player */
-            currentSong = homeViewModel.mediaDataCompatToSong (it)!!
-            binding.songTitleTextView.text = currentSong.songName
-            glide.load (currentSong.thumbnailS).into (binding.songThumbnail)
+            currentSong = homeViewModel.mediaDataCompatToSong (it)
+            currentSong?.apply {
+                binding.songTitleTextView.text = songName
+                glide.load (thumbnailS).into (binding.songThumbnail)
 
-            /* full player */
-            binding.channelTitleTextViewFull.text = currentSong.channelTitle
-            binding.songTitleTextViewFull.text = currentSong.songName
-            glide.load (currentSong.thumbnailM).into (binding.songThumbnailFull)
+                /* full player */
+                binding.channelTitleTextViewFull.text = channelTitle
+                binding.songTitleTextViewFull.text = songName
+                glide.load (thumbnailM).into (binding.songThumbnailFull)
+            }
         }
 
         homeViewModel.playbackState.observe (this) {
@@ -241,11 +242,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        /**
+         * Observer for Song Network Operations: Song Loading
+         */
         homeViewModel.networkError.observe (this) {
             it?.getContentIfNotHandle()?.let { result ->
                 when (result.status) {
                     Status.ERROR -> {
                         // show error snack bar
+                        Snackbar.make (
+                            binding.mainSnackBar,
+                            result.message ?: "An Unknown Error Occurred!",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    else -> Unit
+                }
+            }
+        }
+
+        /**
+         * Observer for Song IO Operations: Add, Remove
+         */
+        homeViewModel.ioError.observe (this) {
+            it?.getContentIfNotHandle()?.let { result ->
+                when (result.status) {
+                    Status.ERROR -> {
                         Snackbar.make (
                             binding.mainSnackBar,
                             result.message ?: "An Unknown Error Occurred!",

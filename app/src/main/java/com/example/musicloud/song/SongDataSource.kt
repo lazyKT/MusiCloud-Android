@@ -5,6 +5,7 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
+import android.util.Log
 import androidx.core.net.toUri
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.song.State.*
@@ -102,6 +103,16 @@ class SongDataSource @Inject constructor(
 
     fun addNewSong (mediaMetadataCompat: MediaMetadataCompat) {
         formattedSongs.add (0, mediaMetadataCompat)
+    }
+
+    fun removeSong (index: Int): MediaMetadataCompat {
+        formattedSongs.map {
+            Log.i ("SongDataSource", "remove: item index: $index")
+            Log.i ("SongDataSource", "remove: ${it.description.title}")
+        }
+        val res = formattedSongs.removeAt (index)
+        Log.i ("SongDataSource", "Remove Result at $index: $res")
+        return res
     }
 }
 

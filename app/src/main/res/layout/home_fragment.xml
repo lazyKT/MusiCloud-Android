@@ -23,6 +23,7 @@
             />
 
         <ImageView
+            android:id="@+id/playListStatusImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"

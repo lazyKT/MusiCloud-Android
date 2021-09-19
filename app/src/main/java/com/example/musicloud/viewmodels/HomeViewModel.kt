@@ -25,6 +25,7 @@ class HomeViewModel @Inject constructor (
     val isConnected = musicServiceConnection.isConnected
     val networkError = musicServiceConnection.networkError
     val currentPlayingSong = musicServiceConnection.currentPlayingSong
+    val ioError = musicServiceConnection.ioError
     val playbackState = musicServiceConnection.playbackState
 
     private val _playbackStateDuration = MutableLiveData<Long> ()
@@ -126,18 +127,32 @@ class HomeViewModel @Inject constructor (
         }
     }
 
-    fun mediaDataCompatToSong (mediaMetadataCompat: MediaMetadataCompat) =
-        mediaMetadataCompat.description.mediaId?.let {
-            Song (
-            songID = it,
-            songName = mediaMetadataCompat.description.title.toString(),
-            localFileURL = mediaMetadataCompat.description.mediaUri.toString(),
-            thumbnailM = mediaMetadataCompat.description.iconUri.toString(),
-            thumbnailS = mediaMetadataCompat.description.iconUri.toString(),
-            processing = false,
-            finished = true
+    private fun songToMediaDataCompat (song: Song): MediaMetadataCompat {
+        return MediaMetadataCompat.Builder()
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.channelTitle)
+            .putString(METADATA_KEY_MEDIA_ID, song.songID)
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.songName)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.songName)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, song.thumbnailM)
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, song.localFileURL)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, song.thumbnailM)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, song.channelTitle)
+            .build()
+    }
+
+    fun mediaDataCompatToSong (mediaMetadataCompat: MediaMetadataCompat): Song? {
+        return mediaMetadataCompat.description.mediaId?.let {
+            Song(
+                songID = it,
+                songName = mediaMetadataCompat.description.title.toString(),
+                localFileURL = mediaMetadataCompat.description.mediaUri.toString(),
+                thumbnailM = mediaMetadataCompat.description.iconUri.toString(),
+                thumbnailS = mediaMetadataCompat.description.iconUri.toString(),
+                processing = false,
+                finished = true
             )
         }
+    }
 
     private fun updateCurrentPlaybackStatePosition () {
         viewModelScope.launch {
@@ -153,16 +168,7 @@ class HomeViewModel @Inject constructor (
     }
 
     fun addSongToPlayList (song: Song) {
-        val mediaMetadataCompat = MediaMetadataCompat.Builder()
-            .putString (MediaMetadataCompat.METADATA_KEY_ARTIST, song.channelTitle)
-            .putString (METADATA_KEY_MEDIA_ID, song.songID)
-            .putString (MediaMetadataCompat.METADATA_KEY_TITLE, song.songName)
-            .putString (MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.songName)
-            .putString (MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, song.thumbnailM)
-            .putString (MediaMetadataCompat.METADATA_KEY_MEDIA_URI, song.localFileURL)
-            .putString (MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, song.thumbnailM)
-            .putString (MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, song.channelTitle)
-            .build()
+        val mediaMetadataCompat = songToMediaDataCompat (song)
 
         musicServiceConnection.sendCommand ("add", mediaMetadataCompat)
 
@@ -175,12 +181,33 @@ class HomeViewModel @Inject constructor (
         oldPlayList?.add (0, song)
 
         _mediaItems.postValue (Resource.success(oldPlayList))
+    }
+
+    fun removeSongFromPlaylist (song: Song) {
+        val metadataCompat = songToMediaDataCompat (song)
+        var removedIndex: Int = -1
+
+        var playList: MutableList<Song>? = null
 
         mediaItems.value?.apply {
-            data?.map {
-                Log.i ("HomeViewModel", "Music: $it")
+
+            playList = this.data?.toMutableList()
+            removedIndex = playList?.indexOfFirst {
+                it.songID == song.songID
+            } ?: -1
+
+            playList?.map {
+                Log.i ("HomeViewModel", "remove: item index: ${playList?.indexOf (song)}")
+                Log.i ("HomeViewModel", "remove: ${it.songName}")
             }
+            Log.i ("HomeViewModel", "remove: item index: ${playList?.indexOf (song)}")
+            playList?.removeAt (removedIndex)
         }
+
+
+        musicServiceConnection.sendCommand ("remove", metadataCompat, removedIndex)
+
+        _mediaItems.postValue (Resource.success (playList))
     }
 
     override fun onCleared() {

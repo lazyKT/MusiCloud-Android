@@ -24,6 +24,9 @@ class MusicServiceConnection (
     private val _networkError = MutableLiveData <Event<Resource<Boolean>>> ()
     val networkError: LiveData <Event<Resource<Boolean>>> get() = _networkError
 
+    private val _ioError = MutableLiveData <Event<Resource<Boolean>>> ()
+    val ioError: LiveData <Event<Resource<Boolean>>> get() = _ioError
+
     private val _playbackState = MutableLiveData <PlaybackStateCompat?> ()
     val playbackState: LiveData <PlaybackStateCompat?> get() = _playbackState
 
@@ -61,26 +64,39 @@ class MusicServiceConnection (
      * send command to MusicService: MediaBrowserServiceCompat
      * The below two functions are referenced from Universal Android Music Player Github.
      * */
-    fun sendCommand (command:String, song: MediaMetadataCompat?) {
+    fun sendCommand (command:String, song: MediaMetadataCompat?, removedIndex: Int = -1) {
 
-        val parameters: Bundle?
+        var parameters: Bundle? = null
         when (command) {
             "add" -> {
                 parameters = Bundle()
-                parameters.putParcelable ("newSong", song)
-
-                sendCommand(command, parameters) { _, _ -> }
+                parameters.putParcelable ("song", song)
             }
             "startNotification" -> {
-                Log.i ("MusicServiceConnection", "First time playing: $firstTimePlaying")
                 if (firstTimePlaying) {
                     parameters = null
                     firstTimePlaying = false
-                    sendCommand(command, parameters) { _, _ -> }
+                }
+            }
+            "remove" -> {
+                Log.i ("MusicServiceConnection", "remove song: $song")
+                if (removedIndex < 0) {
+                    _ioError.postValue (Event (Resource.error(
+                        "Unable to remove song! Invalid Index!",
+                        false
+                    )))
+                    return
+                }
+                else {
+                    parameters = Bundle()
+                    parameters.putParcelable ("song", song)
+                    parameters.putInt ("removedIndex", removedIndex)
+                    _ioError.postValue (Event (Resource.success (true)))
                 }
             }
             else -> Unit
         }
+        sendCommand(command, parameters) { _, _ -> }
     }
 
     private fun sendCommand (command: String, parameters: Bundle?, resultCallback: ((Int, Bundle?) -> Unit)): Boolean {

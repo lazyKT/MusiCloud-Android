@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.musicloud.database.SongDAO
@@ -12,6 +13,7 @@ import com.example.musicloud.database.SongDatabase
 import com.example.musicloud.databinding.SongDetailFragmentBinding
 import com.example.musicloud.song.SongDetailsViewModel
 import com.example.musicloud.song.SongDetailsViewModelFactory
+import com.example.musicloud.viewmodels.HomeViewModel
 
 class SongDetailFragment: Fragment() {
 
@@ -36,10 +38,13 @@ class SongDetailFragment: Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        val homeViewModel: HomeViewModel by activityViewModels ()
+
         viewModel.navigateToHomeFragmentAfterDelete.observe (viewLifecycleOwner, {
             it?.let {
+                homeViewModel.removeSongFromPlaylist (it)
                 this.findNavController().navigate (
-                            SongDetailFragmentDirections.actionSongDetailFragmentToHomeFragment(it)
+                            SongDetailFragmentDirections.actionSongDetailFragmentToHomeFragment(it.songName)
                         )
                 viewModel.onNavigatedAfterDeletion()
             }

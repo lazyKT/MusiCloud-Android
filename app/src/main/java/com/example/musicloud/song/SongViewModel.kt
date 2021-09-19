@@ -48,6 +48,7 @@ class SongViewModel (
         getSongsFromRepository()
     }
 
+
     private fun getSongsFromRepository () {
         viewModelScope.launch {
             try {
@@ -59,6 +60,9 @@ class SongViewModel (
         }
     }
 
+    /**
+     * Request the song processing on the server.
+     */
     fun startSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
         Log.i ("SongViewModel", "startSongProcessing()")
         try {
@@ -84,7 +88,10 @@ class SongViewModel (
         }
     }
 
-    /* write/store song to MediaStore.Audio */
+    /**
+     * Download the song to media store after processing.
+     * Upon Successful download, the song will be added to the Exoplayer playlist.
+     * */
     private suspend fun downloadSong (song: Song, stream: InputStream) {
 
         withContext (Dispatchers.IO) {

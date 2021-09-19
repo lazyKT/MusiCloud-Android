@@ -24,8 +24,8 @@ class SongDetailsViewModel (
     private val _song = MutableLiveData<Song> ()
     val song: LiveData<Song> get() = _song
 
-    private val _navigateToHomeFragmentAfterDelete = MutableLiveData<String>()
-    val navigateToHomeFragmentAfterDelete: LiveData<String>
+    private val _navigateToHomeFragmentAfterDelete = MutableLiveData<Song>()
+    val navigateToHomeFragmentAfterDelete: LiveData<Song>
             get() = _navigateToHomeFragmentAfterDelete
 
     init {
@@ -62,7 +62,7 @@ class SongDetailsViewModel (
         }
         finally {
             song.value?.let { database.delete (it) }
-            _navigateToHomeFragmentAfterDelete.value = song.value?.songName
+            _navigateToHomeFragmentAfterDelete.value = song.value
             Log.i ("SongDetailsViewModel", "${song.value?.songName} has been removed from Room Database!")
         }
 
