@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -62,9 +61,6 @@ class HomeFragment: Fragment () {
         homeViewModel.mediaItems.observe (viewLifecycleOwner, { result ->
             when (result.status) {
                 Status.SUCCESS -> {
-                    Log.i ("HomeFragment", "Music: Media Items Loaded!")
-                    Log.i ("HomeFragment", "Songs Loaded!!")
-
                     /**
                      * Check whether playlist is empty or not.
                      * If empty, show empty icon. Otherwise, playlist!!
@@ -78,22 +74,18 @@ class HomeFragment: Fragment () {
                     }
 
                     result.data?.let { songs ->
-                        songs.map {
-                            Log.i ("HomeFragment", "song name: ${it.songName}")
-                        }
                         homeAdapter.songs = songs
                     }
                 }
                 Status.ERROR -> Unit
                 Status.LOADING -> {
-                    Log.i ("HomeFragment", "Songs Loading ....")
-                    Toast.makeText (requireActivity(), "Songs Loading ...", Toast.LENGTH_SHORT).show()
+                    binding.playListStatusImageView.visibility = View.VISIBLE
+                    binding.playListStatusImageView.setImageResource (R.drawable.loading_animation)
                 }
             }
         })
 
         homeViewModel.navigateToSongDetailsFragment.observe (viewLifecycleOwner, { songId ->
-            Log.i ("HomeFragment", "songId: $songId")
             if (songId != null) {
                 this.findNavController().navigate (HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(songId))
                 homeViewModel.onNavigatedToSongDetailsFragment()
@@ -106,7 +98,6 @@ class HomeFragment: Fragment () {
         }
 
         homeAdapter.setOptionItemClickListener {
-            Log.i ("HomeFragment", "setOptionItemClickListener: $it")
             homeViewModel.showSongDetails (it)
         }
 

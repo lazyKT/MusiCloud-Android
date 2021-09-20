@@ -3,6 +3,9 @@ package com.example.musicloud.song
 import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.Context.MODE_PRIVATE
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -11,6 +14,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.musicloud.R
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
 import com.example.musicloud.network.ErrorMessages.genErrorMessage
@@ -25,6 +29,9 @@ import java.io.InputStream
 import java.lang.NullPointerException
 import kotlin.system.measureTimeMillis
 
+private const val WIFI = "WIFI"
+private const val MOBILE_DATA = "MOBILE_DATA"
+private const val NO_CONNECTION = "NO_CONNECTION"
 
 /**
  * Usage of view model prevents the data loss because of configuration changes (screen rotations) or
@@ -51,8 +58,16 @@ class SongViewModel (
     private val _errorMessage = MutableLiveData<String> ()
     val errorMessage: LiveData<String> get() = _errorMessage
 
+    private val _dataSaverModeOn = MutableLiveData<Boolean> ()
+    val dataSaverModeOn: LiveData<Boolean> get() = _dataSaverModeOn
+
+    private val _userAlert = MutableLiveData<String> ()
+    val userAlert: LiveData<String> get() = _userAlert
+
     init {
+        _userAlert.value = null
         processUnfinishedSongs()
+        readFromSharedPrefs()
     }
 
     /**
@@ -83,6 +98,31 @@ class SongViewModel (
      * Request the song processing on the server.
      */
     fun startSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
+
+        val networkState = getNetworkState()
+        Log.i ("SongViewModel", "Current Network State: $networkState")
+
+        when (networkState) {
+            WIFI -> {
+                requestSongProcessing (youtubeSearchProperty)
+            }
+            MOBILE_DATA -> {
+                if (dataSaverModeOn.value == false) {
+                    requestSongProcessing(youtubeSearchProperty)
+                }
+                else {
+                    _userAlert.value = getApplication<Application>().getString (R.string.dataSaverUserAlert)
+                }
+            }
+            NO_CONNECTION -> {
+                _errorMessage.value = "You are Offline!"
+            }
+            else -> Unit
+        }
+
+    }
+
+    private fun requestSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
         try {
             viewModelScope.launch {
                 val newSong = Song(
@@ -112,8 +152,8 @@ class SongViewModel (
      * */
     private suspend fun downloadSong (song: Song, stream: InputStream) {
 
-        withContext (Dispatchers.IO) {
-            try {
+        try {
+            withContext (Dispatchers.IO) {
                 val resolver: ContentResolver = getApplication<Application>().contentResolver
 
                 val audioCollection: Uri =
@@ -167,16 +207,17 @@ class SongViewModel (
                     songDatabase.finishSongProcessing (finished = true, processing = false, songID = song.songID )
                     isNewSong = true
                 }
+
             }
-            catch (e: NullPointerException) {
-                _errorMessage.value = genErrorMessage (e)
-            }
-            catch (e: IOException) {
-                _errorMessage.value = genErrorMessage (e)
-            }
-            catch (e: FileNotFoundException) {
-                _errorMessage.value = genErrorMessage (e)
-            }
+        }
+        catch (e: NullPointerException) {
+            _errorMessage.value = genErrorMessage (e)
+        }
+        catch (e: IOException) {
+            _errorMessage.value = genErrorMessage (e)
+        }
+        catch (e: FileNotFoundException) {
+            _errorMessage.value = genErrorMessage (e)
         }
     }
 
@@ -212,4 +253,52 @@ class SongViewModel (
      *   }
      *
      *  */
+
+    /**
+     * Enable/disable data saver mode.
+     * If the data saver mode is on,
+     * one cannot process or download songs unless wifi is connected!
+     */
+    fun toggleDataSaverMode (enable: Boolean) {
+        Log.i ("SongViewModel", "Data Saver Mode: $enable")
+        _dataSaverModeOn.value = enable
+        saveToSharedPrefs()
+    }
+
+    private fun getNetworkState (): String {
+        val connectivityManager = getApplication<Application>().getSystemService (ConnectivityManager::class.java)
+        val networks = connectivityManager.activeNetwork ?: return NO_CONNECTION
+        val activeNetworks = connectivityManager.getNetworkCapabilities (networks) ?: return NO_CONNECTION
+
+        return when {
+            activeNetworks.hasTransport (NetworkCapabilities.TRANSPORT_WIFI) -> WIFI
+            activeNetworks.hasTransport (NetworkCapabilities.TRANSPORT_CELLULAR) -> MOBILE_DATA
+            activeNetworks.hasTransport (NetworkCapabilities.TRANSPORT_ETHERNET) -> MOBILE_DATA
+            else -> ""
+        }
+    }
+
+
+    /**
+     * Read SharedPreferences Storage at the SongViewModel Initialization
+     */
+    private fun readFromSharedPrefs () {
+        val sharedPreferences = getApplication<Application>().getSharedPreferences ("MusiCloud", MODE_PRIVATE)
+        val dataSaverMode = sharedPreferences.getBoolean ("DataSaverMode", false)
+        _dataSaverModeOn.value = dataSaverMode
+    }
+
+
+    /**
+     * save DataSaverMode state in shared preferences storage,
+     * so that the user will not lose the state.
+     */
+    private fun saveToSharedPrefs () {
+        val sharedPreferences = getApplication<Application>().getSharedPreferences ("MusiCloud", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        dataSaverModeOn.value?.let {
+            editor.putBoolean ("DataSaverMode", it)
+        }
+        editor.apply()
+    }
 }

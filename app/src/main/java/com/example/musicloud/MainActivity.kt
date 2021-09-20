@@ -291,6 +291,14 @@ class MainActivity : AppCompatActivity() {
             showErrorMessage (it)
         }
 
+        /**
+         * Show Alert
+         */
+        songViewModel.userAlert.observe (this) { alertMessage ->
+            if (alertMessage == null) return@observe
+            showErrorMessage (alertMessage)
+        }
+
     }
 
     private fun toTimeFormat (ms: Long): String {

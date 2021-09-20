@@ -3,66 +3,46 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutDescription="@xml/setting_fragment_xml_constraintlayout_scene">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/deleteLayout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="40dp"
-            android:background="@color/whisper"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+        <TextView
+            android:id="@+id/dataSaverTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dataSaverTitle"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:layout_margin="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="100dp"
+            android:text="@string/dataSaverDesc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/dataSaverTitle" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/delete"
-                android:src="@drawable/ic_delete_foreground" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/delete"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="40dp"
-            android:background="@color/dark_white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/dataSaverSwitch"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/deleteLayout">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/share"
-                android:src="@drawable/ic_share_foreground" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/share"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
-        </LinearLayout>
 
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

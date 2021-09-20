@@ -33,14 +33,12 @@ class MusicPlaybackPreparer (
         cb: ResultReceiver?
     ): Boolean {
 
-        Log.i ("MusicPlaybackPreparer", "onCommand() -> command: $command")
         when (command) {
             "add" -> {
                 val mediaMetadataCompat = extras?.getParcelable<MediaMetadataCompat>("song")
                 mediaMetadataCompat?.apply {
                     player.addMediaItem (0, MediaItem.fromUri(getString (METADATA_KEY_MEDIA_URI)))
                     songDataSource.addNewSong (this)
-                    Log.i ("MusicPlaybackPreparer", "onCommand() -> Added to the playlist")
                 }
             }
             "startNotification" -> {
@@ -51,8 +49,8 @@ class MusicPlaybackPreparer (
                 val idx = extras?.getInt ("removedIndex")
                 mediaMetadataCompat?.apply {
                     idx?.let {
-                        songDataSource.removeSong (idx)
                         player.removeMediaItem (idx)
+                        songDataSource.removeSong (idx)
                     }
                 }
             }

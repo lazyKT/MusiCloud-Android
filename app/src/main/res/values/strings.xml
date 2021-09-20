@@ -38,4 +38,9 @@
     <!-- player -->
     <string name="playbackTime">--:--</string>
 
+    <!-- setting -->
+    <string name="dataSaverTitle">DataSaver Mode</string>
+    <string name="dataSaverDesc">Process and Download Song only when wifi is connected.</string>
+    <string name="dataSaverUserAlert">DataSaver Mode is On and You are not currently connected to WIFI.</string>
+
 </resources>
