@@ -99,10 +99,7 @@ class SongViewModel (
      */
     fun startSongProcessing (youtubeSearchProperty: YoutubeSearchProperty) {
 
-        val networkState = getNetworkState()
-        Log.i ("SongViewModel", "Current Network State: $networkState")
-
-        when (networkState) {
+        when (getNetworkState()) {
             WIFI -> {
                 requestSongProcessing (youtubeSearchProperty)
             }
@@ -260,7 +257,6 @@ class SongViewModel (
      * one cannot process or download songs unless wifi is connected!
      */
     fun toggleDataSaverMode (enable: Boolean) {
-        Log.i ("SongViewModel", "Data Saver Mode: $enable")
         _dataSaverModeOn.value = enable
         saveToSharedPrefs()
     }
