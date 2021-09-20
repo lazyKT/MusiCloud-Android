@@ -42,6 +42,10 @@ class YoutubeSearchViewModel: ViewModel () {
         _errorMessage.value = null
     }
 
+    fun setSearchResult (searchList: MutableList<YoutubeSearchProperty>) {
+        _searchResults.value = searchList
+    }
+
     private fun getSearchResult (filter: String) {
         Log.i ("YoutubeSearchViewModel", "searchQuery : ${searchQuery.value}")
         val queryString: (String) -> String = { it.replace(" ", "+") }
