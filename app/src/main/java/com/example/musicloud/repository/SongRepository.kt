@@ -17,8 +17,6 @@ import java.net.SocketTimeoutException
 private const val DOWNLOAD_READY = "EXISTED"
 private const val PROCESS_SONG = "NOT EXISTS"
 private const val PROCESS_COMPLETED = "SUCCESS"
-private const val RESPONSE_OK = "OK"
-private const val RESPONSE_ERROR = "ERROR"
 private const val RESPONSE_TIMEOUT = "response_timeout"
 private val SOCKET_RESPONSES = arrayOf ("SUCCESS", "STARTED", "PROGRESS")
 
@@ -38,7 +36,6 @@ class SongRepository (private val songDAO: SongDAO) {
                 withContext(Dispatchers.IO) {
                     MusiCloudApi.retrofitService.checkSong(SongRequestBody(url = song.youtubeURL))
                 }
-            Log.i ("SongRepository", "checkSongStatus = $songStatus")
 
             when (songStatus.status) {
                 PROCESS_SONG -> {
@@ -192,5 +189,9 @@ class SongRepository (private val songDAO: SongDAO) {
             Log.i ("SongRepository", "downloadSong: ${e.message}")
             _errorMessage.value = genErrorMessage(e)
         }
+    }
+
+    fun getUnFinishedSongsAsync (scope: CoroutineScope) = scope.async {
+        songDAO.getDownloadList (finish = false)
     }
 }

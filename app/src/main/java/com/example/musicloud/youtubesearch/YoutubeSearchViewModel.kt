@@ -5,26 +5,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.musicloud.network.MusiCloudApi
 import com.example.musicloud.network.ErrorMessages.genErrorMessage
 
 import com.example.musicloud.network.YoutubeSearchProperty
+import com.example.musicloud.repository.YoutubeSearchRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 /* network request states */
 enum class YoutubeSearchApiStatus { NOTHING, LOADING, SUCCESS, ERROR }
 
 
-class YoutubeSearchViewModel: ViewModel () {
+class YoutubeSearchViewModel (
+    private val repository: YoutubeSearchRepository
+        ): ViewModel () {
 
     private val _status = MutableLiveData<YoutubeSearchApiStatus> ()
     val status: LiveData<YoutubeSearchApiStatus> get() = _status
 
-    private val _searchResults = MutableLiveData<List<YoutubeSearchProperty>> ()
+    private val _searchResults = MutableLiveData <List<YoutubeSearchProperty>> ()
     val searchResults: LiveData<List<YoutubeSearchProperty>> get() = _searchResults
 
-    private val _searchQuery = MutableLiveData<String> ()
+    private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> get() = _searchQuery
 
     private val _navigateToDetailsPage = MutableLiveData<YoutubeSearchProperty> ()
@@ -33,40 +37,26 @@ class YoutubeSearchViewModel: ViewModel () {
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?>
-                    get() = _errorMessage
+        get() = _errorMessage
 
     init {
-        Log.i ("YoutubeSearchViewModel", "Initialised!!!")
-        _status.value = YoutubeSearchApiStatus.NOTHING
         _searchQuery.value = ""
-        _errorMessage.value = null
+        _status.value = YoutubeSearchApiStatus.NOTHING
+        _navigateToDetailsPage.value = null
     }
 
-    fun setSearchResult (searchList: MutableList<YoutubeSearchProperty>) {
-        _searchResults.value = searchList
-    }
-
+    @Suppress ("unchecked_cast")
     private fun getSearchResult (filter: String) {
-        Log.i ("YoutubeSearchViewModel", "searchQuery : ${searchQuery.value}")
-        val queryString: (String) -> String = { it.replace(" ", "+") }
-
-        val url = "/search?filter=${queryString(filter)}&maxResults=10"
-
         _status.value = YoutubeSearchApiStatus.LOADING
-
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.IO) {
             try {
-                val searchResults = MusiCloudApi.retrofitService.getYtSearchResults(url)
-                _status.value = YoutubeSearchApiStatus.SUCCESS
-                _errorMessage.value = null
-                if (searchResults.isNotEmpty())
-                    _searchResults.value = searchResults
+                val searchResults = repository.getSearchResultAsync (viewModelScope, filter).await() as List<*>
+                _status.postValue (YoutubeSearchApiStatus.SUCCESS)
+                _searchResults.postValue (searchResults as List<YoutubeSearchProperty>?)
             }
             catch (e: Exception) {
-                _status.value = YoutubeSearchApiStatus.ERROR
-                Log.i ("YoutubeSearchViewModel", "Error: ${e.message}, " + status.value)
-                _searchResults.value = ArrayList()
-                _errorMessage.value = genErrorMessage (e)
+                _status.postValue (YoutubeSearchApiStatus.ERROR)
+                _errorMessage.postValue (genErrorMessage(e))
             }
         }
     }

@@ -11,8 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicloud.R
 import com.example.musicloud.databinding.YoutubeFragmentBinding
+import com.example.musicloud.repository.YoutubeSearchRepository
 import com.example.musicloud.youtubesearch.YoutubeSearchAdapter
 import com.example.musicloud.youtubesearch.YoutubeSearchViewModel
+import com.example.musicloud.youtubesearch.YoutubeSearchViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
 class YoutubeFragment: Fragment() {
@@ -20,9 +22,7 @@ class YoutubeFragment: Fragment() {
     private var _binding: YoutubeFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val youtubeSearchViewModel: YoutubeSearchViewModel by lazy {
-        ViewModelProvider(this).get (YoutubeSearchViewModel::class.java)
-    }
+    private lateinit var youtubeSearchViewModel: YoutubeSearchViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +31,12 @@ class YoutubeFragment: Fragment() {
     ): View {
         _binding = YoutubeFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
+
+        val youtubeSearchRepository = YoutubeSearchRepository ()
+        val youtubeSearchViewModelFactory = YoutubeSearchViewModelFactory (youtubeSearchRepository)
+
+        youtubeSearchViewModel = ViewModelProvider (this, youtubeSearchViewModelFactory).get (YoutubeSearchViewModel::class.java)
+
         binding.viewModel = youtubeSearchViewModel
 
         binding.searchResultList.adapter = YoutubeSearchAdapter (YoutubeSearchAdapter.OnClickListener {

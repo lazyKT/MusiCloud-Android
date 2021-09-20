@@ -77,9 +77,9 @@ class SongViewModel (
         try {
             viewModelScope.launch (Dispatchers.IO) {
 
-                val unfinishedSongs = songDatabase.getUnFinishedSongs (finished = false)
+                val unfinishedSongs = songRepository.getUnFinishedSongsAsync (this).await().value
 
-                unfinishedSongs.map {
+                unfinishedSongs?.map {
                     val songData = songRepository.processAndDownloadSongsAsync (viewModelScope, it).await()
                     if (songData != null && songData != Unit) {
                         downloadSong (it, songData as InputStream)
