@@ -7,12 +7,12 @@ import com.example.musicloud.youtubesearch.YoutubeSearchApiStatus
 import kotlinx.coroutines.*
 
 
-class YoutubeSearchRepository {
+class YoutubeSearchRepository: BaseYoutubeSearchRepository() {
 
     private val _status = MutableLiveData<YoutubeSearchApiStatus> ()
     val status: LiveData<YoutubeSearchApiStatus> get() = _status
 
-    fun getSearchResultAsync (scope: CoroutineScope, filter: String) = scope.async {
+    override fun getSearchResultAsync (scope: CoroutineScope, filter: String) = scope.async {
         try {
             val queryString: (String) -> String = { it.replace(" ", "+") }
 

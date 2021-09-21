@@ -3,8 +3,11 @@ package com.example.musicloud.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.musicloud.network.YoutubeSearchProperty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 
-class FakeYoutubeSearchRepository {
+class FakeYoutubeSearchRepository: BaseYoutubeSearchRepository() {
 
     private val youtubeLists = listOf(
         YoutubeSearchProperty ("123", "", "", "", "", "", "", ""),
@@ -17,14 +20,16 @@ class FakeYoutubeSearchRepository {
         YoutubeSearchProperty ("321", "", "", "", "", "", "", "")
     )
 
-    fun getSearchResults (filter: String): List<YoutubeSearchProperty> {
-
+    override fun getSearchResultAsync(
+        scope: CoroutineScope,
+        filter: String
+    ) = scope.async {
         val searchList = mutableListOf<YoutubeSearchProperty>()
         youtubeLists.map { result ->
             if (result.videoID == filter)
                 searchList.add (result)
         }
-        return searchList
+        searchList
     }
 
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.musicloud.network.ErrorMessages.genErrorMessage
 
 import com.example.musicloud.network.YoutubeSearchProperty
+import com.example.musicloud.repository.BaseYoutubeSearchRepository
 import com.example.musicloud.repository.YoutubeSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ enum class YoutubeSearchApiStatus { NOTHING, LOADING, SUCCESS, ERROR }
 
 
 class YoutubeSearchViewModel (
-    private val repository: YoutubeSearchRepository
+    private val repository: BaseYoutubeSearchRepository
         ): ViewModel () {
 
     private val _status = MutableLiveData<YoutubeSearchApiStatus> ()
@@ -46,7 +47,7 @@ class YoutubeSearchViewModel (
     }
 
     @Suppress ("unchecked_cast")
-    private fun getSearchResult (filter: String) {
+    fun getSearchResult (filter: String) {
         _status.value = YoutubeSearchApiStatus.LOADING
         viewModelScope.launch (Dispatchers.IO) {
             try {
