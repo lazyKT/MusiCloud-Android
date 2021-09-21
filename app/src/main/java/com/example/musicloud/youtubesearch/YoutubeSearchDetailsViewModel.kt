@@ -3,7 +3,6 @@ package com.example.musicloud.youtubesearch
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,7 +25,6 @@ class YoutubeSearchDetailsViewModel (
      * Open Youtube App to view the video of give url
      */
     fun viewOnYoutube () {
-        Log.i ("YoutubeSearchDetailsViewModel", searchDetails.value.toString())
         searchDetails.value?.let {
             val intent = Intent (Intent.ACTION_VIEW, Uri.parse (it.fullURL))
             intent.addFlags (Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -9,7 +9,6 @@ import com.example.musicloud.network.ErrorMessages.genErrorMessage
 
 import com.example.musicloud.network.YoutubeSearchProperty
 import com.example.musicloud.repository.BaseYoutubeSearchRepository
-import com.example.musicloud.repository.YoutubeSearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -48,6 +47,7 @@ class YoutubeSearchViewModel (
 
     @Suppress ("unchecked_cast")
     fun getSearchResult (filter: String) {
+        _searchResults.value = null
         _status.value = YoutubeSearchApiStatus.LOADING
         viewModelScope.launch (Dispatchers.IO) {
             try {
@@ -66,6 +66,7 @@ class YoutubeSearchViewModel (
 
 
     fun displaySearchResultDetails (result: YoutubeSearchProperty) {
+        Log.i ("YoutubeSearchViewModel", "displaySearchResultDetails ${result.title}")
         _navigateToDetailsPage.value = result
     }
 

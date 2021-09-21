@@ -17,7 +17,6 @@ class HomeAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
-        Log.i ("HomeAdapter", "song: $song")
         try {
             holder.binding as MediaItemViewBinding
             holder.binding.apply {

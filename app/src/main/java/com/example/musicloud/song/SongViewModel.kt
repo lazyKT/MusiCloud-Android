@@ -9,7 +9,6 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,7 +26,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.lang.NullPointerException
-import kotlin.system.measureTimeMillis
 
 private const val WIFI = "WIFI"
 private const val MOBILE_DATA = "MOBILE_DATA"
@@ -55,6 +53,9 @@ class SongViewModel (
 
     var isNewSong: Boolean = false
 
+    private val _newSong = MutableLiveData<Song> ()
+    val newSong: LiveData<Song> get() = _newSong
+
     private val _errorMessage = MutableLiveData<String> ()
     val errorMessage: LiveData<String> get() = _errorMessage
 
@@ -65,6 +66,7 @@ class SongViewModel (
     val userAlert: LiveData<String> get() = _userAlert
 
     init {
+        _newSong.value = null
         _userAlert.value = null
         processUnfinishedSongs()
         readFromSharedPrefs()
@@ -77,9 +79,8 @@ class SongViewModel (
         try {
             viewModelScope.launch (Dispatchers.IO) {
 
-                val unfinishedSongs = songRepository.getUnFinishedSongsAsync (this).await().value
-
-                unfinishedSongs?.map {
+                val unfinishedSongs = songDatabase.getUnFinishedSongs (finished = false)
+                unfinishedSongs.map {
                     val songData = songRepository.processAndDownloadSongsAsync (viewModelScope, it).await()
                     if (songData != null && songData != Unit) {
                         downloadSong (it, songData as InputStream)
@@ -148,7 +149,6 @@ class SongViewModel (
      * Upon Successful download, the song will be added to the Exoplayer playlist.
      * */
     private suspend fun downloadSong (song: Song, stream: InputStream) {
-
         try {
             withContext (Dispatchers.IO) {
                 val resolver: ContentResolver = getApplication<Application>().contentResolver
@@ -176,20 +176,18 @@ class SongViewModel (
                 var downloadedBytes: Int
 
                 viewModelScope.launch (Dispatchers.IO) {
-                    val timeTaken = measureTimeMillis {
-                        resolver.openOutputStream(songLocation!!, "w").use {
-                            val byteArray = ByteArray(4096)
-                            var count = stream.read(byteArray, 0, 4096)
-                            downloadedBytes = count
-                            while (count != -1) {
-                                it?.write(byteArray, 0, count)
-                                count = stream.read(byteArray, 0, 4096)
-                                downloadedBytes += count
-                            }
-                            songDetails.put(MediaStore.Audio.Media.SIZE, downloadedBytes)
+
+                    resolver.openOutputStream(songLocation!!, "w").use {
+                        val byteArray = ByteArray(4096)
+                        var count = stream.read(byteArray, 0, 4096)
+                        downloadedBytes = count
+                        while (count != -1) {
+                            it?.write(byteArray, 0, count)
+                            count = stream.read(byteArray, 0, 4096)
+                            downloadedBytes += count
                         }
+                        songDetails.put(MediaStore.Audio.Media.SIZE, downloadedBytes)
                     }
-                    Log.i ("SongViewModel", "Download Finish in ${timeTaken/1000} seconds")
 
                     stream.close()
                     songDetails.clear()
@@ -199,9 +197,10 @@ class SongViewModel (
                     songDetails.put (MediaStore.Audio.Media.SIZE, downloadedBytes)
                     songDetails.put (MediaStore.Audio.Media.TITLE, song.songName)
                     songDetails.put (MediaStore.Audio.Media.ARTIST, song.channelTitle)
-                    resolver.update (songLocation!!, songDetails, null, null)
+                    resolver.update (songLocation, songDetails, null, null)
                     songDatabase.updateFileLocation (songLocation.toString(), song.songID)
                     songDatabase.finishSongProcessing (finished = true, processing = false, songID = song.songID )
+                    _newSong.postValue (songDatabase.getLastSong())
                     isNewSong = true
                 }
 

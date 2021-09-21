@@ -3,7 +3,6 @@ package com.example.musicloud.viewmodels
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.musicloud.database.Song
 import com.example.musicloud.media.*
@@ -87,7 +86,6 @@ class HomeViewModel @Inject constructor (
     }
 
     fun showSongDetails (song: Song) {
-        Log.i ("HomeViewModel", "showSongDetails() $song")
         _navigateToSongDetailsFragment.value = song.songID
     }
 
@@ -105,13 +103,11 @@ class HomeViewModel @Inject constructor (
     }
 
     fun playOrPauseSong (mediaItem: Song, toggle: Boolean = false) {
-        Log.i ("HomeViewModel", "playOrPauseSong ${mediaItem.songName}")
         val isPrepared = playbackState.value?.isPrepared ?: false
         musicServiceConnection.sendCommand ("startNotification", null)
 
         if (isPrepared &&
             mediaItem.songID == currentPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)) {
-            Log.i ("HomeViewModel", "PlayerIsPrepared: playOrPauseSong ${mediaItem.songName}")
             playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControl.pause()

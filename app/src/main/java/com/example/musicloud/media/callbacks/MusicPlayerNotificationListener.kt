@@ -2,7 +2,6 @@ package com.example.musicloud.media.callbacks
 
 import android.app.Notification
 import android.content.Intent
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.musicloud.media.MusicService
 import com.example.musicloud.media.NOTIFICATION_ID
@@ -26,7 +25,6 @@ class MusicPlayerNotificationListener (
         notification: Notification,
         ongoing: Boolean
     ) {
-        Log.i ("MusicPlayerNotificationListener", "onNotificationPosted $notificationId, $notification")
         super.onNotificationPosted(notificationId, notification, ongoing)
         musicService.apply {
             if (ongoing && !isForeGroundService) {

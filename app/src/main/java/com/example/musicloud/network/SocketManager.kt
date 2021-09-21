@@ -1,9 +1,7 @@
 package com.example.musicloud.network
 
-import android.util.Log
 import io.socket.client.IO
 import io.socket.client.Socket
-import io.socket.emitter.Emitter
 import kotlinx.coroutines.delay
 import java.net.URISyntaxException
 
@@ -11,8 +9,8 @@ private const val RESPONSE_TIMEOUT = "response_timeout"
 
 class SocketManager {
 
-    private lateinit var socket: Socket
-    private val serverSocketURL = "http://10.0.2.2:5000/api"
+    private var socket: Socket
+    private val serverSocketURL = "https://www.musicloud-api.site/api"
 
     init {
         try {
@@ -20,7 +18,7 @@ class SocketManager {
             socket.connect()
         }
         catch (exp: URISyntaxException) {
-            exp.message?.let { Log.e ("SocketManger", it) }
+            throw exp
         }
     }
 
@@ -30,7 +28,7 @@ class SocketManager {
         socket.on (Socket.EVENT_CONNECT) {
             isConnected = true
         }
-        delay (1000L)
+        delay (2000L)
         return isConnected
     }
 
@@ -41,16 +39,13 @@ class SocketManager {
         socket.on ("process_status_resp") {
             taskStatus = it[0] as String
         }
-        delay (2000L)
+        delay (3000L)
 
         return taskStatus
     }
 
     fun disconnectSocket () {
         socket.disconnect()
-        socket.on (Socket.EVENT_DISCONNECT) {
-            Log.i ("SongRepository", "Socket Disconnected!")
-        }
     }
 
 }

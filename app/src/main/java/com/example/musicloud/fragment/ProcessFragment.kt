@@ -45,7 +45,7 @@ class ProcessFragment: Fragment() {
 
     private fun subscribeObservers () {
 
-        songViewModel.songs.observe (viewLifecycleOwner) {
+        songViewModel.processingSongs.observe (viewLifecycleOwner) {
             it?.let {
                 processAdapter.songs = it
             }

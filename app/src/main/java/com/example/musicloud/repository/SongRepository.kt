@@ -1,16 +1,16 @@
 package com.example.musicloud.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.musicloud.database.Song
 import com.example.musicloud.database.SongDAO
-import com.example.musicloud.network.*
 import com.example.musicloud.network.ErrorMessages.genErrorMessage
+import com.example.musicloud.network.MusiCloudApi
+import com.example.musicloud.network.SocketManager
+import com.example.musicloud.network.SongRequestBody
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.io.IOException
-import java.lang.Exception
 import java.net.SocketTimeoutException
 
 
@@ -40,8 +40,10 @@ class SongRepository (private val songDAO: SongDAO) {
             when (songStatus.status) {
                 PROCESS_SONG -> {
                     _errorMessage.value = null
-                    doConversion (scope, song.youtubeURL)
-                    getSongMetaDataAsync (scope, song.songID).await()
+                    val conversionStatus = doConversion (scope, song.youtubeURL)
+                    if (conversionStatus == 1)
+                        getSongMetaDataAsync (scope, song.songID).await()
+                    else throw SocketTimeoutException ("Socket Connection TimeOut!")
                 }
                 DOWNLOAD_READY -> {
                     _errorMessage.value = null
@@ -65,13 +67,14 @@ class SongRepository (private val songDAO: SongDAO) {
                 withContext(Dispatchers.IO) {
                     MusiCloudApi.retrofitService.checkSong(SongRequestBody(url = song.youtubeURL))
                 }
-            Log.i ("SongRepository", "checkSongStatus = $songStatus")
 
             when (songStatus.status) {
                 PROCESS_SONG -> {
                     _errorMessage.value = null
-                    doConversion (scope, song.youtubeURL)
-                    getSongMetaDataAsync (scope, song.songID).await()
+                    val conversionStatus = doConversion (scope, song.youtubeURL)
+                    if (conversionStatus == 1)
+                        getSongMetaDataAsync (scope, song.songID).await()
+                    else throw SocketTimeoutException ("Socket Connection TimeOut!")
                 }
                 DOWNLOAD_READY -> {
                     _errorMessage.value = null
@@ -92,27 +95,24 @@ class SongRepository (private val songDAO: SongDAO) {
     * Request to server for the song conversion process of the given YouTube URL.
     * Initiate the socket connection to server to get the status updates of conversion process
     * */
-    private suspend fun doConversion (scope: CoroutineScope, ytURL: String) {
+    private suspend fun doConversion (scope: CoroutineScope, ytURL: String): Int {
 
         try {
-            Log.i ("SongRepository", "Start Song Processing...")
             /* do song conversion processing in server */
             val processTask = withContext (Dispatchers.IO) {
                 MusiCloudApi.retrofitService.doConversion (SongRequestBody(url = ytURL))
             }
-            Log.i ("SongRepository", "Task ID: $processTask")
 
             val sock = SocketManager()
-            socketConnected =
-                withContext(Dispatchers.IO) {
-                    sock.connectSocketEvent()
-                }
-            Log.i ("SongRepository", "SocketConnected? : $socketConnected")
+            socketConnected = withContext(scope.coroutineContext) {
+                sock.connectSocketEvent()
+            }
+            delay (500L)
 
             if (socketConnected) {
                 // do accordingly
                 val taskCompleted = trackConversionProcessAsync (scope, sock, processTask.taskID).await()
-                Log.i ("SongRepository", "ConversionTask Completed? = $taskCompleted")
+                return if(taskCompleted as Boolean) 1 else throw IOException ("Error During Conversion Process.")
             }
             else throw SocketTimeoutException ("Socket Connection Time Out!")
         }
@@ -122,6 +122,7 @@ class SongRepository (private val songDAO: SongDAO) {
         catch (e: Exception) {
             _errorMessage.value = genErrorMessage(e)
         }
+        return 0
     }
 
 
@@ -130,7 +131,6 @@ class SongRepository (private val songDAO: SongDAO) {
 
         try {
             var processStatus = async { sock.trackSongProcess(taskID) }
-            Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
 
             var taskCompleted: Boolean = processStatus.await() == PROCESS_COMPLETED
             var taskError = false
@@ -138,10 +138,10 @@ class SongRepository (private val songDAO: SongDAO) {
             while (!taskCompleted) {
                 delay (4000L)
                 processStatus = async { sock.trackSongProcess(taskID) }
-                Log.i ("SongRepository", "Process Status: ${processStatus.await()}")
                 taskCompleted = processStatus.await() == PROCESS_COMPLETED
                 if (processStatus.await() !in SOCKET_RESPONSES) {
                     taskError = true
+                    taskCompleted = false
                     break
                 }
             }
@@ -182,16 +182,10 @@ class SongRepository (private val songDAO: SongDAO) {
             }
         }
         catch (e: HttpException) {
-            Log.i ("SongRepository", "downloadSong: ${e.code()}: ${e.message}")
             _errorMessage.value = genErrorMessage (e)
         }
         catch (e: Exception) {
-            Log.i ("SongRepository", "downloadSong: ${e.message}")
             _errorMessage.value = genErrorMessage(e)
         }
-    }
-
-    fun getUnFinishedSongsAsync (scope: CoroutineScope) = scope.async {
-        songDAO.getDownloadList (finish = false)
     }
 }

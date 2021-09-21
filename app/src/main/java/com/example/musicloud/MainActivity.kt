@@ -3,7 +3,6 @@ package com.example.musicloud
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -166,20 +165,14 @@ class MainActivity : AppCompatActivity() {
     private fun subscribeObservers () {
 
         /* add song to play list */
-        songViewModel.songs.observe (this) {
-            if (it.isNotEmpty()) {
-                if (songViewModel.isNewSong) {
-                    val lastSong = it[0]
-                    Log.i ("MainActivity", "Music: last song : $lastSong")
-                    if (lastSong.finished)
-                        homeViewModel.addSongToPlayList (lastSong)
-                }
-                songViewModel.isNewSong = false
-            }
+        songViewModel.newSong.observe (this) {
+            if (it == null) return@observe
+
+            if (it.finished)
+                homeViewModel.addSongToPlayList (it)
         }
 
         homeViewModel.currentPlayingSong.observe (this) {
-            Log.i ("MainActivity", "CurrentPlaying Song: $it")
             if (it == null) {
                 binding.songTitleTextView.text = "--"
                 binding.songThumbnailFull.setImageResource (R.drawable.ic_logo)

@@ -30,7 +30,7 @@ class YoutubeFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = YoutubeFragmentBinding.inflate(inflater)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         val youtubeSearchRepository = YoutubeSearchRepository ()
         val youtubeSearchViewModelFactory = YoutubeSearchViewModelFactory (youtubeSearchRepository)

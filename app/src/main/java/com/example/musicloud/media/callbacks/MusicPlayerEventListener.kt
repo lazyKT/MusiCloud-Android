@@ -1,6 +1,5 @@
 package com.example.musicloud.media.callbacks
 
-import android.util.Log
 import android.widget.Toast
 import com.example.musicloud.media.MusicService
 import com.google.android.exoplayer2.PlaybackException
@@ -25,7 +24,6 @@ class MusicPlayerEventListener (
 
     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
         super.onPlayWhenReadyChanged(playWhenReady, reason)
-        Log.i ("MusicPlayerEventListener", "PlayWhenReadyChangeReason : $reason")
         if (_playbackState == Player.STATE_READY && !playWhenReady) {
             musicService.stopForeground (false)
         }

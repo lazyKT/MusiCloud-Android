@@ -21,7 +21,7 @@ import java.lang.Exception
 import java.net.SocketTimeoutException
 
 
-private const val BASE_URL = "http:10.0.2.2:5000"
+private const val BASE_URL = "https://www.musicloud-api.site"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
