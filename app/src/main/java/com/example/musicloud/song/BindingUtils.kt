@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.example.musicloud.R
 import com.example.musicloud.database.Song
-import org.w3c.dom.Text
+
 
 /*
 * Song Adapter Data Binding static functions
@@ -27,11 +27,6 @@ fun TextView.setSongSource (song: Song) {
 @BindingAdapter ("channelTitle")
 fun TextView.channelTitle (song: Song) {
     text = if (song.channelTitle == "") "Anonymous" else song.channelTitle
-}
-
-@BindingAdapter ("playState")
-fun ImageView.playState (playing: Boolean) {
-    setImageResource (if (playing) R.drawable.ic_pause_foreground else R.drawable.play_foreground)
 }
 
 @SuppressLint("ResourceAsColor")

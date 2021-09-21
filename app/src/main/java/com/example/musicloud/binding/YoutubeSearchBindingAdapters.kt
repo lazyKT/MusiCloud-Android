@@ -52,10 +52,9 @@ fun bindStatus (statusImageView: ImageView, status: YoutubeSearchApiStatus?) {
 
 @BindingAdapter ("search")
 fun bindSearch (editText: EditText, getSearchResult: (String) -> Unit) {
-    Log.i ("YoutubeFragment", "bindSearch Method Called!")
+
     editText.setOnKeyListener (View.OnKeyListener { _, keyCode, event ->
         if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-            Log.i ("YoutubeFragment", "EditText Entered!")
             getSearchResult (editText.text.toString())
             return@OnKeyListener true
         }
