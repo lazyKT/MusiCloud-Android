@@ -49,6 +49,8 @@
     <string name="sampleQuestion">What\'ll happen if I uninstalled the app?</string>
     <string name="sampleAnswer">If you uninstall the app, the songs will not be removed from the device, instead they will be still saved as Audio Media Item. However, the app will lose track of all the songs and the songs will not be available for the app when you install again.</string>
     <string name="contact">Contact</string>
+    <string name="contactInfo">Contact Info</string>
+    <string name="contactDescription">Currently, I am working on the mail service for the Contact Function and will be included in next Update.\nFor now, please contact me via\n <b>kyaw.thitlwin.me@gmail.com</b> \nwith subject, MusiCloud.\nThanks for understanding.</string>
 
     <string-array name="questions">
         <item>What\'ll happen if I uninstalled the app?</item>

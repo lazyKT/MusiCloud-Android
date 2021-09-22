@@ -60,5 +60,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addFromLocalButton" />
 
+        <Button
+            android:id="@+id/copyPasteYoutubeLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/cpYoutubeLink"
+            android:textColor="@color/sky_blue_700"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addFromYouTubeButton" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
