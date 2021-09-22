@@ -148,7 +148,6 @@ class HomeFragment: Fragment () {
     }
 
     override fun onDestroyView() {
-        Log.i ("SongFragment", "onDestroyView()")
         _binding = null
         super.onDestroyView()
     }

@@ -66,7 +66,6 @@ class YoutubeSearchViewModel (
 
 
     fun displaySearchResultDetails (result: YoutubeSearchProperty) {
-        Log.i ("YoutubeSearchViewModel", "displaySearchResultDetails ${result.title}")
         _navigateToDetailsPage.value = result
     }
 
@@ -75,7 +74,6 @@ class YoutubeSearchViewModel (
     }
 
     override fun onCleared() {
-        Log.i ("YoutubeSearchViewModel", "Data Cleared!")
         super.onCleared()
     }
 }
