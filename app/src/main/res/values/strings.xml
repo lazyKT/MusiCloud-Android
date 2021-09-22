@@ -13,6 +13,7 @@
     <string name="add">Add New Song</string>
     <string name="youtube_search_result_details">Youtube Search Result Details</string>
     <string name="process">Process</string>
+    <string name="help">Help</string>
 
     <!-- button texts -->
     <string name="share">Share</string>
@@ -24,6 +25,7 @@
     <string name="download">Download MP3 Offline</string>
     <string name="view_in_youtube">View Video in Youtube</string>
     <string name="close">Close</string>
+    <string name="cpYoutubeLink">Copy and Paste YouTube Link</string>
 
     <!-- hints -->
     <string name="search_youtube">Search on YouTube</string>
@@ -42,5 +44,26 @@
     <string name="dataSaverTitle">DataSaver Mode</string>
     <string name="dataSaverDesc">Process and Download Song only when wifi is connected.</string>
     <string name="dataSaverUserAlert">DataSaver Mode is On and You are not currently connected to WIFI.</string>
+
+    <!-- help -->
+    <string name="sampleQuestion">What\'ll happen if I uninstalled the app?</string>
+    <string name="sampleAnswer">If you uninstall the app, the songs will not be removed from the device, instead they will be still saved as Audio Media Item. However, the app will lose track of all the songs and the songs will not be available for the app when you install again.</string>
+    <string name="contact">Contact</string>
+
+    <string-array name="questions">
+        <item>What\'ll happen if I uninstalled the app?</item>
+        <item>Why can\'t I find the song after download?</item>
+        <item>Why is the song process taking too long?</item>
+        <item>If I reinstalled the app, will I lose my songs?</item>
+        <item>I cannot find the song I like?</item>
+    </string-array>
+
+    <string-array name="answers">
+        <item>If you uninstall the app, the songs will not be removed from the device, instead they will be still saved as Audio Media Item.However, the app will lose track of all the songs and the songs will not be available for the app when you install again.</item>
+        <item>I have tried to make sure that there\'s no room for error. However, once in a blue moon or in an unfortunate circumstances, some errors might still occur.Please restart the app if you encounter this situation.</item>
+        <item>The song processing time is directly proportional to the duration of the Youtube Videos you have chosen. The longer the video duration, the longer processing time.Please make sure your device has a good connection or if these options do not help, kindly contact me.</item>
+        <item>Yes, the songs will not be available after the re-installation. However, these songs can be played with other Audio Application (for example, built-in music app)</item>
+        <item>You can copy the link of the song from YouTube and paste it in the text-box. (Add >> Direct Convert)</item>
+    </string-array>
 
 </resources>

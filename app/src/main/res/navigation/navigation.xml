@@ -100,4 +100,9 @@
         android:name="com.example.musicloud.fragment.ProcessFragment"
         android:label="@string/process"
         tools:layout="@layout/process_fragment" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.musicloud.fragment.HelpFragment"
+        android:label="@string/help"
+        tools:layout="@layout/help_fragment"/>
 </navigation>
