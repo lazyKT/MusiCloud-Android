@@ -14,6 +14,8 @@
     <string name="youtube_search_result_details">Youtube Search Result Details</string>
     <string name="process">Process</string>
     <string name="help">Help</string>
+    <string name="songInfo">Song Info</string>
+    <string name="aboutTitle">What is MusiCloud?</string>
 
     <!-- button texts -->
     <string name="share">Share</string>
@@ -67,5 +69,7 @@
         <item>Yes, the songs will not be available after the re-installation. However, these songs can be played with other Audio Application (for example, built-in music app)</item>
         <item>You can copy the link of the song from YouTube and paste it in the search bar.</item>
     </string-array>
+
+    <!-- about -->
 
 </resources>

@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.musicloud.GlideApp
+import com.bumptech.glide.Glide
 import com.example.musicloud.R
 import com.example.musicloud.network.YoutubeSearchProperty
 import com.example.musicloud.youtubesearch.YoutubeSearchAdapter
@@ -20,7 +20,7 @@ import com.example.musicloud.youtubesearch.YoutubeSearchApiStatus
 fun bindImage (imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
-        GlideApp.with (imgView.context)
+        Glide.with (imgView.context)
             .load (imgUri)
             .placeholder (R.drawable.loading_animation)
             .error (R.drawable.ic_broken_image_foreground)

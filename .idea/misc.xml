@@ -26,10 +26,10 @@
         <entry key="app/src/main/res/drawable/splash_image.xml" value="0.2578125" />
         <entry key="app/src/main/res/drawable/top_shadow.xml" value="0.2578125" />
         <entry key="app/src/main/res/drawable/youtube_search_image.xml" value="0.2947916666666667" />
-        <entry key="app/src/main/res/layout/about_fragment.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/about_fragment.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.13360507246376813" />
-        <entry key="app/src/main/res/layout/add_new_song_dialog.xml" value="0.16847826086956522" />
+        <entry key="app/src/main/res/layout/add_new_song_dialog.xml" value="0.335" />
         <entry key="app/src/main/res/layout/grid_view_item.xml" value="0.13360507246376813" />
         <entry key="app/src/main/res/layout/header_text.xml" value="0.13360507246376813" />
         <entry key="app/src/main/res/layout/help_fragment.xml" value="0.15307971014492755" />
@@ -63,7 +63,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

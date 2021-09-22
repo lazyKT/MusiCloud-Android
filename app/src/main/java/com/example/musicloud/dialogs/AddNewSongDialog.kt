@@ -7,23 +7,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.example.musicloud.R
 import com.example.musicloud.databinding.AddNewSongDialogBinding
-import com.example.musicloud.song.SongViewModel
 
 
 class AddNewSongDialog: DialogFragment() {
 
     private var _binding: AddNewSongDialogBinding? = null
     private val binding get() = _binding!!
-
-    /* shared viewModel from the host activity via the parent fragment: Notice -> requireParentFragment().requireActivity() */
-    private val songViewModel by viewModels<SongViewModel>(ownerProducer = { requireParentFragment().requireActivity() })
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -34,7 +30,7 @@ class AddNewSongDialog: DialogFragment() {
         val dialog: AlertDialog = builder.create()
 
         binding.addFromLocalButton.setOnClickListener {
-//            songViewModel.startSongProcessing()
+            Toast.makeText (requireActivity(), "Coming Soon", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
 

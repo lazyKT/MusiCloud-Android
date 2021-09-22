@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.musicloud.databinding.AboutFragmentBinding
+import com.example.musicloud.viewmodels.AboutViewModel
 
 class AboutFragment: Fragment() {
 
@@ -18,6 +20,13 @@ class AboutFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = AboutFragmentBinding.inflate (inflater, container, false)
+
+        val aboutViewModel = ViewModelProvider(this).get (AboutViewModel::class.java)
+
+        aboutViewModel.aboutText.observe (viewLifecycleOwner) {
+            binding.aboutTextView.text = it
+        }
+
         return binding.root
     }
 

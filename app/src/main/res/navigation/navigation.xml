@@ -48,7 +48,7 @@
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.example.musicloud.fragment.AboutFragment"
-        android:label="AboutFragment" />
+        android:label="@string/about" />
 
     <fragment
         android:id="@+id/reportFragment"
@@ -74,7 +74,7 @@
     <fragment
         android:id="@+id/songDetailFragment"
         android:name="com.example.musicloud.fragment.SongDetailFragment"
-        android:label="SongDetailFragment"
+        android:label="@string/songInfo"
         tools:layout="@layout/song_detail_fragment">
         <argument
             android:name="songKey"
