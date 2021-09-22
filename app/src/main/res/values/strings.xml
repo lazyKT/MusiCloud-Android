@@ -57,7 +57,7 @@
         <item>Why can\'t I find the song after download?</item>
         <item>Why is the song process taking too long?</item>
         <item>If I reinstalled the app, will I lose my songs?</item>
-        <item>I cannot find the song I like?</item>
+        <item>I cannot find the song I like. What can I do?</item>
     </string-array>
 
     <string-array name="answers">
@@ -65,7 +65,7 @@
         <item>I have tried to make sure that there\'s no room for error. However, once in a blue moon or in an unfortunate circumstances, some errors might still occur.Please restart the app if you encounter this situation.</item>
         <item>The song processing time is directly proportional to the duration of the Youtube Videos you have chosen. The longer the video duration, the longer processing time.Please make sure your device has a good connection or if these options do not help, kindly contact me.</item>
         <item>Yes, the songs will not be available after the re-installation. However, these songs can be played with other Audio Application (for example, built-in music app)</item>
-        <item>You can copy the link of the song from YouTube and paste it in the text-box. (Add >> Direct Convert)</item>
+        <item>You can copy the link of the song from YouTube and paste it in the search bar.</item>
     </string-array>
 
 </resources>

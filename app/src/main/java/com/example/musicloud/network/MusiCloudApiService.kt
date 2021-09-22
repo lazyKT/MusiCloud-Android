@@ -22,6 +22,8 @@ import java.net.SocketTimeoutException
 
 
 private const val BASE_URL = "https://www.musicloud-api.site"
+//private const val BASE_URL = "http://10.0.2.2:5000"
+
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -58,6 +60,9 @@ interface MusiCloudApiService {
     /* get search results from YouTube */
     @GET
     suspend fun getYtSearchResults (@Url url: String): List<YoutubeSearchProperty>
+
+    @GET
+    suspend fun getYtSearchResultById (@Url url: String): List<YoutubeSearchProperty>
 
     /* Request Song Processing */
     @POST ("/process")
