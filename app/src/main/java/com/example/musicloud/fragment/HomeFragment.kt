@@ -1,7 +1,6 @@
 package com.example.musicloud.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -116,7 +115,6 @@ class HomeFragment: Fragment () {
         val badgeCount = processActionView.findViewById <TextView> (R.id.badgeCount)
 
         processActionView.setOnClickListener {
-            Log.i ("HomeFragment", "Process Action View Clicked!")
             this.findNavController().navigate (R.id.action_homeFragment_to_processFragment)
         }
 
@@ -133,8 +131,6 @@ class HomeFragment: Fragment () {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        Log.i ("HomeFragment", "onOptionsItemSelected: ${item.itemId}")
 
         if (item.itemId == R.id.add_new_song) {
             /* show options of adding new songs to user */

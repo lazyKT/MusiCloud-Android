@@ -164,12 +164,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun subscribeObservers () {
 
-        /* add song to play list */
-        songViewModel.newSong.observe (this) {
+        songViewModel.numOfSongsAdded.observe (this) {
+            songViewModel.getNewlyAddedSongs (it)
+        }
+        songViewModel.newSongs.observe (this) {
             if (it == null) return@observe
-
-            if (it.finished)
-                homeViewModel.addSongToPlayList (it)
+            homeViewModel.addNewlyAddedSongs (it)
         }
 
         homeViewModel.currentPlayingSong.observe (this) {

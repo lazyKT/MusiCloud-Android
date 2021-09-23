@@ -51,10 +51,11 @@ class SongViewModel (
 
     val songs = songRepository.songs
 
-    var isNewSong: Boolean = false
+    private val _newSongs = MutableLiveData <List<Song>> ()
+    val newSongs: LiveData <List<Song>> get() = _newSongs
 
-    private val _newSong = MutableLiveData<Song> ()
-    val newSong: LiveData<Song> get() = _newSong
+    private val _numOfSongsAdded = MutableLiveData<Int> ()
+    val numOfSongsAdded: LiveData<Int> get() = _numOfSongsAdded
 
     private val _errorMessage = MutableLiveData<String> ()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -66,7 +67,7 @@ class SongViewModel (
     val userAlert: LiveData<String> get() = _userAlert
 
     init {
-        _newSong.value = null
+        _numOfSongsAdded.value = 0
         _userAlert.value = null
         processUnfinishedSongs()
         readFromSharedPrefs()
@@ -200,8 +201,7 @@ class SongViewModel (
                     resolver.update (songLocation, songDetails, null, null)
                     songDatabase.updateFileLocation (songLocation.toString(), song.songID)
                     songDatabase.finishSongProcessing (finished = true, processing = false, songID = song.songID )
-                    _newSong.postValue (songDatabase.getLastSong())
-                    isNewSong = true
+                    _numOfSongsAdded.postValue (numOfSongsAdded.value?.plus(1))
                 }
 
             }
@@ -295,5 +295,14 @@ class SongViewModel (
             editor.putBoolean ("DataSaverMode", it)
         }
         editor.apply()
+    }
+
+    fun getNewlyAddedSongs (limit: Int) {
+        if (limit < 1) return
+        viewModelScope.launch (Dispatchers.IO) {
+            val newSongList = songDatabase.getNewlyAddedSongs (finished = true, limit = limit)
+            _newSongs.postValue (newSongList)
+            _numOfSongsAdded.postValue (0)
+        }
     }
 }

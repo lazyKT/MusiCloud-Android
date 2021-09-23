@@ -163,20 +163,23 @@ class HomeViewModel @Inject constructor (
         }
     }
 
-    fun addSongToPlayList (song: Song) {
-        val mediaMetadataCompat = songToMediaDataCompat (song)
+    fun addNewlyAddedSongs (songs: List<Song>) {
 
-        musicServiceConnection.sendCommand ("add", mediaMetadataCompat)
-
-        var oldPlayList: MutableList<Song>? = null
+        var oldPlayList: MutableList<Song> = mutableListOf()
 
         mediaItems.value?.apply {
-            oldPlayList = this.data?.toMutableList()
+            oldPlayList = this.data as MutableList<Song>
         }
 
-        oldPlayList?.add (0, song)
+        val newList = songs + oldPlayList
+        _mediaItems.postValue (Resource.success(newList))
 
-        _mediaItems.postValue (Resource.success(oldPlayList))
+        var i = 0
+        while (i < songs.size) {
+            val mediaMetadataCompat = songToMediaDataCompat (newList[i])
+            musicServiceConnection.sendCommand ("add", mediaMetadataCompat)
+            i++
+        }
     }
 
     fun removeSongFromPlaylist (song: Song) {
