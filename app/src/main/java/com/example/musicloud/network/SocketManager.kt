@@ -10,7 +10,7 @@ private const val RESPONSE_TIMEOUT = "response_timeout"
 class SocketManager {
 
     private var socket: Socket
-    private val serverSocketURL = "https://www.musicloud-api.site/api"
+    private val serverSocketURL = "https://musicloud-api.site/api"
 //    private val serverSocketURL = "http://10.0.2.2:5000/api"
 
     init {
